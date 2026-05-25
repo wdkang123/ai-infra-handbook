@@ -1,6 +1,6 @@
 {
-  "name": "ai-infra-manual",
-  "description": "AI Infra learning manual with runnable scaffolds, hands-on labs, assessments, and a VitePress site.",
+  "name": "ai-infra-handbook",
+  "description": "AI Infra learning handbook with runnable scaffolds, hands-on labs, assessments, and a VitePress site.",
   "private": true,
   "license": "MIT",
   "type": "module",

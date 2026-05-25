@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "AI Infra Manual"
+  name: "AI Infra Handbook"
   text: "一套能边学边跑的 AI Infra 学习站"
   tagline: "把概念、命令、服务状态页和最小可运行代码收成同一个入口。"
   actions:

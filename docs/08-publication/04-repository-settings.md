@@ -9,12 +9,13 @@
 
 ```text
 Description:
-AI Infra learning manual with runnable Python scaffolds, hands-on labs, assessments, and a VitePress site.
+AI Infra learning handbook with runnable Python scaffolds, hands-on labs, assessments, and a VitePress site.
 
 Website:
-<你的 GitHub Pages 地址>
+https://wdkang123.github.io/ai-infra-handbook/
 
 Topics:
+ai-infrastructure
 ai-infra
 llm
 inference
@@ -28,8 +29,7 @@ hands-on-labs
 workshop
 ```
 
-如果你还没部署 Pages，Website 可以先留空。  
-等 [GitHub Pages 发布指南](/08-publication/01-github-pages) 跑通后再补。
+如果 Pages workflow 还没跑通，Website 可以先留空；跑通后再填上面的地址。
 
 ## 2. README 第一屏
 

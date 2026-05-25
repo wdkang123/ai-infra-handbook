@@ -56,7 +56,7 @@ npm audit --omit=dev --audit-level=moderate
 
 | 设置 | 建议 |
 | --- | --- |
-| Description | AI Infra learning manual with runnable scaffolds |
+| Description | AI Infra learning handbook with runnable scaffolds |
 | Website | GitHub Pages 或其他静态站地址 |
 | Topics | `ai-infra`, `llm`, `inference`, `gateway`, `evaluation`, `finetuning`, `vitepress` |
 | Issues | 开启 |
@@ -111,7 +111,7 @@ npm audit --omit=dev --audit-level=moderate
 ## 发布公告模板
 
 ```text
-AI Infra Manual 发布了一个学习型版本。
+AI Infra Handbook 发布了一个学习型版本。
 
 它不是生产平台，而是一套能边学边跑的 AI Infra 学习站：
 

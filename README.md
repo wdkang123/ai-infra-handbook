@@ -1,4 +1,10 @@
-# AI Infra Manual
+# AI Infra Handbook
+
+[![CI](https://github.com/wdkang123/ai-infra-handbook/actions/workflows/ci.yml/badge.svg)](https://github.com/wdkang123/ai-infra-handbook/actions/workflows/ci.yml)
+[![Docs Pages](https://github.com/wdkang123/ai-infra-handbook/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/wdkang123/ai-infra-handbook/actions/workflows/docs-pages.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+
+> 一套能边学边跑的 AI 基础设施学习手册：从 LLM 请求链路、推理服务、AI Gateway、评测观测到微调资产化，用文档站、可运行代码、hands-on labs 和证据包把学习过程连起来。
 
 这个仓库现在的主目标，不是做一个花哨产品，而是把 AI Infra 的学习内容、可运行脚手架和最小联调链路收成一套能边学边跑的手册。
 
@@ -13,6 +19,34 @@
 1. 文档线：沉淀结构化学习手册
 2. 项目线：同步维护 `inference-service`、`ai-gateway`、`eval-module`、`finetune-demo`
 3. 实战线：用 hands-on labs 把概念、代码、命令、产物和验收串起来
+
+## 适合谁
+
+- 想系统理解 AI Infra，而不是只零散看模型 API 的学习者
+- 想把 inference serving、gateway、evaluation、finetuning 串成工程闭环的开发者
+- 想组织学习小组、公开分享或带练 AI Infra 主题的讲师/维护者
+- 想从学习型 mock 系统逐步迁移到真实 serving、评测和训练栈的工程实践者
+
+## 项目地图
+
+```mermaid
+flowchart LR
+  A["学习路线<br/>概念、术语、课程大纲"] --> B["可运行项目<br/>serving / gateway / eval / finetune"]
+  B --> C["深度实战<br/>labs、案例复盘、输出证据"]
+  C --> D["公开分享<br/>自测、共学包、路线图、发布检查"]
+  D --> E["生产迁移<br/>替换真实后端、平台策略、评测和训练执行"]
+```
+
+```mermaid
+flowchart TB
+  Client["Client / Learner"] --> Gateway["ai-gateway<br/>auth / routing / fallback / events"]
+  Gateway --> Serving["inference-service<br/>chat completions / streaming / metrics"]
+  Gateway --> Eval["eval-module<br/>run / compare / leaderboard"]
+  Eval --> Evidence["evidence packet<br/>reports / summaries / release brief"]
+  Finetune["finetune-demo<br/>dataset registry / run history / exports"] --> Eval
+  Finetune --> Evidence
+  Serving --> Evidence
+```
 
 ## 现在最推荐怎么开始
 

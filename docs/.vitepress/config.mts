@@ -1,18 +1,34 @@
 import { defineConfig } from "vitepress";
 
+const base = process.env.VITEPRESS_BASE || "/";
+const siteUrl = "https://wdkang123.github.io/ai-infra-handbook/";
+
 export default defineConfig({
   lang: "zh-CN",
-  title: "AI Infra Manual",
-  description: "把学习文档、可运行脚手架和最小联调链路收成一个可浏览的学习站。",
-  base: process.env.VITEPRESS_BASE || "/",
+  title: "AI Infra Handbook",
+  description: "把学习文档、可运行脚手架、hands-on labs 和最小联调链路收成一个可浏览的 AI Infra 学习站。",
+  base,
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: "localhostLinks",
+  head: [
+    ["meta", { property: "og:title", content: "AI Infra Handbook" }],
+    [
+      "meta",
+      {
+        property: "og:description",
+        content: "一套能边学边跑的 AI Infra 学习站，覆盖推理服务、AI Gateway、评测观测、微调训练和公开分享材料。",
+      },
+    ],
+    ["meta", { property: "og:type", content: "website" }],
+    ["meta", { property: "og:url", content: siteUrl }],
+    ["meta", { name: "twitter:card", content: "summary" }],
+  ],
   themeConfig: {
-    siteTitle: "AI Infra Manual",
+    siteTitle: "AI Infra Handbook",
     logo: {
       src: "/mark.svg",
-      alt: "AI Infra Manual",
+      alt: "AI Infra Handbook",
     },
     search: {
       provider: "local",

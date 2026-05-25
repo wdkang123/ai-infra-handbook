@@ -157,7 +157,7 @@ npm audit --omit=dev --audit-level=moderate
 可以用这个模板写 GitHub description 或文章开头：
 
 ```text
-AI Infra Manual 是一个面向学习的 AI Infra 小系统。它把文档站、推理服务、AI gateway、评测模块、微调示例、hands-on labs 和自测题放在一个仓库里，目标是帮助读者理解模型服务、平台治理、质量闭环和训练资产化之间的关系。
+AI Infra Handbook 是一个面向学习的 AI Infra 小系统。它把文档站、推理服务、AI gateway、评测模块、微调示例、hands-on labs 和自测题放在一个仓库里，目标是帮助读者理解模型服务、平台治理、质量闭环和训练资产化之间的关系。
 ```
 
 再补一句边界：
