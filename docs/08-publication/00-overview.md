@@ -13,7 +13,7 @@
 - 我发现问题后怎么反馈
 - 我想贡献内容时按什么标准来
 
-## 发布前最重要的九件事
+## 发布前最重要的十件事
 
 ### 1. 本地质量通过
 
@@ -112,6 +112,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - 依赖 PR 有本地检查和 CI 检查路径
 - Actions 升级后会确认对应 workflow 实际通过
 - 维护者知道如何判断 bot 邮件、关闭 PR 和手动补丁之间的关系
+- v0.1 release notes 能说明学习价值、验证命令和项目边界
 
 具体流程见 [依赖维护与 Bot PR 处理](/08-publication/07-dependency-maintenance)。
 
@@ -133,6 +134,19 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 初期优先使用 GitHub 默认标签，例如 `bug`、`documentation`、`enhancement`、`good first issue`、`help wanted`、`question`。等贡献真的变多后，再创建 `lab`、`evidence`、`feedback`、`ci`、`dependencies` 等自定义标签。
 
 具体分类见 [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)。
+
+### 10. 首发 release 要说明边界
+
+如果准备创建第一个 GitHub release，不要只写“initial release”。
+应该说明：
+
+- 当前版本能帮助读者学什么
+- 包含哪些可运行项目、labs、案例和自动产物
+- 跑过哪些验证命令
+- 仍然是学习型项目，不是生产平台
+- 发布后 24 小时和 7 天怎么接反馈
+
+具体模板见 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)。
 
 ## 当前已经准备好的材料
 
@@ -162,8 +176,9 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 5. 配置 GitHub Pages 为 GitHub Actions
 6. 手动运行一次 docs-pages workflow，确认 Pages 配置可用
 7. 把在线站点链接补到 README
-8. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) 创建第一批 roadmap issues
-9. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 选择首批 good first issue、docs、lab 和 evidence 任务
+8. 根据 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook) 准备首个 release notes
+9. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) 创建第一批 roadmap issues
+10. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 选择首批 good first issue、docs、lab 和 evidence 任务
 
 ## 发布后优先收集什么反馈
 
@@ -189,6 +204,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - [依赖维护与 Bot PR 处理](/08-publication/07-dependency-maintenance)
 - [维护节奏与运营清单](/08-publication/08-maintainer-rhythm)
 - [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)
+- [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
 - [项目成熟度地图](/00-overview/14-project-maturity-map)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [示例输出与证据库](/13-output-gallery/00-overview)

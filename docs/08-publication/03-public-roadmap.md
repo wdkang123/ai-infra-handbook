@@ -46,6 +46,8 @@ PYTHON=.venv/bin/python make roadmap-pack
 - 生产迁移路线章节，覆盖 Serving 后端、Gateway 平台化、Eval 评测系统和 Finetune 真实训练迁移
 - 自动生成路线图包，能把发布摘要和测评弱点整理成 GitHub issue 种子、推荐 label 和发布后反馈闭环
 - 发布维护节奏与 issue triage 文档，帮助公开仓库用低噪音方式持续处理反馈、依赖和路线图
+- v0.1 首发发布手册，帮助第一个 release 说明学习价值、验证命令和项目边界
+- 深化案例复盘，新增 Gateway fallback/cache 与 Eval 退化阻断两类更接近真实工程评审的案例
 
 它已经适合开始公开分享和收集反馈。
 
@@ -95,6 +97,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 
 - 配置 GitHub Pages
 - README 增加在线站点链接
+- 准备 `v0.1.0-learning-site` release notes
 - 设置 repo description、topics 和 About website
 - 创建 good first issue
 - 创建 roadmap issue

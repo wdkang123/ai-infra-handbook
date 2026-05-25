@@ -79,6 +79,7 @@ export default defineConfig({
           { text: "依赖维护", link: "/08-publication/07-dependency-maintenance" },
           { text: "维护节奏", link: "/08-publication/08-maintainer-rhythm" },
           { text: "Issue 分类", link: "/08-publication/09-issue-triage-and-labels" },
+          { text: "v0.1 发布", link: "/08-publication/10-v0-1-release-playbook" },
         ],
       },
     ],
@@ -204,6 +205,8 @@ export default defineConfig({
           { text: "请求失败排查案例", link: "/11-case-studies/01-request-incident-walkthrough" },
           { text: "模型发布判断案例", link: "/11-case-studies/02-model-release-decision-walkthrough" },
           { text: "训练产物复现案例", link: "/11-case-studies/03-finetune-to-eval-asset-lineage" },
+          { text: "Gateway Fallback 与缓存复盘案例", link: "/11-case-studies/04-gateway-fallback-cache-incident" },
+          { text: "Eval 退化与发布阻断案例", link: "/11-case-studies/05-eval-regression-release-gate" },
         ],
       },
       {
@@ -255,6 +258,7 @@ export default defineConfig({
           { text: "依赖维护与 Bot PR 处理", link: "/08-publication/07-dependency-maintenance" },
           { text: "维护节奏与运营清单", link: "/08-publication/08-maintainer-rhythm" },
           { text: "Issue 分类与标签策略", link: "/08-publication/09-issue-triage-and-labels" },
+          { text: "v0.1 首发发布手册", link: "/08-publication/10-v0-1-release-playbook" },
         ],
       },
       {

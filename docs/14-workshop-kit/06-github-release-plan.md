@@ -165,5 +165,6 @@ npm audit --omit=dev --audit-level=moderate
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
 - [共学与公开分享套件](/14-workshop-kit/00-overview)
 - [公开发布总览](/08-publication/00-overview)
+- [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
 
 这些入口能跑顺，首发体验就不会散。

@@ -14,6 +14,8 @@
 - 一个请求失败了，怎么定位
 - 一个候选模型想发布，怎么判断
 - 一次训练产物要复现，怎么追溯
+- 一次 fallback/cache 成功响应背后是否隐藏平台风险
+- 一次 eval 轻微退化是否应该阻断发布
 
 ## 什么时候读这一章
 
@@ -78,6 +80,36 @@
 
 确认这个导出产物能否被解释、被复现、被评测。
 
+### 案例 4：Gateway Fallback 与缓存复盘
+
+入口：[Gateway Fallback 与缓存复盘案例](/11-case-studies/04-gateway-fallback-cache-incident)
+
+你会从一个表面成功的请求出发，沿着：
+
+- `x-fallback-used`
+- `x-cache`
+- gateway request timeline
+- failure summary
+- cache token 隔离
+- fallback 成本、质量和延迟风险
+
+判断这次成功是正常降级，还是掩盖了上游健康问题。
+
+### 案例 5：Eval 退化与发布阻断
+
+入口：[Eval 退化与发布阻断案例](/11-case-studies/05-eval-regression-release-gate)
+
+你会从一次 candidate 评测轻微退化出发，沿着：
+
+- comparison report
+- settings changed
+- sample outputs
+- sample analysis
+- failed sample 聚类
+- release recommendation
+
+判断应该继续 review、补测，还是直接阻断发布。
+
 ## 这章训练什么能力
 
 这章最想训练的是三种能力：
@@ -87,6 +119,7 @@
 | 定位 | 从一个现象回到具体层、具体 request、具体 artifact |
 | 判断 | 用证据而不是感觉判断是否可发布、可复现、可继续排查 |
 | 讲述 | 把一次工程过程讲成别人听得懂的系统故事 |
+| 阻断 | 在证据不足或风险集中时，知道为什么不能继续发布 |
 
 ## 建议复盘格式
 

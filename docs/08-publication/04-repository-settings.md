@@ -175,3 +175,4 @@ Release notes 可以包含：
 - CI 和 smoke
 
 发布前确认 [Publication Checklist](/08-publication/00-overview) 里的关键项已经完成。
+如果需要更完整的 release notes 模板和发布后 24 小时检查清单，继续看 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)。

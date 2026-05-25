@@ -157,6 +157,7 @@ npm audit --omit=dev --audit-level=moderate
 - 如果要直接安排学习活动，再运行 `make workshop-packet`
 - 如果要做模块测评或 PR review，再运行 `make assessment-pack`
 - 如果要整理首批路线图 issue，再运行 `make roadmap-pack`
+- 如果要写第一个 GitHub release，再对照 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
 
 ## 和其他产物的关系
 

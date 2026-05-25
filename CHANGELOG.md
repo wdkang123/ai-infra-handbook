@@ -40,6 +40,8 @@
 - 新增 evidence example 与 workshop feedback issue templates，让公开发布后的输出证据和共学反馈能结构化进入仓库。
 - 新增 learning question 与 roadmap task issue templates，让学习问题和公开路线图任务能结构化进入仓库。
 - 新增维护节奏与 issue triage 文档，说明公开发布后如何处理 Dependabot、反馈、labels、路线图和低噪音协作。
+- 新增 v0.1 首发发布手册，提供 release notes 模板、发布前门禁和发布后 24 小时检查口径。
+- 新增 Gateway fallback/cache 与 Eval 退化阻断案例，强化平台层成功响应复盘和评测发布门禁判断。
 - 新增 Dependabot 配置，覆盖 npm、pip 和 GitHub Actions 依赖更新提醒。
 - 新增 `scripts/build_evidence_packet.py`、`make infra-evidence` 和脚本测试，可把 smoke 产物汇总成 JSON / Markdown 端到端证据包。
 - 扩展 smoke，保存 serving/gateway 快照并校验证据包生成结果。
