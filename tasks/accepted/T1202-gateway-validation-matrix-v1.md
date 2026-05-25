@@ -16,10 +16,10 @@
 | ID | 端点 | 方法 | 场景 | 预期 HTTP | 验证命令 | 依赖 Patch |
 |---|---|---|---|---|---|---|
 | G01 | `/health` | GET | 健康检查 | 200 | `curl localhost:8080/health` | P1 |
-| G02 | `/v1/chat/completions` | POST | 有效 token + 已知模型 | 200 | `curl -H "Authorization: Bearer sk-test-key-1" ...` | P3 |
+| G02 | `/v1/chat/completions` | POST | 有效 token + 已知模型 | 200 | `curl -H "Authorization: Bearer dev-gateway-key-1" ...` | P3 |
 | G03 | `/v1/chat/completions` | POST | 无 token | 401 | `curl ...`（无 Auth header） | P2 |
 | G04 | `/v1/chat/completions` | POST | 错误 scheme（Basic） | 401 | `curl -H "Authorization: Basic ..."` | P2 |
-| G05 | `/v1/chat/completions` | POST | 错误 scheme（无 Bearer） | 401 | `curl -H "Authorization: sk-test-key-1"` | P2 |
+| G05 | `/v1/chat/completions` | POST | 错误 scheme（无 Bearer） | 401 | `curl -H "Authorization: dev-gateway-key-1"` | P2 |
 | G06 | `/v1/chat/completions` | POST | 无效 key | 401 | `curl -H "Authorization: Bearer invalid-key-xyz"` | P2 |
 | G07 | `/v1/chat/completions` | POST | 未知模型 | 404 | `curl ... "model": "unknown-model"` | P3 |
 | G08 | `/v1/chat/completions` | POST | 空消息 | 422 | `curl ... "messages": []` | P1（FastAPI 校验） |
@@ -46,7 +46,7 @@ curl -s http://localhost:8080/health | python -m json.tool
 ```bash
 curl -s -X POST http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "What is 2+2?"}]}' \
   | python -m json.tool
 # 期望：200 + inference-service 响应
@@ -89,7 +89,7 @@ curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
 ```bash
 curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -d '{"model": "nonexistent-model", "messages": [{"role": "user", "content": "Hi"}]}'
 # 期望：404 + {"error": {"message": "Model not found: nonexistent-model", "type": "invalid_request_error", "code": "404"}}
 ```
@@ -105,7 +105,7 @@ curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
 for i in {1..65}; do
   curl -s -o /dev/null -w "%{http_code}\n" \
     -X POST http://localhost:8080/v1/chat/completions \
-    -H "Authorization: Bearer sk-test-key-1" \
+    -H "Authorization: Bearer dev-gateway-key-1" \
     -H "Content-Type: application/json" \
     -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}'
 done | grep "429" | head -1

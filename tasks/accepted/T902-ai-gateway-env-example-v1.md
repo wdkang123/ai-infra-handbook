@@ -39,7 +39,7 @@ AUTH_ENABLED=true
 AUTH_TYPE=api_key  # api_key | jwt
 
 # 有效 API Keys（逗号分隔，或在 config.yaml 中列表定义）
-# API_KEYS=sk-test-key-1,sk-test-key-2
+# API_KEYS=dev-gateway-key-1,dev-gateway-key-2
 
 # JWT 密钥（如果 AUTH_TYPE=jwt）
 # JWT_SECRET=your-secret-key-here
@@ -61,8 +61,8 @@ LOGGING_ENABLED=true
 LOGGING_LEVEL=INFO  # DEBUG | INFO | WARNING | ERROR
 
 # ---------- External API Keys ----------
-OPENAI_API_KEY=sk-your-openai-key
-ANTHROPIC_API_KEY=sk-ant-your-anthropic-key
+OPENAI_API_KEY=replace-with-openai-api-key
+ANTHROPIC_API_KEY=replace-with-anthropic-api-key
 ```
 
 ## 字段优先级

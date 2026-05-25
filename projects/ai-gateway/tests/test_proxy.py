@@ -14,7 +14,7 @@ from fastapi.testclient import TestClient
 def _make_client() -> TestClient:
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.rate_limit.enabled = True
     cfg.rate_limit.requests_per_minute = 2
     set_config(cfg)
@@ -53,12 +53,12 @@ def test_list_models_includes_gateway_metadata_without_api_keys(monkeypatch) -> 
 
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.models = [
         ModelEntry(
             name="vllm-local",
             base_url="http://primary.example/v1",
-            api_key="sk-secret",
+            api_key="test-downstream-key",
             target_model="primary-model",
             fallbacks=["vllm-backup"],
         ),
@@ -78,7 +78,7 @@ def test_list_models_includes_gateway_metadata_without_api_keys(monkeypatch) -> 
     assert payload["data"][0]["metadata"]["fallbacks"] == ["vllm-backup"]
     assert payload["data"][0]["metadata"]["fallback_count"] == 1
     assert payload["data"][0]["metadata"]["upstream_health"] == "healthy"
-    assert "sk-secret" not in response.text
+    assert "test-downstream-key" not in response.text
 
 
 def test_config_rejects_duplicate_model_names() -> None:
@@ -137,7 +137,7 @@ def test_invalid_auth_format_returns_401() -> None:
     client = _make_client()
     response = client.post(
         "/v1/chat/completions",
-        headers={"Authorization": "Token sk-test-key-1"},
+        headers={"Authorization": "Token dev-gateway-key-1"},
         json={"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]},
     )
     assert response.status_code == 401
@@ -148,7 +148,7 @@ def test_unknown_model_returns_404() -> None:
     client = _make_client()
     response = client.post(
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={"model": "unknown-model", "messages": [{"role": "user", "content": "Hi"}]},
     )
     assert response.status_code == 404
@@ -170,7 +170,7 @@ def test_stream_proxy_success(monkeypatch) -> None:
         "POST",
         "/v1/chat/completions",
         headers={
-            "Authorization": "Bearer sk-test-key-1",
+            "Authorization": "Bearer dev-gateway-key-1",
             "X-Request-ID": "req_gateway_stream_1",
         },
         json={
@@ -199,7 +199,7 @@ def test_stream_proxy_updates_success_metrics(monkeypatch) -> None:
     with client.stream(
         "POST",
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={
             "model": "vllm-local",
             "messages": [{"role": "user", "content": "Hi"}],
@@ -233,7 +233,7 @@ def test_stream_proxy_falls_back_before_first_chunk(monkeypatch) -> None:
 
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.rate_limit.enabled = False
     cfg.models = [
         ModelEntry(
@@ -256,7 +256,7 @@ def test_stream_proxy_falls_back_before_first_chunk(monkeypatch) -> None:
     with client.stream(
         "POST",
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={
             "model": "vllm-local",
             "messages": [{"role": "user", "content": "Hi stream fallback"}],
@@ -291,7 +291,7 @@ def test_stream_proxy_emits_error_when_all_candidates_fail(monkeypatch) -> None:
 
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.rate_limit.enabled = False
     cfg.models = [
         ModelEntry(
@@ -314,7 +314,7 @@ def test_stream_proxy_emits_error_when_all_candidates_fail(monkeypatch) -> None:
     with client.stream(
         "POST",
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={
             "model": "vllm-local",
             "messages": [{"role": "user", "content": "Hi all fail"}],
@@ -350,7 +350,7 @@ def test_stream_proxy_emits_error_without_fallback_after_first_chunk(monkeypatch
 
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.rate_limit.enabled = False
     cfg.models = [
         ModelEntry(
@@ -373,7 +373,7 @@ def test_stream_proxy_emits_error_without_fallback_after_first_chunk(monkeypatch
     with client.stream(
         "POST",
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={
             "model": "vllm-local",
             "messages": [{"role": "user", "content": "Hi mid stream fail"}],
@@ -415,7 +415,7 @@ def test_proxy_success(monkeypatch) -> None:
     response = client.post(
         "/v1/chat/completions",
         headers={
-            "Authorization": "Bearer sk-test-key-1",
+            "Authorization": "Bearer dev-gateway-key-1",
             "X-Request-ID": "req_gateway_json_1",
         },
         json={"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]},
@@ -487,7 +487,7 @@ def test_proxy_generates_request_id_when_missing(monkeypatch) -> None:
     client = _make_client()
     response = client.post(
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]},
     )
     assert response.status_code == 200
@@ -524,7 +524,7 @@ def test_proxy_falls_back_on_upstream_5xx(monkeypatch) -> None:
 
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.rate_limit.enabled = False
     cfg.models = [
         ModelEntry(
@@ -546,7 +546,7 @@ def test_proxy_falls_back_on_upstream_5xx(monkeypatch) -> None:
     client = TestClient(app)
     response = client.post(
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]},
     )
 
@@ -587,7 +587,7 @@ def test_proxy_cache_serves_repeated_non_stream_request(monkeypatch) -> None:
 
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.rate_limit.enabled = False
     cfg.cache.enabled = True
     cfg.cache.ttl_seconds = 60
@@ -597,7 +597,7 @@ def test_proxy_cache_serves_repeated_non_stream_request(monkeypatch) -> None:
     monkeypatch.setattr("ai_gateway.server.forward_chat_request", _fake_forward_chat_request)
 
     client = TestClient(app)
-    headers = {"Authorization": "Bearer sk-test-key-1"}
+    headers = {"Authorization": "Bearer dev-gateway-key-1"}
     payload = {"model": "vllm-local", "messages": [{"role": "user", "content": "Hi cache"}]}
 
     first = client.post("/v1/chat/completions", headers=headers, json=payload)
@@ -621,21 +621,21 @@ def test_response_cache_expires_entries(monkeypatch) -> None:
     cache = InMemoryResponseCache(ttl_seconds=1, max_entries=2)
     body = {"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}
 
-    cache.set("sk-a", body, {"choices": [{"message": {"content": "cached"}}]})
-    assert cache.get("sk-a", body)["choices"][0]["message"]["content"] == "cached"
+    cache.set("cache-key-a", body, {"choices": [{"message": {"content": "cached"}}]})
+    assert cache.get("cache-key-a", body)["choices"][0]["message"]["content"] == "cached"
 
     clock["now"] = 101.0
-    assert cache.get("sk-a", body) is None
+    assert cache.get("cache-key-a", body) is None
 
 
 def test_response_cache_is_scoped_by_token() -> None:
     cache = InMemoryResponseCache(ttl_seconds=60, max_entries=2)
     body = {"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}
 
-    cache.set("sk-a", body, {"id": "for-a"})
+    cache.set("cache-key-a", body, {"id": "for-a"})
 
-    assert cache.get("sk-a", body)["id"] == "for-a"
-    assert cache.get("sk-b", body) is None
+    assert cache.get("cache-key-a", body)["id"] == "for-a"
+    assert cache.get("cache-key-b", body) is None
 
 
 def test_response_cache_evicts_oldest_entry_when_full() -> None:
@@ -644,23 +644,23 @@ def test_response_cache_evicts_oldest_entry_when_full() -> None:
     second = {"model": "vllm-local", "messages": [{"role": "user", "content": "two"}]}
     third = {"model": "vllm-local", "messages": [{"role": "user", "content": "three"}]}
 
-    cache.set("sk-a", first, {"id": "first"})
-    cache.set("sk-a", second, {"id": "second"})
-    cache.set("sk-a", third, {"id": "third"})
+    cache.set("cache-key-a", first, {"id": "first"})
+    cache.set("cache-key-a", second, {"id": "second"})
+    cache.set("cache-key-a", third, {"id": "third"})
 
-    assert cache.get("sk-a", first) is None
-    assert cache.get("sk-a", second)["id"] == "second"
-    assert cache.get("sk-a", third)["id"] == "third"
+    assert cache.get("cache-key-a", first) is None
+    assert cache.get("cache-key-a", second)["id"] == "second"
+    assert cache.get("cache-key-a", third)["id"] == "third"
 
 
 def test_downstream_headers_include_request_id_and_optional_api_key() -> None:
     without_key = _build_downstream_headers(SimpleNamespace(api_key=""), "req_downstream_1")
     assert without_key == {"x-request-id": "req_downstream_1"}
 
-    with_key = _build_downstream_headers(SimpleNamespace(api_key="sk-downstream"), "req_downstream_2")
+    with_key = _build_downstream_headers(SimpleNamespace(api_key="test-downstream-key"), "req_downstream_2")
     assert with_key == {
         "x-request-id": "req_downstream_2",
-        "authorization": "Bearer sk-downstream",
+        "authorization": "Bearer test-downstream-key",
     }
 
 
@@ -682,7 +682,7 @@ def test_proxy_auth_uses_config_fallback_without_app_state(monkeypatch) -> None:
 
     cfg = load_config()
     cfg.auth.enabled = True
-    cfg.auth.api_keys = ["sk-test-key-1"]
+    cfg.auth.api_keys = ["dev-gateway-key-1"]
     cfg.rate_limit.enabled = False
     set_config(cfg)
     if hasattr(app.state, "config"):
@@ -692,7 +692,7 @@ def test_proxy_auth_uses_config_fallback_without_app_state(monkeypatch) -> None:
     client = TestClient(app)
     response = client.post(
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]},
     )
     assert response.status_code == 200
@@ -713,7 +713,7 @@ def test_upstream_failure_returns_502(monkeypatch) -> None:
     client = _make_client()
     response = client.post(
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json={"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]},
     )
     assert response.status_code == 502
@@ -738,7 +738,7 @@ def test_rate_limit_returns_429(monkeypatch) -> None:
 
     monkeypatch.setattr("ai_gateway.server.forward_chat_request", _fake_forward_chat_request)
     client = _make_client()
-    headers = {"Authorization": "Bearer sk-test-key-1"}
+    headers = {"Authorization": "Bearer dev-gateway-key-1"}
     payload = {"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}
 
     assert client.post("/v1/chat/completions", headers=headers, json=payload).status_code == 200
@@ -767,7 +767,7 @@ def test_metrics_reflect_error_paths(monkeypatch) -> None:
     client.post("/v1/chat/completions", json=payload)
     client.post(
         "/v1/chat/completions",
-        headers={"Authorization": "Bearer sk-test-key-1"},
+        headers={"Authorization": "Bearer dev-gateway-key-1"},
         json=payload,
     )
     metrics = client.get("/metrics")

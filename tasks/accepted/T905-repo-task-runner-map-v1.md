@@ -112,8 +112,8 @@ ai-gateway serve \
 
 | Key | 用途 |
 |-----|------|
-| `sk-test-key-1` | 默认测试 key |
-| `sk-test-key-2` | 备用测试 key |
+| `dev-gateway-key-1` | 默认测试 key |
+| `dev-gateway-key-2` | 备用测试 key |
 
 ---
 

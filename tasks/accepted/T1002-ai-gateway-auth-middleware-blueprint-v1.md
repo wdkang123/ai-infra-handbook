@@ -111,7 +111,7 @@ async def verify_bearer_token(request: Request) -> str:
         return await middleware(request)
     """
     # [PLACEHOLDER] real implementation
-    return "sk-test-key-1"
+    return "dev-gateway-key-1"
 
 
 def create_auth_middleware(config: dict) -> AuthMiddleware:

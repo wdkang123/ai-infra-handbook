@@ -147,14 +147,14 @@ ai-gateway/src/ai_gateway/
 ```bash
 # 未知模型 → 404
 curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model": "unknown-model", "messages": [{"role": "user", "content": "Hi"}]}'
 # 期望：404
 
 # 已知模型 vllm-local → 200（需 inference-service 运行在 localhost:8000）
 curl -s -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "What is 2+2?"}]}'
 # 期望：200 + 来自下游的响应

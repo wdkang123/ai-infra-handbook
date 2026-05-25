@@ -205,7 +205,7 @@ def test_create_engine_builds_openai_compatible_engine() -> None:
     cfg = InferenceServiceConfig()
     cfg.engine.type = "openai-compatible"
     cfg.engine.base_url = "http://upstream.example/v1"
-    cfg.engine.api_key = "sk-upstream"
+    cfg.engine.api_key = "test-upstream-key"
     engine = create_engine(cfg)
     assert isinstance(engine, OpenAICompatibleEngine)
     assert engine.name == "openai-compatible"
@@ -213,7 +213,7 @@ def test_create_engine_builds_openai_compatible_engine() -> None:
 
 async def _fake_openai_handler(request: httpx.Request) -> httpx.Response:
     payload = json.loads(request.content)
-    assert request.headers["authorization"] == "Bearer sk-upstream"
+    assert request.headers["authorization"] == "Bearer test-upstream-key"
     assert payload["model"] == "Qwen/Qwen2.5-0.5B-Instruct"
     if payload.get("stream"):
         return httpx.Response(
@@ -249,7 +249,7 @@ def test_openai_compatible_engine_generate(monkeypatch) -> None:
     )
     engine = OpenAICompatibleEngine(
         base_url="http://upstream.example/v1",
-        api_key="sk-upstream",
+        api_key="test-upstream-key",
     )
 
     result = anyio.run(
@@ -277,7 +277,7 @@ def test_openai_compatible_engine_stream(monkeypatch) -> None:
     )
     engine = OpenAICompatibleEngine(
         base_url="http://upstream.example/v1",
-        api_key="sk-upstream",
+        api_key="test-upstream-key",
     )
 
     async def _collect_events() -> list[StreamEvent]:

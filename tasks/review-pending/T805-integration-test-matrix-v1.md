@@ -48,7 +48,7 @@ ai-gateway serve --port 8080 &
 
 # 3. 通过 gateway 请求
 curl -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key" \
+  -H "Authorization: Bearer dev-gateway-key" \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello"}]}'
 ```
 

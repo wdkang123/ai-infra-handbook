@@ -27,7 +27,7 @@
 |---|---|---|---|
 | **inference-service 启动慢** | vLLM engine 初始化需要 30s+ | `local_dev_sequence.sh` 中 `sleep 10` | 等待 `/health` 返回 200 再启动下游 |
 | **gateway 依赖 inference** | gateway 启动过早，proxy 请求失败 | R08 失败 | `local_dev_sequence.sh` 中加 health poll |
-| **auth token 失效** | 测试用 `sk-test-key-1` 被修改 | R09 失败 | 检查 `ai-gateway` 中 `api_keys` 配置 |
+| **auth token 失效** | 测试用 `dev-gateway-key-1` 被修改 | R09 失败 | 检查 `ai-gateway` 中 `api_keys` 配置 |
 | **eval-module 依赖 GPU** | lm-eval runner 需要真实 GPU | R12 失败 | P0 阶段用 mock runner |
 
 ---

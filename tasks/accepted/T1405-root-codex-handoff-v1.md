@@ -96,7 +96,7 @@ bash scripts/local_dev_sequence.sh stop
 ```bash
 curl -s -w "\n%{http_code}" -X POST "http://localhost:8080/v1/chat/completions" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "What is 2+2?"}]}'
 ```
 

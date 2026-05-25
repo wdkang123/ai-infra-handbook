@@ -53,7 +53,7 @@ python -c "from ai_gateway import config, models; print('OK')"
 - `set_config()` / `get_config()` 状态注入
 - `/health` 返回 mock `HealthResponse`
 - `/v1/chat/completions` mock 返回 200（不调真实下游）
-- `verify_bearer_token()` mock 直接 return `"sk-test-key-1"`（跳过真实验证）
+- `verify_bearer_token()` mock 直接 return `"dev-gateway-key-1"`（跳过真实验证）
 
 **验证：**
 ```bash
@@ -106,7 +106,7 @@ curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
 # 有效 token → 透传
 curl -s -X POST http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}' \
   | python -m json.tool
 # 期望：200（到达下游）
@@ -131,14 +131,14 @@ curl -s -X POST http://localhost:8080/v1/chat/completions \
 ```bash
 # 未知模型 → 404
 curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model": "unknown-model", "messages": [{"role": "user", "content": "Hi"}]}'
 # 期望：404 + {"error": {"code": "404"}}
 
 # 已知模型 → 200（需 inference-service 运行）
 curl -s -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "What is 2+2?"}]}' \
   | python -m json.tool
@@ -161,7 +161,7 @@ curl -s -X POST http://localhost:8080/v1/chat/completions \
 for i in {1..65}; do
   curl -s -o /dev/null -w "%{http_code}\n" \
     -X POST http://localhost:8080/v1/chat/completions \
-    -H "Authorization: Bearer sk-test-key-1" \
+    -H "Authorization: Bearer dev-gateway-key-1" \
     -H "Content-Type: application/json" \
     -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}'
 done | tail -5

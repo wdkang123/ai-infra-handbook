@@ -54,7 +54,7 @@ from eval_module import Evaluator, LLmasJudge
 # 提案接口：创建 LLM-as-Judge 评测器
 evaluator = LLMasJudge(
     judge_model="gpt-4",
-    api_key="sk-...",
+    api_key="replace-with-openai-api-key",
     inference_endpoint="http://localhost:8000/v1"  # 对接 inference-service
 )
 

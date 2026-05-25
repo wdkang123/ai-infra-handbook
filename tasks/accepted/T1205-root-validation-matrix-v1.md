@@ -22,9 +22,9 @@
 | R05 | `bash scripts/local_dev_sequence.sh` | 本地开发顺序 | 所有服务健康 | `bash scripts/local_dev_sequence.sh && curl localhost:8000/health && curl localhost:8080/health` | P2 |
 | R06 | `curl localhost:8000/health` | inference 健康 | 200 OK | `curl -s localhost:8000/health` | P1 |
 | R07 | `curl localhost:8080/health` | gateway 健康 | 200 OK | `curl -s localhost:8080/health` | P1 |
-| R08 | `curl localhost:8080/v1/chat/completions` | Gateway 代理 | 200 OK + choices | `curl -s -X POST localhost:8080/v1/chat/completions -H "Authorization: Bearer sk-test-key-1" -d '{"model":"Qwen2.5-0.5B-Instruct","messages":[{"role":"user","content":"2+2=?"}]}'` | P1 |
+| R08 | `curl localhost:8080/v1/chat/completions` | Gateway 代理 | 200 OK + choices | `curl -s -X POST localhost:8080/v1/chat/completions -H "Authorization: Bearer dev-gateway-key-1" -d '{"model":"Qwen2.5-0.5B-Instruct","messages":[{"role":"user","content":"2+2=?"}]}'` | P1 |
 | R09 | `curl localhost:8080/v1/chat/completions` (无 auth) | 无认证 401 | 401 Unauthorized | `curl -s -w "%{http_code}" localhost:8080/v1/chat/completions` → `401` | P1 |
-| R10 | `curl localhost:8080/v1/chat/completions` (unknown model) | 未知模型 404 | 404 | `curl -s -w "%{http_code}" -X POST localhost:8080/v1/chat/completions -H "Authorization: Bearer sk-test-key-1" -d '{"model":"unknown-model","messages":[{"role":"user","content":"hi"}]}'` → `404` | P1 |
+| R10 | `curl localhost:8080/v1/chat/completions` (unknown model) | 未知模型 404 | 404 | `curl -s -w "%{http_code}" -X POST localhost:8080/v1/chat/completions -H "Authorization: Bearer dev-gateway-key-1" -d '{"model":"unknown-model","messages":[{"role":"user","content":"hi"}]}'` → `404` | P1 |
 | R11 | `curl localhost:8080/metrics` | Prometheus metrics | 200 + vllm_/inference_service_ metrics | `curl -s localhost:8080/metrics | grep -c "vllm_"` | P1 |
 | R12 | `make eval-run-mmlu` | 运行 MMLU 评测 | 结果 JSON 生成 | `make eval-run-mmlu MODEL=Qwen2.5-0.5B-Instruct && ls results/mmlu_result.json` | P2 |
 | R13 | `make finetune-train` | 运行微调训练 | adapter 产物 | `make finetune-train MODEL=Qwen2.5-0.5B-Instruct && ls finetune-demo/outputs/` | P2 |
@@ -58,7 +58,7 @@ curl -s -X POST http://localhost:8000/v1/chat/completions \
 
 # IT-01: Gateway proxy
 curl -s -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model":"Qwen2.5-0.5B-Instruct","messages":[{"role":"user","content":"hi"}],"max_tokens":10}' \
   | python -c "import json,sys; r=json.load(sys.stdin); print('IT-01:', 'choices' in r)"
@@ -72,7 +72,7 @@ curl -s -w "%{http_code}" http://localhost:8080/v1/chat/completions \
 
 # IT-06: Unknown model 404
 curl -s -w "%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model":"unknown-model-xyz","messages":[{"role":"user","content":"hi"}]}' \
   | tail -c 3

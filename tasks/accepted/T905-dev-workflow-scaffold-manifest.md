@@ -46,7 +46,7 @@ MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct
 INFERENCE_BASE_URL=http://localhost:8000
 
 # 共享：API Keys
-OPENAI_API_KEY=sk-...
+OPENAI_API_KEY=replace-with-openai-api-key
 
 # 各模块独立端口
 INFERENCE_PORT=8000

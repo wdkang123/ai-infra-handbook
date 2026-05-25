@@ -62,7 +62,7 @@ PYTHONPATH=src ../../.venv/bin/python -m ai_gateway.main serve
 
 ```bash
 curl -s http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'Content-Type: application/json' \
   -H 'X-Request-ID: req_lab_gateway_ok_1' \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello gateway lab"}]}'
@@ -92,7 +92,7 @@ curl -i -s http://localhost:8080/v1/chat/completions \
 
 ```bash
 curl -i -s http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'Content-Type: application/json' \
   -d '{"model":"unknown-model","messages":[{"role":"user","content":"unknown"}]}'
 ```
@@ -102,7 +102,7 @@ curl -i -s http://localhost:8080/v1/chat/completions \
 ```bash
 for i in 1 2 3; do
   curl -i -s http://localhost:8080/v1/chat/completions \
-    -H 'Authorization: Bearer sk-test-key-1' \
+    -H 'Authorization: Bearer dev-gateway-key-1' \
     -H 'Content-Type: application/json' \
     -d '{"model":"vllm-local","messages":[{"role":"user","content":"rate limit"}]}'
 done
@@ -118,7 +118,7 @@ done
 
 ```bash
 curl -N http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'Content-Type: application/json' \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"stream through gateway"}],"stream":true}'
 ```

@@ -31,7 +31,7 @@ HOST="${GATEWAY_HOST:-localhost}"
 PORT="${GATEWAY_PORT:-8080}"
 BASE_URL="http://${HOST}:${PORT}"
 MODEL="${GATEWAY_MODEL:-vllm-local}"
-AUTH_KEY="${GATEWAY_AUTH_KEY:-sk-test-key-1}"
+AUTH_KEY="${GATEWAY_AUTH_KEY:-dev-gateway-key-1}"
 INVALID_KEY="invalid-key-xyz"
 
 # ---------- Color ----------
@@ -184,7 +184,7 @@ Commands:
 Environment variables:
     GATEWAY_HOST      Default: localhost
     GATEWAY_PORT      Default: 8080
-    GATEWAY_AUTH_KEY  Default: sk-test-key-1
+    GATEWAY_AUTH_KEY  Default: dev-gateway-key-1
 
 Examples:
     $0 health
@@ -214,7 +214,7 @@ esac
 | 场景 | 命令 | 预期结果 |
 |------|------|---------|
 | 健康检查 | `curl localhost:8080/health` | `{"status":"healthy",...}` |
-| 成功请求 | `curl .../v1/chat/completions -H "Authorization: Bearer sk-test-key-1"` | OpenAI 格式响应 |
+| 成功请求 | `curl .../v1/chat/completions -H "Authorization: Bearer dev-gateway-key-1"` | OpenAI 格式响应 |
 | 流式请求 | `curl .../v1/chat/completions -d '{"stream":true}'` | SSE 流 |
 | 无 Auth | 无 `-H "Authorization"` | 401 |
 | 无效 Key | `Bearer invalid-key` | 401 |
@@ -227,7 +227,7 @@ esac
 import httpx
 
 GATEWAY = "http://localhost:8080"
-KEY = "sk-test-key-1"
+KEY = "dev-gateway-key-1"
 
 # Success
 resp = httpx.post(

@@ -35,8 +35,8 @@
 贡献示例时请使用占位符：
 
 ```text
-sk-example
-sk-test-key-1
+example-placeholder-key
+dev-gateway-key-1
 YOUR_API_KEY
 ```
 

@@ -5,7 +5,7 @@ server:
 auth:
   enabled: true
   api_keys:
-    - "sk-test-key-1"
+    - "dev-gateway-key-1"
 
 metrics:
   enabled: true

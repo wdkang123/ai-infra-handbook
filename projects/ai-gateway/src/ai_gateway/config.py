@@ -30,7 +30,7 @@ class AuthConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="AUTH_")
 
     enabled: bool = Field(default=True)
-    api_keys: list[str] = Field(default_factory=lambda: ["sk-test-key-1"])
+    api_keys: list[str] = Field(default_factory=lambda: ["dev-gateway-key-1"])
 
 
 class MetricsConfig(BaseSettings):

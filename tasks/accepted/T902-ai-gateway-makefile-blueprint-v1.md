@@ -73,7 +73,7 @@ curl-chat:
 	@echo "Testing /v1/chat/completions via gateway..."
 	@curl -s -X POST http://localhost:$(PORT)/v1/chat/completions \
 		-H "Content-Type: application/json" \
-		-H "Authorization: Bearer sk-test-key-1" \
+		-H "Authorization: Bearer dev-gateway-key-1" \
 		-d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello"}]}' | \
 		$(PYTHON) -m json.tool
 

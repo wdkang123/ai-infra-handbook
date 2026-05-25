@@ -79,7 +79,7 @@ curl -s http://localhost:8080/v1/models
 
 ```bash
 curl -s http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'Content-Type: application/json' \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello gateway"}]}'
 ```
@@ -88,7 +88,7 @@ curl -s http://localhost:8080/v1/chat/completions \
 
 ```bash
 curl -N http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'Content-Type: application/json' \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello stream"}],"stream":true}'
 ```
@@ -97,7 +97,7 @@ curl -N http://localhost:8080/v1/chat/completions \
 
 ```bash
 curl -i -s http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'X-Request-ID: req_demo_gateway_1' \
   -H 'Content-Type: application/json' \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello request id"}]}'

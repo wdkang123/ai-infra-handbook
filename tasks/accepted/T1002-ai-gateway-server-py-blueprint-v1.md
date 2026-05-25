@@ -107,7 +107,7 @@ async def verify_api_key(request: Request) -> str | None:
     if not enabled:
         return None
     # Placeholder: always pass
-    return "sk-test-key-1"
+    return "dev-gateway-key-1"
 
 
 # ---------- Health ----------

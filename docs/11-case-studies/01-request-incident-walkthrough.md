@@ -29,7 +29,7 @@
 
 ```bash
 curl -i -s http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'X-Request-ID: req_case_gateway_1' \
   -H 'Content-Type: application/json' \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"case study"}]}'
@@ -59,7 +59,7 @@ curl -i -s http://localhost:8080/v1/chat/completions \
 
 ```bash
 curl -i -s http://localhost:8080/v1/chat/completions \
-  -H 'Authorization: Bearer sk-test-key-1' \
+  -H 'Authorization: Bearer dev-gateway-key-1' \
   -H 'Content-Type: application/json' \
   -d '{"model":"unknown-model","messages":[{"role":"user","content":"unknown"}]}'
 ```

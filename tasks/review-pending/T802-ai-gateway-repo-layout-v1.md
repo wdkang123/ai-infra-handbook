@@ -165,8 +165,8 @@ GATEWAY_HOST=0.0.0.0
 GATEWAY_PORT=8080
 
 # 外部 API Keys
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=replace-with-openai-api-key
+ANTHROPIC_API_KEY=replace-with-anthropic-api-key
 
 # Auth 配置
 AUTH_ENABLED=true

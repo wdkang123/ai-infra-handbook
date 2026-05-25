@@ -109,7 +109,7 @@ curl http://localhost:8080/health
 # 5. 通过 gateway 请求
 curl -s -X POST http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello"}]}'
 ```
 

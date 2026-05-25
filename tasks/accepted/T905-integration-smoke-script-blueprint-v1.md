@@ -31,7 +31,7 @@ set -euo pipefail
 INFERENCE_URL="${INFERENCE_URL:-http://localhost:8000}"
 GATEWAY_URL="${GATEWAY_URL:-http://localhost:8080}"
 MODEL="${MODEL_NAME:-Qwen/Qwen2.5-0.5B-Instruct}"
-AUTH_KEY="${SMOKE_AUTH_KEY:-sk-test-key-1}"
+AUTH_KEY="${SMOKE_AUTH_KEY:-dev-gateway-key-1}"
 RESULTS_DIR="${SMOKE_RESULTS_DIR:-./results/smoke}"
 
 # ---------- Color ----------

@@ -58,7 +58,7 @@ server:
 auth:
   enabled: true
   api_keys:
-    - "sk-test-key-1"
+    - "dev-gateway-key-1"
 
 rate_limit:
   default_rpm: 60

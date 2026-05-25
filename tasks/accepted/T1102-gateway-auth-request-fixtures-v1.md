@@ -27,7 +27,7 @@
 请求：
 ```yaml
 headers:
-  Authorization: "Bearer sk-test-key-1"
+  Authorization: "Bearer dev-gateway-key-1"
   Content-Type: "application/json"
 method: "POST"
 path: "/v1/chat/completions"
@@ -35,7 +35,7 @@ body_present: true
 ```
 
 期望：
-- 鉴权中间件返回 `"sk-test-key-1"`（已验证的 token 字符串）
+- 鉴权中间件返回 `"dev-gateway-key-1"`（已验证的 token 字符串）
 - 请求继续传递到下游处理
 
 ---
@@ -101,7 +101,7 @@ body_present: true
 请求：
 ```yaml
 headers:
-  Authorization: "sk-test-key-1"
+  Authorization: "dev-gateway-key-1"
   Content-Type: "application/json"
 method: "POST"
 path: "/v1/chat/completions"
@@ -178,8 +178,8 @@ config_override:
 auth:
   enabled: true                    # false = skip auth entirely
   api_keys:                       # list of accepted Bearer tokens
-    - "sk-test-key-1"
-    - "sk-test-key-2"
+    - "dev-gateway-key-1"
+    - "dev-gateway-key-2"
   bypass_paths:                    # paths that skip auth
     - "/health"
     - "/metrics"

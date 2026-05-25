@@ -131,7 +131,7 @@ T4-02 → T4-05 → T4-06
 | 节点 | 验证命令 |
 |------|---------|
 | inference-service 可启动 | `curl localhost:8000/health` → `{"status":"healthy"}` |
-| gateway 可代理 | `curl .../v1/chat/completions -H "Authorization: Bearer sk-test-key-1"` → 200 |
+| gateway 可代理 | `curl .../v1/chat/completions -H "Authorization: Bearer dev-gateway-key-1"` → 200 |
 | MMLU 可跑 | `eval-module run --task mmlu` → accuracy 分数 |
 | LoRA 可训练 | `finetune-demo train --method lora` → adapter 产物 |
 | 冒烟测试全过 | `bash scripts/integration_smoke_test.sh` → 0 failed |

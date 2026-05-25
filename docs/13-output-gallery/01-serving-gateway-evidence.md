@@ -52,7 +52,7 @@ curl -s http://localhost:8080/health
 
 ```bash
 curl -i -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -H "X-Request-ID: demo_request_1" \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"hello"}]}'
@@ -85,7 +85,7 @@ Streaming 请求适合验证 SSE 路径：
 
 ```bash
 curl -sN -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"stream"}],"stream":true}'
 ```

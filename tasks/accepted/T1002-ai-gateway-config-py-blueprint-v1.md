@@ -66,7 +66,7 @@ class AuthConfig(BaseSettings):
     enabled: bool = Field(default=True, description="Enable API key verification")
     type: str = Field(default="api_key", description="Auth type: api_key | jwt | ...")
     api_keys: list[str] = Field(
-        default_factory=lambda: ["sk-test-key-1", "sk-test-key-2"],
+        default_factory=lambda: ["dev-gateway-key-1", "dev-gateway-key-2"],
         description="Valid API keys",
     )
 
@@ -119,7 +119,7 @@ class AiGatewayConfig(BaseSettings):
             ModelEntry(
                 name="openai-gpt4",
                 base_url="https://api.openai.com/v1",
-                api_key="sk-...",
+                api_key="replace-with-openai-api-key",
             ),
         ],
     )
@@ -190,14 +190,14 @@ models:
     api_key: ""
   - name: "openai-gpt4"
     base_url: "https://api.openai.com/v1"
-    api_key: "sk-your-openai-key"
+    api_key: "replace-with-openai-api-key"
 
 auth:
   enabled: true
   type: "api_key"
   api_keys:
-    - "sk-test-key-1"
-    - "sk-test-key-2"
+    - "dev-gateway-key-1"
+    - "dev-gateway-key-2"
 
 rate_limit:
   enabled: true

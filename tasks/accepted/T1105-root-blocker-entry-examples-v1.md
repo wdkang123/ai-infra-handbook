@@ -101,7 +101,7 @@ impact: |
 reproduction: |
   1. `make all-serve`
   2. `curl -X POST http://localhost:8080/v1/chat/completions \
-       -H "Authorization: Bearer sk-test-key-1" \
+       -H "Authorization: Bearer dev-gateway-key-1" \
        -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}'`
   3. 返回 404
 workaround: |

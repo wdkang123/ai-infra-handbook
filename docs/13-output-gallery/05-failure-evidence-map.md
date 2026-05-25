@@ -68,7 +68,7 @@ PYTHON=.venv/bin/python make docs-quality
 先看请求 header：
 
 ```text
-Authorization: Bearer sk-test-key-1
+Authorization: Bearer dev-gateway-key-1
 ```
 
 再查 events：

@@ -60,13 +60,13 @@ def test_config_dict() -> dict:
             {
                 "name": "openai-gpt4",
                 "base_url": "https://api.openai.com/v1",
-                "api_key": "sk-test-openai",
+                "api_key": "test-openai-key",
             },
         ],
         "auth": {
             "enabled": True,
             "type": "api_key",
-            "api_keys": ["sk-test-key-1", "sk-test-key-2"],
+            "api_keys": ["dev-gateway-key-1", "dev-gateway-key-2"],
         },
         "rate_limit": {
             "enabled": True,
@@ -88,7 +88,7 @@ def test_config_dict() -> dict:
 @pytest.fixture
 def auth_headers() -> dict:
     """Valid auth headers for testing."""
-    return {"Authorization": "Bearer sk-test-key-1"}
+    return {"Authorization": "Bearer dev-gateway-key-1"}
 
 
 @pytest.fixture

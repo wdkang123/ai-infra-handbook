@@ -170,7 +170,7 @@ smoke_test() {
     log "Testing ai-gateway with auth..."
     curl -s -X POST "http://localhost:${GATEWAY_PORT}/v1/chat/completions" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer sk-test-key-1" \
+        -H "Authorization: Bearer dev-gateway-key-1" \
         -d "{
             \"model\": \"vllm-local\",
             \"messages\": [{\"role\": \"user\", \"content\": \"Hi\"}]

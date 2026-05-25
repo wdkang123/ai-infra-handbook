@@ -45,7 +45,7 @@ PYTHONPATH=src ../../.venv/bin/python -m inference_service.main serve --engine m
 PYTHONPATH=src ../../.venv/bin/python -m inference_service.main serve \
   --engine openai-compatible \
   --engine-base-url http://localhost:8001/v1 \
-  --engine-api-key sk-local \
+  --engine-api-key local-engine-key \
   --model Qwen/Qwen2.5-0.5B-Instruct
 ```
 

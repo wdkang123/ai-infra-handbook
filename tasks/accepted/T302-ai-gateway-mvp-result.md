@@ -61,7 +61,7 @@ from ai_gateway import AIGateway
 
 gateway = AIGateway()
 gateway.add_model("vllm-local", base_url="http://localhost:8000/v1")
-gateway.add_model("openai-gpt4", api_key="sk-...", base_url="https://api.openai.com/v1")
+gateway.add_model("openai-gpt4", api_key="replace-with-openai-api-key", base_url="https://api.openai.com/v1")
 
 response = gateway.chat(model="vllm-local", messages=[...])
 ```

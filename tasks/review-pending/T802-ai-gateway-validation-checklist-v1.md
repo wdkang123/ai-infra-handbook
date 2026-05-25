@@ -136,7 +136,7 @@ curl -s http://localhost:8080/health | python -m json.tool
 # 成功请求
 curl -s -X POST http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -d '{"model":"vllm-local","messages":[{"role":"user","content":"Hello"}]}' | python -m json.tool
 
 # 无 auth 请求（预期 401）
@@ -153,7 +153,7 @@ for i in {1..65}; do
   curl -s -o /dev/null -w "%{http_code}\n" \
     -X POST http://localhost:8080/v1/chat/completions \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer sk-test-key-1" \
+    -H "Authorization: Bearer dev-gateway-key-1" \
     -d '{"model":"vllm-local","messages":[{"role":"user","content":"test"}]}'
 done
 ```

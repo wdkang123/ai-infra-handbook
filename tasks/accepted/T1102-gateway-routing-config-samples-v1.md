@@ -76,8 +76,8 @@ service:
 auth:
   enabled: true
   api_keys:
-    - "sk-test-key-1"
-    - "sk-test-key-2"
+    - "dev-gateway-key-1"
+    - "dev-gateway-key-2"
   bypass_paths:
     - "/health"
     - "/metrics"
@@ -115,7 +115,7 @@ service:
 auth:
   enabled: false              # skip auth in local dev
   api_keys:
-    - "sk-test-key-1"
+    - "dev-gateway-key-1"
   bypass_paths:
     - "/health"
     - "/metrics"

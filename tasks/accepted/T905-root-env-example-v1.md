@@ -42,8 +42,8 @@ GATEWAY_HOST=0.0.0.0
 GATEWAY_PORT=8080
 
 # ---------- External API Keys ----------
-OPENAI_API_KEY=sk-your-openai-key
-ANTHROPIC_API_KEY=sk-ant-your-anthropic-key
+OPENAI_API_KEY=replace-with-openai-api-key
+ANTHROPIC_API_KEY=replace-with-anthropic-api-key
 
 # ---------- Metrics Ports ----------
 # Prometheus metrics 各模块独立

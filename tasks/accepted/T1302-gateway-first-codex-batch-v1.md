@@ -65,7 +65,7 @@
 1. **包结构：** `src/ai_gateway/` 是 Python 包根目录
 2. **配置加载：** `config.py` 从 `configs/models.yaml` 和 `configs/config.yaml` 加载
 3. **端口：** `localhost:8080`
-4. **api_keys：** 测试用 `sk-test-key-1`（来自 accepted T1002 blueprint）
+4. **api_keys：** 测试用 `dev-gateway-key-1`（来自 accepted T1002 blueprint）
 5. **AuthMiddleware：** 当前批次 G4 暂不实现 auth middleware，G2 实现时在 server.py 中替换 `verify_bearer_token` mock 为真实实现
 6. **路由：** 当前批次 G4 `/v1/chat/completions` 返回 mock，等 G3 实现时替换为真实路由
 

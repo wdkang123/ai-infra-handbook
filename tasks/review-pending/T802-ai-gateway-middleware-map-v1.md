@@ -228,8 +228,8 @@ middleware:
     enabled: true
     type: "api_key"
     api_keys:
-      - "sk-test-key-1"
-      - "sk-test-key-2"
+      - "dev-gateway-key-1"
+      - "dev-gateway-key-2"
 
   rate_limit:
     enabled: true

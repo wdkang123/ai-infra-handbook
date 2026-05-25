@@ -87,8 +87,8 @@ PYTHON=.venv/bin/python make public-check
 文档和测试里可以使用明显的占位值：
 
 ```text
-sk-test-key-1
-sk-example
+dev-gateway-key-1
+example-placeholder-key
 YOUR_API_KEY
 ```
 

@@ -39,7 +39,7 @@ VLLMGpuMemoryUtilization=0.85
 GATEWAY_PORT=8080
 GATEWAY_HOST=0.0.0.0
 GATEWAY_BASE_URL=http://localhost:8080
-SMOKE_AUTH_KEY=sk-test-key-1
+SMOKE_AUTH_KEY=dev-gateway-key-1
 
 # --- eval-module ---
 EVAL_BACKEND_URL=http://localhost:8000/v1
@@ -81,7 +81,7 @@ VLLMEnforceEager=true          # 方便调试
 GATEWAY_PORT=8080
 GATEWAY_HOST=127.0.0.1
 GATEWAY_BASE_URL=http://localhost:8080
-SMOKE_AUTH_KEY=sk-test-key-1
+SMOKE_AUTH_KEY=dev-gateway-key-1
 
 # --- 冒烟测试专用 ---
 SMOKE_RESULTS_DIR=./results/smoke
@@ -107,7 +107,7 @@ INFERENCE_PORT=8000
 INFERENCE_BASE_URL=http://localhost:8000/v1
 GATEWAY_PORT=8080
 GATEWAY_BASE_URL=http://localhost:8080
-SMOKE_AUTH_KEY=${SMOKE_AUTH_KEY:-sk-test-key-1}
+SMOKE_AUTH_KEY=${SMOKE_AUTH_KEY:-dev-gateway-key-1}
 LOG_LEVEL=error
 PYTHONPATH=.
 ```

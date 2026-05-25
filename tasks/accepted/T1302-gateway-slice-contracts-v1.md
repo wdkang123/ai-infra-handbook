@@ -65,7 +65,7 @@ curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
 # 有效 token → 透传（需 inference-service 运行）
 curl -s -X POST http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}' \
   | python -m json.tool
 # 期望：200（到达下游 inference-service）
@@ -92,14 +92,14 @@ curl -s -X POST http://localhost:8080/v1/chat/completions \
 ```bash
 # 未知模型 → 404
 curl -s -w "\n%{http_code}" -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model": "unknown-model", "messages": [{"role": "user", "content": "Hi"}]}'
 # 期望：404 + {"error": {"code": 404}}
 
 # 已知模型 → 200（需 inference-service 运行）
 curl -s -X POST http://localhost:8080/v1/chat/completions \
-  -H "Authorization: Bearer sk-test-key-1" \
+  -H "Authorization: Bearer dev-gateway-key-1" \
   -H "Content-Type: application/json" \
   -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "What is 2+2?"}]}' \
   | python -m json.tool
@@ -154,7 +154,7 @@ curl -s http://localhost:8080/metrics | grep "ai_gateway_"
 for i in {1..65}; do
   curl -s -o /dev/null -w "%{http_code}\n" \
     -X POST http://localhost:8080/v1/chat/completions \
-    -H "Authorization: Bearer sk-test-key-1" \
+    -H "Authorization: Bearer dev-gateway-key-1" \
     -H "Content-Type: application/json" \
     -d '{"model": "vllm-local", "messages": [{"role": "user", "content": "Hi"}]}'
 done | tail -5
