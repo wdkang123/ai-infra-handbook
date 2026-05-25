@@ -1,0 +1,38 @@
+name: Evidence example
+description: Add or improve a sample output, artifact, manifest, or evidence explanation.
+title: "[Evidence] "
+labels:
+  - documentation
+  - evidence
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario
+      description: What command, API call, lab, or workflow produced this evidence?
+      placeholder: Gateway request with fallback enabled.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Paste sanitized output, key fields, file paths, or screenshots. Do not include secrets.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: What should learners notice?
+      description: Explain which fields matter and what they prove.
+    validations:
+      required: true
+  - type: textarea
+    id: links
+    attributes:
+      label: Related pages
+      description: Which docs page should link to or include this evidence?
+      placeholder: docs/13-output-gallery/01-serving-gateway-evidence.md
+    validations:
+      required: false

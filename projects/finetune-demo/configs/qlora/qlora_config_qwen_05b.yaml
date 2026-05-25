@@ -1,0 +1,9 @@
+method: "qlora"
+model:
+  name_or_path: "Qwen/Qwen2.5-0.5B-Instruct"
+output_dir: "./outputs/qlora_qwen_05b"
+qlora:
+  load_in_4bit: true
+  bnb_4bit_quant_type: "nf4"
+data:
+  train_file: "./data/train.jsonl"

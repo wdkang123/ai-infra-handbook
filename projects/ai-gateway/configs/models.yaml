@@ -1,0 +1,12 @@
+models:
+  - name: "vllm-local"
+    base_url: "http://localhost:8000/v1"
+    api_key: ""
+    target_model: "Qwen/Qwen2.5-0.5B-Instruct"
+    fallbacks:
+      - "vllm-backup"
+  - name: "vllm-backup"
+    base_url: "http://localhost:8000/v1"
+    api_key: ""
+    target_model: "Qwen/Qwen2.5-0.5B-Instruct"
+    fallbacks: []

@@ -1,0 +1,32 @@
+name: Bug report
+description: Report a reproducible problem in code, docs build, or smoke flow.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: List commands or steps.
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Paste logs without secrets, tokens, or private URLs.
+      render: text
+    validations:
+      required: false

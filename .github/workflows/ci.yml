@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Python project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          make PYTHON=python infra-dev-install
+
+      - name: Install docs dependencies
+        run: npm ci
+
+      - name: Run unit and docs checks
+        run: |
+          make PYTHON=python docs-inventory
+          make PYTHON=python course-catalog
+          make PYTHON=python public-check
+
+      - name: Run integration smoke
+        run: make PYTHON=python infra-smoke
+
+      - name: Build evidence and release brief
+        run: |
+          make PYTHON=python infra-evidence
+          make PYTHON=python course-catalog
+          make PYTHON=python release-brief
+          make PYTHON=python workshop-packet
+          make PYTHON=python assessment-pack
+          make PYTHON=python roadmap-pack
