@@ -71,6 +71,10 @@ Actions -> docs-pages -> Run workflow
 第一次配置时手动运行一次。后续推送文档站相关改动到 `main` 或 `master` 时，workflow 也会自动发布。  
 项目路径部署时，workflow 会自动设置 `VITEPRESS_BASE` 为 `/<仓库名>/`。
 
+如果第一次推送发生在 Pages source 设置完成之前，可能会看到 `build` job 成功、`deploy` job 失败。
+
+这通常不是文档构建问题；在 Pages source 改成 `GitHub Actions` 后，重新运行 `docs-pages` workflow，或推送一次文档相关提交即可重新部署。
+
 ## 4. Branch Protection
 
 等仓库稳定后，可以给默认分支添加保护规则。
