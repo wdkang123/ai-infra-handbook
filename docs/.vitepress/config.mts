@@ -76,6 +76,7 @@ export default defineConfig({
           { text: "课程目录", link: "/09-reference/10-course-catalog" },
           { text: "路线图包", link: "/08-publication/05-generated-roadmap-pack" },
           { text: "仓库卫生规范", link: "/08-publication/06-public-repo-hygiene" },
+          { text: "依赖维护", link: "/08-publication/07-dependency-maintenance" },
         ],
       },
     ],
@@ -249,6 +250,7 @@ export default defineConfig({
           { text: "GitHub 仓库设置建议", link: "/08-publication/04-repository-settings" },
           { text: "自动生成路线图包", link: "/08-publication/05-generated-roadmap-pack" },
           { text: "公开仓库卫生规范", link: "/08-publication/06-public-repo-hygiene" },
+          { text: "依赖维护与 Bot PR 处理", link: "/08-publication/07-dependency-maintenance" },
         ],
       },
       {
@@ -285,7 +287,7 @@ export default defineConfig({
     },
     footer: {
       message: "Learning-first docs + runnable scaffold.",
-      copyright: "AI Infra Manual",
+      copyright: "AI Infra Handbook",
     },
   },
 });

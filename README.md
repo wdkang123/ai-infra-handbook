@@ -102,6 +102,7 @@ flowchart TB
 - [自动生成路线图包](./docs/08-publication/05-generated-roadmap-pack.md)
 - [公开发布总览](./docs/08-publication/00-overview.md)
 - [GitHub 仓库设置建议](./docs/08-publication/04-repository-settings.md)
+- [依赖维护与 Bot PR 处理](./docs/08-publication/07-dependency-maintenance.md)
 - [Publication Checklist](./PUBLICATION_CHECKLIST.md)
 
 ## 文档站

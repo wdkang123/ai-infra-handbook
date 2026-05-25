@@ -39,7 +39,7 @@
     </div>
     <div class="launch-stats">
       <div class="stat-pill">
-        <strong>124</strong>
+        <strong>125</strong>
         <span>文档页</span>
       </div>
       <div class="stat-pill">

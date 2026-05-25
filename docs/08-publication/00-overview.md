@@ -13,7 +13,7 @@
 - 我发现问题后怎么反馈
 - 我想贡献内容时按什么标准来
 
-## 发布前最重要的六件事
+## 发布前最重要的七件事
 
 ### 1. 本地质量通过
 
@@ -103,6 +103,18 @@ PYTHON=.venv/bin/python make roadmap-pack
 
 这些内容集中在 [共学与公开分享套件](/14-workshop-kit/00-overview)。
 
+### 7. 依赖维护流程要清楚
+
+公开仓库上线后，Dependabot、dependency review、CI 和 Pages workflow 会持续产生反馈。
+发布前需要确认：
+
+- Dependabot 覆盖 npm、pip 和 GitHub Actions
+- 依赖 PR 有本地检查和 CI 检查路径
+- Actions 升级后会确认对应 workflow 实际通过
+- 维护者知道如何判断 bot 邮件、关闭 PR 和手动补丁之间的关系
+
+具体流程见 [依赖维护与 Bot PR 处理](/08-publication/07-dependency-maintenance)。
+
 ## 当前已经准备好的材料
 
 仓库已经有：
@@ -117,6 +129,8 @@ PYTHON=.venv/bin/python make roadmap-pack
 - GitHub issue templates
 - Pull request template
 - CI workflow
+- Dependency review workflow
+- Dependabot weekly grouped updates
 - 支持手动触发和文档相关 push 自动发布的 GitHub Pages workflow
 
 ## 推荐发布顺序
@@ -152,6 +166,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - [GitHub 仓库设置建议](/08-publication/04-repository-settings)
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
 - [公开仓库卫生规范](/08-publication/06-public-repo-hygiene)
+- [依赖维护与 Bot PR 处理](/08-publication/07-dependency-maintenance)
 - [项目成熟度地图](/00-overview/14-project-maturity-map)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [示例输出与证据库](/13-output-gallery/00-overview)

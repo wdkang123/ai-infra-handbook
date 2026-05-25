@@ -53,6 +53,9 @@
 - [ ] Issue templates 已存在
 - [ ] PR template 已存在
 - [ ] Dependabot 已覆盖 npm、pip 和 GitHub Actions
+- [ ] Dependabot 分组和限流配置能避免依赖 PR 噪音失控
+- [ ] Dependency review workflow 已存在，并会在依赖相关 PR 上运行
+- [ ] GitHub Actions 依赖升级后，对应 workflow 已实际通过
 - [ ] `LICENSE` 已存在，README 已说明许可证
 - [ ] GitHub repo description、topics、About 链接已设置
 
@@ -60,6 +63,7 @@
 
 - [ ] `PYTHON=.venv/bin/python make security-check` 通过
 - [ ] `PYTHON=.venv/bin/python make public-check` 通过
+- [ ] `npm audit --omit=dev --audit-level=moderate` 没有中高风险依赖
 - [ ] `git status --short --ignored` 中缓存、输出、虚拟环境和内部协作材料都处于 ignored 状态
 - [ ] 没有真实 API key
 - [ ] 没有真实云服务凭证
@@ -98,3 +102,4 @@
 - [ ] 标记适合 first-time contributor 的任务
 - [ ] 根据共学反馈更新学习者工作簿和带练议程
 - [ ] 根据读者反馈补充 FAQ
+- [ ] 定期处理 Dependabot 和 dependency review 反馈
