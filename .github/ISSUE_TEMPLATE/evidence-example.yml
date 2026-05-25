@@ -3,7 +3,6 @@ description: Add or improve a sample output, artifact, manifest, or evidence exp
 title: "[Evidence] "
 labels:
   - documentation
-  - evidence
 body:
   - type: textarea
     id: scenario

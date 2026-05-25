@@ -41,9 +41,11 @@ PYTHON=.venv/bin/python make roadmap-pack
 - 示例输出与证据库章节，覆盖 HTTP header、events、eval report、finetune manifest、失败证据和公开演示脚本
 - 共学与公开分享套件章节，覆盖讲师带练、学习者工作簿、学习小组议程、复盘模板、贡献协作和 GitHub 发布计划
 - evidence example 与 workshop feedback issue templates，用于结构化收集输出证据和共学反馈
+- learning question 与 roadmap task issue templates，用于沉淀学习问题和公开路线图任务
 - Reference 层新增 API Surface、CLI Surface 和验证矩阵，帮助读者快速定位接口、命令和检查策略
 - 生产迁移路线章节，覆盖 Serving 后端、Gateway 平台化、Eval 评测系统和 Finetune 真实训练迁移
 - 自动生成路线图包，能把发布摘要和测评弱点整理成 GitHub issue 种子、推荐 label 和发布后反馈闭环
+- 发布维护节奏与 issue triage 文档，帮助公开仓库用低噪音方式持续处理反馈、依赖和路线图
 
 它已经适合开始公开分享和收集反馈。
 
@@ -97,6 +99,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - 创建 good first issue
 - 创建 roadmap issue
 - 用 workshop feedback issue template 收集第一批共学反馈
+- 用 learning question 和 roadmap task issue template 收集学习问题与后续任务
 - 定期根据反馈整理 FAQ
 
 验收：

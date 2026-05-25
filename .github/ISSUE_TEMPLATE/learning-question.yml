@@ -1,0 +1,28 @@
+name: Learning question
+description: Ask a learning question that may become FAQ, troubleshooting, or roadmap material.
+title: "[Question] "
+labels:
+  - question
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you trying to understand?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Which page, command, lab, or concept led to this question?
+      placeholder: docs/00-overview/03-runbook.md
+    validations:
+      required: false
+  - type: textarea
+    id: expected-learning
+    attributes:
+      label: What would help?
+      description: Tell us what kind of explanation, example, or evidence would make this clearer.
+    validations:
+      required: false

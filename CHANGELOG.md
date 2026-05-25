@@ -38,6 +38,8 @@
 - 新增示例输出与证据库章节，覆盖 Serving/Gateway 输出、Eval 报告、Finetune 产物、端到端证据包、失败症状地图和公开演示脚本。
 - 新增共学与公开分享套件章节，覆盖讲师带练、学习者工作簿、学习小组议程、复盘评审模板、贡献者协作和 GitHub 发布计划。
 - 新增 evidence example 与 workshop feedback issue templates，让公开发布后的输出证据和共学反馈能结构化进入仓库。
+- 新增 learning question 与 roadmap task issue templates，让学习问题和公开路线图任务能结构化进入仓库。
+- 新增维护节奏与 issue triage 文档，说明公开发布后如何处理 Dependabot、反馈、labels、路线图和低噪音协作。
 - 新增 Dependabot 配置，覆盖 npm、pip 和 GitHub Actions 依赖更新提醒。
 - 新增 `scripts/build_evidence_packet.py`、`make infra-evidence` 和脚本测试，可把 smoke 产物汇总成 JSON / Markdown 端到端证据包。
 - 扩展 smoke，保存 serving/gateway 快照并校验证据包生成结果。
@@ -72,6 +74,7 @@
 - 将 `infra-release`、CI、README、发布清单、贡献指南、PR template、首页证据闭环和公开发布章节接入路线图包生成流程。
 - 将 CI、PR template、贡献指南、发布计划、README、SECURITY 和发布清单统一到 `public-check` 公开上传检查口径。
 - 将 Node 版本约束收紧到 22，与 `.nvmrc`、CI 和本地推荐命令保持一致。
+- 将 issue templates 的默认 labels 收敛到 GitHub 默认标签，避免新仓库因为未创建自定义 labels 产生提示。
 
 ### Verified
 

@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Documentation site
+    url: https://wdkang123.github.io/ai-infra-handbook/
+    about: Read the public learning site before opening an issue.

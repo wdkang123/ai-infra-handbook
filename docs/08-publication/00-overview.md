@@ -13,7 +13,7 @@
 - 我发现问题后怎么反馈
 - 我想贡献内容时按什么标准来
 
-## 发布前最重要的七件事
+## 发布前最重要的九件事
 
 ### 1. 本地质量通过
 
@@ -115,6 +115,25 @@ PYTHON=.venv/bin/python make roadmap-pack
 
 具体流程见 [依赖维护与 Bot PR 处理](/08-publication/07-dependency-maintenance)。
 
+### 8. 维护节奏要可持续
+
+公开项目最怕“首发很完整，后面无人整理”。
+发布后应该明确：
+
+- 每次 PR 前跑什么检查
+- 每周如何处理 Dependabot、issue 和读者反馈
+- 每月如何复盘学习路径、FAQ、证据库和路线图
+- 什么情况必须先停下来处理公开安全问题
+
+具体节奏见 [维护节奏与运营清单](/08-publication/08-maintainer-rhythm)。
+
+### 9. Issue 分类要低噪音
+
+Issue template 和 bot 配置不要引用仓库里不存在的 labels。
+初期优先使用 GitHub 默认标签，例如 `bug`、`documentation`、`enhancement`、`good first issue`、`help wanted`、`question`。等贡献真的变多后，再创建 `lab`、`evidence`、`feedback`、`ci`、`dependencies` 等自定义标签。
+
+具体分类见 [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)。
+
 ## 当前已经准备好的材料
 
 仓库已经有：
@@ -127,6 +146,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - `LICENSE`
 - `PUBLICATION_CHECKLIST.md`
 - GitHub issue templates
+- Learning question 与 roadmap task issue templates
 - Pull request template
 - CI workflow
 - Dependency review workflow
@@ -167,6 +187,8 @@ PYTHON=.venv/bin/python make roadmap-pack
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
 - [公开仓库卫生规范](/08-publication/06-public-repo-hygiene)
 - [依赖维护与 Bot PR 处理](/08-publication/07-dependency-maintenance)
+- [维护节奏与运营清单](/08-publication/08-maintainer-rhythm)
+- [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)
 - [项目成熟度地图](/00-overview/14-project-maturity-map)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [示例输出与证据库](/13-output-gallery/00-overview)

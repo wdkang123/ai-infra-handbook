@@ -3,7 +3,6 @@ description: Share feedback from self-study, a study group, or a public walkthro
 title: "[Workshop] "
 labels:
   - documentation
-  - feedback
 body:
   - type: textarea
     id: context

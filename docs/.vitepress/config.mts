@@ -77,6 +77,8 @@ export default defineConfig({
           { text: "路线图包", link: "/08-publication/05-generated-roadmap-pack" },
           { text: "仓库卫生规范", link: "/08-publication/06-public-repo-hygiene" },
           { text: "依赖维护", link: "/08-publication/07-dependency-maintenance" },
+          { text: "维护节奏", link: "/08-publication/08-maintainer-rhythm" },
+          { text: "Issue 分类", link: "/08-publication/09-issue-triage-and-labels" },
         ],
       },
     ],
@@ -251,6 +253,8 @@ export default defineConfig({
           { text: "自动生成路线图包", link: "/08-publication/05-generated-roadmap-pack" },
           { text: "公开仓库卫生规范", link: "/08-publication/06-public-repo-hygiene" },
           { text: "依赖维护与 Bot PR 处理", link: "/08-publication/07-dependency-maintenance" },
+          { text: "维护节奏与运营清单", link: "/08-publication/08-maintainer-rhythm" },
+          { text: "Issue 分类与标签策略", link: "/08-publication/09-issue-triage-and-labels" },
         ],
       },
       {

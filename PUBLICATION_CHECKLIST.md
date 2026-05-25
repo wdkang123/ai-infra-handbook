@@ -51,6 +51,7 @@
 - [ ] `SECURITY.md` 已存在
 - [ ] `CHANGELOG.md` 已存在并记录当前阶段
 - [ ] Issue templates 已存在
+- [ ] Issue templates 只引用仓库里已经存在的 labels
 - [ ] PR template 已存在
 - [ ] Dependabot 已覆盖 npm、pip 和 GitHub Actions
 - [ ] Dependabot 分组和限流配置能避免依赖 PR 噪音失控
@@ -90,6 +91,7 @@
 - [ ] 有自动生成共学包，帮助讲师把议程、模块卡片、学习者交付和复盘问题整理成一份材料
 - [ ] 有自动生成测评包，帮助学习者、讲师和 reviewer 按模块出题、举证和评分
 - [ ] 有自动生成路线图包，帮助维护者把测评弱点和发布反馈整理成 GitHub issue 种子
+- [ ] 有维护节奏和 issue triage 文档，帮助公开发布后持续处理反馈
 - [ ] 有共学套件，帮助读者组织学习小组、公开演示和贡献协作
 - [ ] 有阶段自测题和参考答案
 - [ ] Capstone 可以帮助读者复盘整个系统
@@ -101,6 +103,7 @@
 - [ ] 给 README 增加在线站点链接
 - [ ] 增加路线图 issue
 - [ ] 标记适合 first-time contributor 的任务
+- [ ] 按维护节奏定期整理 Dependabot、issue、FAQ 和路线图
 - [ ] 根据共学反馈更新学习者工作簿和带练议程
 - [ ] 根据读者反馈补充 FAQ
 - [ ] 定期处理 Dependabot 和 dependency review 反馈

@@ -103,6 +103,8 @@ flowchart TB
 - [公开发布总览](./docs/08-publication/00-overview.md)
 - [GitHub 仓库设置建议](./docs/08-publication/04-repository-settings.md)
 - [依赖维护与 Bot PR 处理](./docs/08-publication/07-dependency-maintenance.md)
+- [维护节奏与运营清单](./docs/08-publication/08-maintainer-rhythm.md)
+- [Issue 分类与标签策略](./docs/08-publication/09-issue-triage-and-labels.md)
 - [Publication Checklist](./PUBLICATION_CHECKLIST.md)
 
 ## 文档站
@@ -354,6 +356,8 @@ PYTHON=.venv/bin/python make roadmap-pack
 - [内容写作规范](./docs/08-publication/02-content-style-guide.md)
 - [公开路线图](./docs/08-publication/03-public-roadmap.md)
 - [GitHub 仓库设置建议](./docs/08-publication/04-repository-settings.md)
+- [维护节奏与运营清单](./docs/08-publication/08-maintainer-rhythm.md)
+- [Issue 分类与标签策略](./docs/08-publication/09-issue-triage-and-labels.md)
 
 ## 当前状态
 

@@ -100,13 +100,15 @@ Actions -> docs-pages -> Run workflow
 
 ## 6. Issue 分类
 
-当前仓库已经有五类 issue template：
+当前仓库已经有七类 issue template：
 
 - Bug report
 - Docs improvement
 - Hands-on lab idea
 - Evidence example
 - Workshop feedback
+- Learning question
+- Roadmap task
 
 建议在 GitHub 上配这些 labels：
 
@@ -120,6 +122,8 @@ Actions -> docs-pages -> Run workflow
 | `evidence` | 输出证据、manifest、报告样例相关任务 |
 | `feedback` | 共学、公开演示和读者反馈 |
 | `question` | 学习问题或设计讨论 |
+
+模板默认只引用 GitHub 默认 labels，避免新仓库因为不存在的 `evidence`、`feedback`、`lab` 等标签产生提示。等你真正创建这些自定义 labels 后，可以再手动补到 issue 或模板里。更完整的分类口径见 [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)。
 
 ## 7. 首批公开 issue
 
