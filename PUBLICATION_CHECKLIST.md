@@ -54,6 +54,7 @@
 - [ ] PR template 已存在
 - [ ] Dependabot 已覆盖 npm、pip 和 GitHub Actions
 - [ ] Dependabot 分组和限流配置能避免依赖 PR 噪音失控
+- [ ] Dependabot 配置没有引用仓库里不存在的 labels
 - [ ] Dependency review workflow 已存在，并会在依赖相关 PR 上运行
 - [ ] GitHub Actions 依赖升级后，对应 workflow 已实际通过
 - [ ] `LICENSE` 已存在，README 已说明许可证

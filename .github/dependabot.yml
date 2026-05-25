@@ -9,9 +9,6 @@ updates:
       timezone: Asia/Shanghai
     open-pull-requests-limit: 3
     rebase-strategy: auto
-    labels:
-      - dependencies
-      - documentation
     groups:
       npm-dependencies:
         patterns:
@@ -29,9 +26,6 @@ updates:
       timezone: Asia/Shanghai
     open-pull-requests-limit: 3
     rebase-strategy: auto
-    labels:
-      - dependencies
-      - python
     groups:
       python-dev-dependencies:
         patterns:
@@ -49,9 +43,6 @@ updates:
       timezone: Asia/Shanghai
     open-pull-requests-limit: 3
     rebase-strategy: auto
-    labels:
-      - dependencies
-      - ci
     groups:
       github-actions:
         patterns:

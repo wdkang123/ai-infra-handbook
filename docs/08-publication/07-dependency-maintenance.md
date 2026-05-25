@@ -27,6 +27,7 @@ Dependabot 常见通知大致分三类：
 | `.github/workflows/docs-pages.yml` | 构建并部署 GitHub Pages 文档站 |
 
 Dependabot 会把同一生态里的更新分组成较少的 PR，避免公开项目一上线就被很多小版本 PR 淹没。
+当前配置没有强制指定 PR labels，因为新仓库默认只有少量 GitHub labels；如果后续想自动打 `dependencies`、`ci`、`python` 这类标签，先在仓库 Settings 或 Labels 页面创建它们，再把 labels 配置加回去。
 
 ## 推荐处理流程
 
@@ -97,6 +98,7 @@ npm 和 pip 依赖升级要同时看“能不能装”和“公开风险”：
 公开发布或大批量更新前，至少确认：
 
 - Dependabot 配置仍覆盖 `npm`、`pip` 和 `github-actions`
+- Dependabot 配置没有引用仓库里不存在的 labels
 - dependency review workflow 存在
 - `PYTHON=.venv/bin/python make public-check` 通过
 - `npm audit --omit=dev --audit-level=moderate` 没有中高风险
