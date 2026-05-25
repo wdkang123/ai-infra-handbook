@@ -1,0 +1,68 @@
+name: docs-pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - docs/**
+      - scripts/docs_quality_check.py
+      - scripts/build_learning_inventory.py
+      - scripts/build_course_catalog.py
+      - scripts/build_release_brief.py
+      - scripts/build_workshop_packet.py
+      - scripts/build_assessment_pack.py
+      - scripts/build_roadmap_pack.py
+      - package.json
+      - package-lock.json
+      - .github/workflows/docs-pages.yml
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check documentation links and navigation
+        run: |
+          python3 scripts/build_learning_inventory.py --docs-dir docs --root-dir . --strict
+          python3 scripts/build_course_catalog.py --strict
+          python3 scripts/docs_quality_check.py
+
+      - name: Build docs
+        run: npm run docs:build
+        env:
+          VITEPRESS_BASE: /${{ github.event.repository.name }}/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

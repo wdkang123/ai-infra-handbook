@@ -1,0 +1,37 @@
+name: Workshop feedback
+description: Share feedback from self-study, a study group, or a public walkthrough.
+title: "[Workshop] "
+labels:
+  - documentation
+  - feedback
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Learning context
+      description: Was this self-study, a study group, a workshop, or a public demo?
+      placeholder: 90-minute study group with 5 learners.
+    validations:
+      required: true
+  - type: textarea
+    id: path
+    attributes:
+      label: Pages or workflow followed
+      description: Which route, lab, workbook, or agenda did you use?
+      placeholder: docs/14-workshop-kit/03-study-group-agenda.md
+    validations:
+      required: true
+  - type: textarea
+    id: friction
+    attributes:
+      label: What was confusing or slow?
+      description: Describe the exact point where learners got stuck.
+    validations:
+      required: true
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Suggested improvement
+      description: What would make the next study session smoother?
+    validations:
+      required: false

@@ -1,0 +1,9 @@
+method: "lora"
+model:
+  name_or_path: "Qwen/Qwen2.5-0.5B-Instruct"
+output_dir: "./outputs/lora_qwen_05b"
+lora:
+  r: 16
+  lora_alpha: 32
+data:
+  train_file: "./data/train.jsonl"

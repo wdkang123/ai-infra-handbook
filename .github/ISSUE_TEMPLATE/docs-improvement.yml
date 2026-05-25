@@ -1,0 +1,28 @@
+name: Docs improvement
+description: Suggest a clearer explanation, missing link, or better learning flow.
+title: "[Docs] "
+labels:
+  - documentation
+body:
+  - type: textarea
+    id: page
+    attributes:
+      label: Page or section
+      description: Which page, heading, or learning path is affected?
+      placeholder: docs/00-overview/02-learning-route.md
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is confusing?
+      description: Describe what made the page hard to understand or use.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: What would make this clearer for future learners?
+    validations:
+      required: false

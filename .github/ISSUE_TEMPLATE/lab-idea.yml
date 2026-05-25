@@ -1,0 +1,30 @@
+name: Hands-on lab idea
+description: Propose a new practical exercise for the learning site.
+title: "[Lab] "
+labels:
+  - enhancement
+  - documentation
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Learning goal
+      description: What should learners understand or be able to do after this lab?
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: Related files
+      description: Which docs or project files would this lab touch?
+      placeholder: projects/ai-gateway/src/ai_gateway/server.py
+    validations:
+      required: false
+  - type: textarea
+    id: verification
+    attributes:
+      label: Suggested verification
+      description: How should learners check that they completed the lab?
+      placeholder: PYTHON=.venv/bin/python make infra-check
+    validations:
+      required: false
