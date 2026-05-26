@@ -84,6 +84,7 @@
 - 将 issue templates 的默认 labels 收敛到 GitHub 默认标签，避免新仓库因为未创建自定义 labels 产生提示。
 - 将 Prefill/Decode/KV Cache、vLLM/SGLang、Triton/TensorRT-LLM、Gateway 鉴权路由限流、Benchmark/Leaderboard/Observability、LoRA/QLoRA/PEFT 从提纲式说明扩写为教程式核心章节。
 - 将 Token/Context、TTFT/ITL/Throughput、服务选型取舍、Gateway health/metrics/request id、Eval run/compare/history、Finetune run/artifacts/export 扩写为带场景、机制、观察方式、误区和仓库映射的深度教程页。
+- 将请求到首个 token、Streaming/Batching/Metrics、Gateway 平台边界、模型名映射、SFT/DPO 训练目标、微调决策、实验追踪复现、Benchmark 与生产质量扩写为教程式核心页。
 
 ### Verified
 
