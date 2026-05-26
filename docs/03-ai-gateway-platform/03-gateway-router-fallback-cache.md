@@ -2,19 +2,31 @@
 
 ## 为什么这一页要放在一起讲
 
-因为这四个词经常在平台层混着出现，但它们并不是完全同一件事。
+Gateway、router、fallback、cache 经常在平台层混着出现，但它们不是同一件事。
 
-如果你不把它们分开，后面很容易出现两种常见混乱：
+如果你不把它们分开，后面很容易出现两种混乱：
 
 - 把 router 误认为整个 gateway
-- 把 fallback / cache 误认为只是“附加优化”
+- 把 fallback / cache 误认为只是附加优化
 
-更好的理解方式是：  
-它们都属于平台层能力，但各自回答的问题不同。
+更好的理解方式是：
+
+> 它们都属于平台层能力，但各自回答的问题不同。
+
+可以先用一句话区分：
+
+- Gateway 回答“统一入口在哪里”
+- Router 回答“这条请求去哪里”
+- Fallback 回答“主路径失败后怎么办”
+- Cache 回答“哪些请求可以不再打到下游”
+
+这四个能力叠在一起，才开始有平台层的味道。
 
 ## Gateway 在回答什么
 
-gateway 回答的是“应用到底通过哪个统一入口来访问模型能力”。
+Gateway 回答的是：
+
+> 应用到底通过哪个统一入口来访问模型能力？
 
 所以 gateway 往往要管：
 
@@ -24,15 +36,23 @@ gateway 回答的是“应用到底通过哪个统一入口来访问模型能力
 - 请求转发
 - 限流
 - 健康检查
-- metrics / request id / structured events
+- metrics
+- request id
+- structured events
+- cache / fallback 的外部语义
 
 在当前仓库里，`ai-gateway` 就是这条主线的最小学习骨架。
 
+它不负责真正执行模型推理，也不负责训练和评测。它的职责是让调用模型这件事被平台化治理。
+
 ## Router 在回答什么
 
-router 回答的是“这条请求最终要发给哪个下游”。
+Router 回答的是：
 
-它经常只是 gateway 里的一部分，而不是完整平台本身。  
+> 这条请求最终要发给哪个下游？
+
+它经常只是 gateway 里的一部分，而不是完整平台本身。
+
 你可以把它先理解成“决策器”，而不是“整个入口层”。
 
 常见路由判断包括：
@@ -40,56 +60,146 @@ router 回答的是“这条请求最终要发给哪个下游”。
 - 这个外部模型名映射到哪个内部 target
 - 这个请求应不应该走备用模型
 - 这个请求应不应该走测试版本
+- 这个 token 或租户是否应该使用某个模型池
+- 当前 upstream 是否健康
+- 当前策略是否允许 fallback
+
+当前项目的 router 不追求复杂策略，但已经保留了最重要的边界：外部模型名和内部上游目标不是同一个东西。
+
+## 为什么外部模型名要和内部 target 解耦
+
+如果调用方直接知道所有内部模型名，后续迁移会很痛苦。
+
+例如你今天对外暴露：
+
+```text
+learning-chat
+```
+
+内部可以先指向 mock inference service，之后可以指向 vLLM、本地 SGLang、OpenAI-compatible upstream，甚至带 fallback 的 target 列表。
+
+对调用方来说，外部模型名稳定；对平台来说，内部实现可以演进。
+
+这就是 router 的价值。
 
 ## Fallback 在回答什么
 
-fallback 回答的是“主要路径失败了以后怎么办”。
+Fallback 回答的是：
+
+> 主要路径失败了以后怎么办？
 
 它的价值不在“聪明切换”，而在“让平台在异常时仍然有可接受的退路”。
 
 学习时你最应该理解的是：
 
 - fallback 不是正常主路径
-- 它是治理能力的一部分
-- 它会影响稳定性、结果一致性和排障复杂度
+- fallback 是治理能力的一部分
+- fallback 会影响稳定性、结果一致性和排障复杂度
+- fallback 必须被记录
 
-所以一个成熟平台不会把 fallback 当成“悄悄发生的小技巧”，而会把它当成明确的系统行为。
+一个成熟平台不会把 fallback 当成“悄悄发生的小技巧”，而会把它当成明确的系统行为。
 
-这也是为什么当前 gateway 会把 fallback 暴露成三类观察面：单次响应里的 `x-upstream-model` / `x-fallback-used`，`/metrics` 里的 fallback attempts / successes，以及 `/events` 里的 `fallback_attempt` / `fallback_success`。
+当前 gateway 会把 fallback 暴露成几类观察面：
+
+- 单次响应里的 `x-upstream-model`
+- 单次响应里的 `x-fallback-used`
+- `/metrics` 里的 fallback attempts / successes
+- `/events` 里的 `fallback_attempt` / `fallback_success`
+- `/events/failures` 里的失败摘要
+
+这样 fallback 不是静默发生，而是能被单次请求、最近事件和长期指标同时解释。
+
+## Fallback 的风险
+
+Fallback 不是越多越好。
+
+它会引入几类风险：
+
+| 风险 | 说明 |
+| --- | --- |
+| 质量不一致 | 备用模型可能回答风格或能力不同 |
+| 成本变化 | 备用上游可能更贵 |
+| 延迟增加 | 主路径失败后再尝试备用路径会增加耗时 |
+| 问题被掩盖 | 用户成功拿到响应，但主 upstream 已经退化 |
+| 复盘复杂 | 如果没有事件和 header，很难知道实际命中了谁 |
+
+所以 fallback 的正确姿势不是“能 fallback 就行”，而是“fallback 可解释、可观测、可控制”。
 
 ## Cache 在平台层又是怎么回事
 
-平台层说 cache，通常不是在说底层 KV cache。  
+平台层说 cache，通常不是在说底层 KV Cache。
+
 更常见的是：
 
-- 请求级响应缓存
+- 请求级 response cache
 - semantic cache
 - 某些高频 prompt 的复用层
 
-这时它的价值更接近：
+它的价值更接近：
 
 - 降低下游调用次数
 - 降低成本
-- 在某些重复问题场景里缩短响应时间
+- 在重复问题场景里缩短响应时间
+- 减少上游波动对用户的影响
 
-所以平台层 cache 和推理引擎里的 prefix caching 是两条不同层次的主线。
+平台层 cache 和推理引擎里的 prefix caching 是两条不同层次的主线。
+
+| 类型 | 所在层 | 缓存对象 | 主要收益 | 主要风险 |
+| --- | --- | --- | --- | --- |
+| Response cache | Gateway | 完整响应 | 降低请求成本 | 用户隔离、过期、敏感内容 |
+| Semantic cache | Gateway / App | 语义相近请求结果 | 复用相似问题 | 误命中、质量不可控 |
+| Prefix caching | Serving runtime | 共享 prompt 前缀的 KV 状态 | 降低 prefill 成本 | 显存管理、prefix 稳定性 |
+| KV Cache | Serving runtime | 单次生成上下文状态 | 加速 decode | 显存压力 |
+
+把这些 cache 混起来，会导致设计判断出错。
+
+## 当前仓库里的 Cache 如何理解
+
+当前 `ai-gateway` 的 cache 更接近 response cache。
+
+它关心的是：
+
+- 相同 token / 请求是否能复用响应
+- cache 是否过期
+- cache 是否按 token 隔离
+- cache 满时如何淘汰
+- response header 如何显示命中状态
+
+它不是在做 prefix caching，也不是在优化模型执行内部状态。
+
+所以读这页时要记住：Gateway cache 是平台治理能力，不是推理 runtime 优化。
 
 ## 四者之间最容易混淆的边界
 
-### 误区一：Gateway 就是 Router
+### Gateway 就是 Router
 
-不对。  
-router 通常只是 gateway 的一个核心内部能力。
+不对。
 
-### 误区二：Fallback 只是路由策略的一种
+Router 通常只是 gateway 的一个核心内部能力。Gateway 还要处理 auth、rate limit、cache、fallback、health、metrics、events 等问题。
 
-部分成立，但不够完整。  
-更准确地说，fallback 是路由体系里专门处理失败路径的那部分策略，它背后往往牵涉到可用性目标。
+### Fallback 只是路由策略的一种
 
-### 误区三：平台层 cache 和引擎层 cache 是同一回事
+部分成立，但不够完整。
 
-不是。  
-一个更靠“减少外部请求或直接复用响应”，一个更靠“复用模型执行中的中间结果”。
+更准确地说，fallback 是路由体系里专门处理失败路径的策略，它背后牵涉可用性目标、质量风险和排障复杂度。
+
+### 平台层 cache 和引擎层 cache 是同一回事
+
+不是。
+
+一个更靠减少外部请求或直接复用响应，一个更靠复用模型执行中的中间结果。
+
+### Cache 命中率越高越好
+
+不一定。
+
+如果 cache 没有用户隔离、过期策略和可解释 header，高命中率也可能代表错误复用。
+
+### Fallback 成功就说明系统健康
+
+不一定。
+
+Fallback 成功只能说明用户拿到了响应，不能说明主路径健康。主路径退化仍然应该进入 metrics 和 events。
 
 ## 在当前仓库里应该怎么学
 
@@ -107,14 +217,38 @@ router 通常只是 gateway 的一个核心内部能力。
 - `/events` 结构化事件
 - 默认关闭的非流式 TTL cache
 
-也就是说，你现在已经能清楚看到 gateway 这个“外层壳”长什么样。  
+也就是说，你现在已经能清楚看到 gateway 这个外层壳长什么样。
+
 后面再往里面加更复杂 router、canary、semantic cache，会容易很多。
 
 ## 推荐的学习顺序
 
-1. 先把 gateway 当成统一入口
-2. 再把 router 看成入口内部的决策器
-3. 再看 fallback 如何处理失败路径
-4. 最后再理解 cache 如何帮助成本和延迟治理
+1. 先把 gateway 当成统一入口。
+2. 再把 router 看成入口内部的决策器。
+3. 再看 fallback 如何处理失败路径。
+4. 再看 cache 如何帮助成本和延迟治理。
+5. 最后把 headers、metrics、events 放在一起复盘。
 
-这样学，你就不会把所有“平台能力”都挤进一个抽象词里。
+这样学，你就不会把所有平台能力都挤进一个抽象词里。
+
+## 实操观察
+
+建议你至少观察这些信号：
+
+- 成功请求是否带 `x-request-id`
+- 成功请求是否带 `x-upstream-model`
+- fallback 时 `x-fallback-used` 是否变化
+- cache 命中时 `x-cache` 是否变化
+- `/metrics` 是否出现 fallback / cache 相关计数
+- `/events` 是否能看到请求、失败、fallback
+- `/events/failures` 是否能聚合失败状态
+
+如果这些信号都能解释，你对 gateway 的平台能力就不只是知道名词了。
+
+## 这一章学完应该带走什么
+
+Gateway 是统一入口，router 是决策器，fallback 是失败路径策略，cache 是成本和延迟治理能力。
+
+它们都属于平台层，但解决的问题不同。
+
+真正有用的平台设计，不是把这些能力堆上去，而是让每个能力都有清楚边界、可观察证据和失败语义。

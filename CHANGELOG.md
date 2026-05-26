@@ -90,6 +90,7 @@
 - 将 LLM Fundamentals、Inference Serving、AI Gateway、Evaluation Observability、Finetuning Training、项目总览、Demo Training 迁移和生产迁移总览扩写为模块导学章，补齐学习目标、系统边界、代码映射、实践路线和常见误区。
 - 将第一次实操后续路线、Run 到发布决策、GitHub 协作入口、参考资料总览、API Surface、自测总览、系统地图自测和 Capstone 答辩扩写为更完整的学习验收、排障定位、公开协作和发布判断指南。
 - 将 AI Infra 总入口、按目标选择学习路径、常见学习误区、FAQ、公开仓库卫生、依赖维护、共学套件总览和学习小组议程扩写为更适合新读者进入、公开维护和组织共学的教程页。
+- 将 Gateway Router/Fallback/Cache、Streaming 错误与 Upstream Health、LLM Evaluation、Benchmark/Arena/Leaderboard、文档项目映射、Serving 可观测性 Lab、Serving/Gateway 自测和 Eval/Finetune 自测扩写为更强调边界、证据链、失败路径和跨模块判断的教程页。
 
 ### Verified
 
