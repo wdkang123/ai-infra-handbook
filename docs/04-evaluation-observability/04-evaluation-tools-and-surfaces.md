@@ -1,102 +1,267 @@
 # 评测工具与展示面
 
-## 为什么要把“工具”和“展示面”分开
+很多初学者会把 benchmark、leaderboard、arena、harness、dashboard 全部混成“评测”。
 
-因为很多初学者会把 benchmark、leaderboard、arena、harness 全混成“评测”。
+这会带来一个问题：
+看到一个排行榜，就误以为自己已经理解了评测过程。
 
-但更好的理解方式是：
+更好的方式是把它们分层：
 
-- 有些东西负责真正去跑
-- 有些东西负责组织结果
-- 有些东西负责把结果展示出来
+- 有些负责执行评测。
+- 有些负责定义任务和规则。
+- 有些负责比较结果。
+- 有些负责展示结果。
+- 有些负责人类偏好收集。
 
-如果你不把这几层分开，后面一看排行榜就容易误以为“这就是评测本身”。
+这页就是把这些层拆开。
 
-## 先把几类东西分出来
+## 先分清几类对象
 
-### 1. Evaluation Harness
+| 对象 | 主要作用 | 更像哪一层 |
+| --- | --- | --- |
+| Evaluation Harness | 执行评测任务 | 执行层 |
+| Benchmark | 定义任务、数据和规则 | 评测口径 |
+| Run Bundle | 保存一次评测证据 | 证据层 |
+| Compare | 比较 baseline/candidate | 判断层 |
+| Leaderboard | 横向展示结果 | 展示层 |
+| Arena | 人类偏好对战/盲评 | 偏好收集层 |
+| Dashboard | 查询、筛选、趋势和 drill-down | 展示/运营层 |
 
-这类工具负责真正执行评测任务。  
-比如给模型喂标准任务集，收集结果，再算出 accuracy、pass@k 之类的指标。
+这些东西都和 evaluation 有关，但不是同一个角色。
 
-学习时你可以把它们理解成“执行引擎”。
+## Evaluation Harness：负责跑
 
-### 2. Benchmark
+Harness 负责真正执行评测任务。
 
-benchmark 更像“被设计好的一套评测任务和规则”。  
-它定义的是测什么、怎么测、用什么口径看结果。
+它通常做：
 
-所以 benchmark 不是一个页面，而是一套评测过程。
+- 加载 task
+- 准备 prompt
+- 调用模型
+- 收集输出
+- 计算指标
+- 保存结果
 
-### 3. Leaderboard
+你可以把 harness 理解成“评测执行引擎”。
 
-leaderboard 是展示层。  
-它把很多 benchmark 结果摆在一起，方便横向比较。
+它解决的是：
 
-所以 leaderboard 最大的价值是“可比较”，而不是“替代了评测过程”。
+> 这次评测怎么跑出来？
 
-### 4. Arena
+但 harness 本身不一定负责：
 
-arena 更像人类盲评或交互式对比场景。  
-它和标准 benchmark 的最大不同，是它更依赖真实交互和主观偏好，而不是固定标准答案。
+- 长期 history
+- 发布判断
+- dashboard
+- 结果解释
+- 人工审核流程
 
-## 为什么这个边界很重要
+这些是更上层的系统能力。
 
-因为你后面会不断看到这样的说法：
+## Benchmark：定义测什么
 
-- 某模型在 leaderboard 上分更高
-- 某模型在 arena 更受欢迎
-- 某 harness 支持更多任务
+Benchmark 更像一套被设计好的评测口径。
 
-如果你没有分层意识，就会把这些话混成一件事。  
-但实际上它们可能分别在讨论：
+它定义：
 
-- 结果展示
-- 人类偏好
-- 评测执行能力
+- task
+- dataset
+- split
+- metric
+- prompt template
+- few-shot 设置
+- scoring rule
+- judge rule
 
-## 在当前仓库里对应到什么
+所以 benchmark 不是一个页面，也不是一个分数。
+它是一套“如何比较”的规则。
 
-当前仓库的 `eval-module` 还不是完整 benchmark 平台，但它已经把最重要的结构搭出来了：
+如果 benchmark 版本变了，结果就不能和旧结果随便混看。
 
-- run
-- compare
-- result bundle
-- history
-- 最小 leaderboard JSON/Markdown
-- leaderboard backend/few-shot 分组
+## Run Bundle：保留证据
 
-这意味着它更像“评测执行和结果管理骨架”。  
-现在的 leaderboard 也只是站在 history 上的展示对象。你以后如果要往 dashboard 方向长，应该继续在这个骨架之上加展示层，而不是反过来。
+一次 run 不能只留下一个分数。
 
-## 学习时常见误区
+它至少要留下：
+
+- task
+- model
+- backend
+- few-shot
+- sample count
+- raw output
+- sample outputs
+- sample summary
+- sample analysis
+- run manifest
+- result file
+
+run bundle 的价值是让分数能被解释。
+没有 run bundle，leaderboard 上的数字就很难复盘。
+
+当前仓库的 `eval-module` 已经把这层表达出来。
+
+## Compare：从分数走向判断
+
+Compare 解决的是：
+
+> candidate 相比 baseline 是否值得进入下一步？
+
+它不只是算 delta。
+还要看：
+
+- task 是否一致
+- sample count 是否变化
+- few-shot 是否变化
+- metric delta
+- min delta
+- verdict
+- release recommendation
+- release reasons
+
+Compare 是评测系统从“测量”走向“决策”的关键层。
+
+## Leaderboard：展示，不是事实来源
+
+Leaderboard 很有用。
+它能帮助你横向看多个模型、多个 backend、多个 run。
+
+但 leaderboard 应该从 run history 和 run artifacts 聚合，而不是手写分数。
+
+它应该能追溯：
+
+- best result file
+- latest result file
+- run count
+- backend
+- few-shot
+- task
+
+如果 leaderboard 不能跳回证据，它就容易变成漂亮但危险的展示页。
+
+## Arena：偏好而不是标准答案
+
+Arena 更像人类偏好收集。
+
+它适合回答：
+
+- 用户更喜欢哪种回答？
+- 哪个模型在开放式交互中更受欢迎？
+- 哪些回答风格更被接受？
+
+它和标准 benchmark 不同：
+
+- 更依赖真实交互。
+- 更依赖主观偏好。
+- 更容易受展示、样本和用户群影响。
+- 更适合开放式任务。
+
+Arena 很有价值，但不能直接替代受控 benchmark。
+
+## Dashboard：视图，不是证据本身
+
+Dashboard 适合做：
+
+- 趋势展示
+- 筛选
+- 对比
+- drill-down
+- 发布复盘
+- 运营监控
+
+但 dashboard 不应该成为唯一事实来源。
+
+更好的结构是：
+
+```text
+run artifacts / comparison artifacts / history
+  -> index / leaderboard
+  -> dashboard
+```
+
+这样 UI 可以迭代，证据不会丢。
+
+## 当前仓库怎么对应
+
+当前 `eval-module` 不是完整评测平台，但已经表达了关键骨架：
+
+```text
+run
+  -> run bundle
+  -> run_history.jsonl
+  -> list-runs
+  -> leaderboard
+
+compare
+  -> comparison bundle
+  -> comparison_history.jsonl
+  -> list-comparisons
+```
+
+相关文件：
+
+```text
+projects/eval-module/src/eval_module/main.py
+projects/eval-module/src/eval_module/results/result_store.py
+projects/eval-module/src/eval_module/runners/lm_eval_runner.py
+```
+
+这套结构让评测从一次性命令变成可追踪对象。
+
+## 一个合理演进路线
+
+如果以后要继续扩展评测系统，推荐顺序是：
+
+1. 先保 run bundle 和 comparison bundle。
+2. 扩展 runner adapter。
+3. 扩展 task/benchmark config。
+4. 引入 judge adapter。
+5. 强化 release recommendation。
+6. 从 JSON/Markdown index 接 dashboard。
+7. 再考虑 arena 或 human preference import。
+
+这个顺序能保住证据层。
+
+## 常见误区
 
 ### “排行榜就是最可信结果”
 
-不一定。  
-排行榜当然有用，但它会受任务集选择、版本更新、提交流程、展示规则影响。
+不一定。
+排行榜受任务集、版本、提交规则和展示方式影响。
 
 ### “Arena 和 benchmark 只是两种分数”
 
-也不对。  
-它们背后的评测逻辑、数据来源和主观性程度都不一样。
+不对。
+它们背后的数据来源、主观性和用途不同。
 
-### “有了 harness 就自动有平台”
+### “有 harness 就有评测平台”
 
-不对。  
-harness 更像执行层。  
-要变成真正的平台，你还需要：
+不够。
+平台还需要结果存储、history、compare、证据、展示和发布判断。
 
-- 结果存储
-- history
-- compare
-- 可追踪的 run metadata
-- 展示与解释界面
+### “Dashboard 可以替代 artifact”
 
-## 推荐的学习顺序
+不建议。
+dashboard 是视图，artifact 才是可复盘证据。
 
-1. 先理解 harness 是怎么执行一次 run 的
-2. 再理解 benchmark 为什么是一套规则，而不是一个页面
-3. 再理解 leaderboard / arena 为什么属于展示与比较层
+### “分数展示越多越专业”
 
-这样你以后再看外部世界里各种“评测榜单”，就更容易判断自己到底在看什么。
+不一定。
+如果没有可比性和追溯性，更多分数只会制造噪音。
+
+## 学完应该能回答
+
+读完这一页后，你应该能回答：
+
+1. harness、benchmark、leaderboard、arena 分别是什么？
+2. 为什么 leaderboard 不能替代 run bundle？
+3. Compare 在评测系统里为什么是判断层？
+4. Dashboard 应该如何建立在 artifact 和 history 上？
+5. 当前仓库的 `eval-module` 已经表达了哪些评测平台骨架？
+
+## 继续阅读
+
+- [LLM Evaluation](/04-evaluation-observability/05-llm-evaluation)
+- [Run、Compare、History](/04-evaluation-observability/01-run-compare-history)
+- [Benchmark、Leaderboard 与 Observability](/04-evaluation-observability/02-benchmark-leaderboard-observability)
+- [Eval 评测系统迁移](/12-production-migration/03-eval-judge-dashboard-migration)

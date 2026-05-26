@@ -1,139 +1,253 @@
 # Cache 与 Prefix Caching
 
-## 为什么这一章值得单独讲
+Cache 在 LLM serving 里不是“锦上添花”。
+它几乎会影响所有重要指标：
 
-因为 cache 在 LLM serving 里不是“锦上添花”，而是几乎所有吞吐、延迟、成本问题背后的核心变量之一。
+- TTFT
+- ITL
+- throughput
+- 显存占用
+- 并发能力
+- 长上下文成本
+- gateway 成本治理
 
-如果你后面遇到这些说法：
+如果你后面遇到这些问题：
 
-- TTFT 为什么降了
-- 为什么第二个请求更快
-- 为什么显存一下被吃满
-- 为什么长上下文把并发打掉了
+- 为什么第二个请求更快？
+- 为什么长上下文把并发打掉了？
+- 为什么显存一下被吃满？
+- 为什么 cache hit 后 TTFT 下降？
+- 为什么 gateway cache 和 prefix cache 不是一回事？
 
-很多时候，最后都会回到 cache。
+很多时候最后都会回到 cache。
 
-## 先把三个常见 cache 层次分开
+## 先分清三种 Cache
 
-### 1. KV Cache
+LLM 系统里常见的 cache 至少有三层。
 
-这是底层层次。  
-你可以先把它理解成：模型在自回归生成时，把前面 token 的关键中间结果存下来，避免每生成一个 token 都从头重算全部历史。
+| Cache 类型 | 所在层 | 复用什么 | 主要影响 |
+| --- | --- | --- | --- |
+| KV Cache | 模型执行层 | 已计算 token 的 key/value 状态 | decode 成本、显存 |
+| Prefix Caching | serving runtime 层 | 共享前缀对应的 KV 状态 | prefill 成本、TTFT |
+| Semantic / Response Cache | gateway/app 层 | 已生成响应或近似问题结果 | 成本、响应速度、上游压力 |
 
-这层最接近模型执行本身。
+这三者都叫 cache，但语义完全不同。
+学习时最容易混淆的就是把它们当成同一种东西。
 
-### 2. Prefix Caching
+## KV Cache 是什么
 
-这是服务/引擎层更常提到的 cache。  
-当两个请求共享相同前缀时，系统尝试复用这段前缀对应的 KV cache，而不是把同样的 prefill 再做一遍。
+自回归模型每生成一个新 token，都要利用前面 token 的上下文。
+如果每一步都从头计算整个历史，成本会非常高。
 
-这层开始直接影响：
+KV Cache 的作用是保存前文 token 的 key/value 状态，让后续 decode 不必重复计算全部历史。
 
-- 第二个请求的整体延迟
-- 共享 system prompt 场景的效率
-- few-shot 模板复用场景的表现
+它的关键点是：
 
-### 3. Semantic Cache
+- 它存在于模型执行过程里。
+- 它和上下文长度强相关。
+- 它占用显存。
+- 它影响并发和长上下文能力。
+- 它不是“返回内容缓存”。
 
-这是更靠应用层的思路。  
-它不要求 token 前缀完全相同，而是通过相似度去判断“这个问题是不是已经被问过了”。
+所以 KV Cache 更像运行时状态，而不是应用层缓存。
 
-这件事和 prefix caching 不是一回事。  
-前者更像“响应复用”，后者更像“中间计算复用”。
+## Prefix Caching 是什么
 
-## 为什么 prefix caching 对学习最有价值
+Prefix caching 关注的是：
 
-因为它刚好站在模型执行和工程系统之间。
+> 多个请求共享相同前缀时，能不能复用这段前缀的 prefill 结果？
 
-它会帮你同时理解两件事：
+例如很多请求都包含同一个 system prompt：
 
-1. cache 命中不是抽象概念，而会真实影响首 token 延迟
-2. prompt 设计、system prompt 复用、请求组织方式，本身也会影响系统性能
+```text
+你是一个严谨的 AI Infra 学习助手。回答必须包含场景、机制、误区和仓库映射。
+```
 
-也就是说，prefix caching 会让你第一次真正意识到：
+如果每次请求都重新 prefill 这段相同前缀，就会浪费。
+prefix caching 想复用这段前缀对应的 KV 状态，从而减少重复 prefill。
 
-- prompt 不是纯应用层文本
-- 它也会成为基础设施行为的一部分
+它主要优化的是首 token 前的工作，也就是 TTFT 中和 prefill 相关的部分。
 
-## 它到底在优化什么
+## Semantic / Response Cache 是什么
 
-它主要在优化 prefill 的重复开销。
+Semantic cache 或 response cache 更靠应用层或 gateway。
 
-如果两个请求前面一大段完全一样，那系统最不愿意做的事情，就是把那一大段重新算一遍。  
-prefix caching 想解决的，就是这个“重复 prefill”问题。
+它关注的是：
 
-所以你后面看到“第二次请求更快”时，不要马上把它理解成：
+> 这个问题是不是已经问过，能不能直接复用之前的回答？
 
-- 模型变聪明了
-- decode 更快了
+这和 prefix caching 不同。
 
-更常见的解释是：
+| 对比 | Prefix Caching | Semantic / Response Cache |
+| --- | --- | --- |
+| 复用对象 | 中间计算状态 | 最终响应 |
+| 匹配条件 | token 前缀相同或可复用 | 问题相同或语义相似 |
+| 所在层 | serving runtime | gateway/app |
+| 主要风险 | 显存占用、命中率受 prompt 影响 | 越权、过期、错误复用 |
+| 当前仓库表达 | 作为未来真实后端观察点 | gateway response cache |
 
-- 共享前缀命中了
-- prefill 被复用了
+当前 `ai-gateway` 的 cache 是 response cache 学习实现，不是 prefix cache。
 
-## 学习时常见误区
+## Prefix Caching 优化什么
 
-### “KV Cache 就等于 Prefix Caching”
+它主要优化 prefill 的重复成本。
 
-不等于。  
-KV cache 更像底层存储对象；prefix caching 更像围绕这些对象建立起来的复用策略。
+假设两个请求：
 
-### “Cache 命中越多越好，不需要代价”
+```text
+Request A = system prompt + few-shot examples + user question A
+Request B = system prompt + few-shot examples + user question B
+```
 
-也不对。  
-cache 占资源，尤其占显存。  
-显存不是无限的，所以系统总是在做权衡：
+前面很长一段完全相同。
+如果 runtime 能复用共享前缀，第二个请求就可能减少 prefill 开销。
 
-- 给更多 cache 空间
-- 还是留更多空间给 batch / 并发
+这不会让 decode 本身 magically 变快。
+它更可能降低首 token 等待。
 
-### “只要开启 prefix caching 就一定明显加速”
+## 为什么它是工作负载敏感优化
 
-不一定。  
-前提至少包括：
+Prefix caching 不是打开就一定明显加速。
 
-- 请求之间真的共享前缀
-- 共享比例足够高
-- 系统没有被别的瓶颈掩盖
+它依赖：
 
-所以它是工作负载敏感的优化，不是魔法开关。
+- 请求之间是否真的共享前缀
+- 共享前缀是否足够长
+- cache 是否还在
+- 显存是否足够
+- runtime 是否正确识别复用
+- 其他瓶颈是否掩盖收益
 
-## 和当前仓库怎么对照
+如果请求完全随机、前缀都不同，prefix caching 命中率就低。
 
-当前仓库的 `inference-service` 还没有真实接入 vLLM 或 SGLang 的 prefix caching，但学习路径已经故意把这件事留成一个清晰观察点。
+因此它不是魔法开关，而是和 workload、prompt 设计、服务调度都有关。
 
-你可以先做两层区分：
+## Cache 的代价
 
-### 当前仓库已经给你的
+Cache 不是免费的。
 
-- 推理服务骨架
-- 普通响应与 streaming
-- metrics 与 request id
-- gateway 到 inference 的主链路
+尤其 KV Cache / prefix cache 会占用 GPU 显存。
+显存给了 cache，就不能给其他用途。
 
-### 你后面接真实后端时要重点观察的
+系统需要权衡：
 
-- 相同前缀请求的整体延迟变化
-- metrics 里有没有 prefix/cache 相关指标
-- gateway 层的 prompt 组织是否影响 cache 命中
+- 留更多 cache，提升重复请求表现。
+- 留更多空间给 batch，提高并发。
+- 清理旧 cache，避免 OOM。
+- 保留长前缀，提升共享 prompt 场景。
+- 限制长上下文，保护系统稳定性。
 
-这样你后面把 mock executor 换成真实框架时，就会知道自己到底在观察什么。
+所以 cache 策略本质上是资源管理策略。
+
+## Prompt 设计会影响 Cache
+
+这是学习 prefix caching 最有价值的直觉之一：
+
+> Prompt 不是纯应用层文本，它会影响基础设施行为。
+
+例如：
+
+- system prompt 稳定，有利于共享前缀。
+- 每次请求都在最前面插入动态时间戳，可能破坏共享前缀。
+- few-shot 示例顺序稳定，有利于复用。
+- RAG 文档每次都不同，prefix reuse 可能下降。
+- 把用户专属信息放在最前面，可能让公共前缀变短。
+
+所以 prompt 组织方式会影响 serving 性能。
+
+## 当前仓库怎么对应
+
+当前仓库还没有真实接入 vLLM/SGLang 的 prefix caching。
+但它已经把观察路径留出来：
+
+### Inference Service
+
+```text
+projects/inference-service/src/inference_service/server.py
+projects/inference-service/src/inference_service/runtime.py
+projects/inference-service/src/inference_service/engines.py
+```
+
+它提供：
+
+- request id
+- usage
+- metrics
+- events
+- streaming
+- engine adapter
+
+这些是未来观察真实 cache 行为的外壳。
+
+### Gateway
+
+```text
+projects/ai-gateway/src/ai_gateway/server.py
+projects/ai-gateway/src/ai_gateway/runtime.py
+```
+
+它表达的是 response cache：
+
+- `x-cache`
+- cache hit/miss events
+- token 隔离
+- TTL
+- eviction
+
+这和 prefix caching 不同，但同样是成本治理的一部分。
 
 ## 最小实践建议
 
-最适合入门的实践，不是直接跑复杂 benchmark，而是做一个非常朴素的小实验：
+以后接真实后端后，可以做一个简单实验：
 
-1. 启动支持 prefix caching 的推理服务
-2. 构造一个很长的共享 system prompt
-3. 连续发两条只改 user message 的请求
-4. 观察第二次整体耗时是否更低
+1. 准备一个长且稳定的 system prompt。
+2. 连续发两条只改变 user message 的请求。
+3. 记录 TTFT、总耗时、prompt token、cache 指标。
+4. 再构造每次前缀都不同的请求作为对照。
+5. 比较两组趋势。
 
-如果你能稳定复现实验趋势，这一章最重要的直觉就建立起来了。
+目标不是严谨 benchmark，而是确认你能看见“共享前缀改变服务行为”。
 
-## 这一章学完之后，你应该带走什么
+## 常见误区
 
-最重要的不是“记住三种 cache 名词”，而是形成这个判断：
+### “KV Cache 等于 Prefix Caching”
 
-缓存不是附属优化，而是推理服务组织方式的一部分。  
-很多 latency、throughput、成本问题，最后都要回到 cache 这条主线来理解。
+不等于。
+KV Cache 是底层状态，prefix caching 是围绕共享前缀复用 KV 状态的策略。
+
+### “Gateway cache 等于 prefix cache”
+
+不等于。
+gateway cache 复用最终响应，prefix cache 复用中间计算。
+
+### “Cache 命中越多越好”
+
+不一定。
+cache 占资源，也可能带来隔离和过期风险。
+
+### “只要开启 prefix caching 就会明显变快”
+
+不一定。
+它依赖工作负载和前缀复用比例。
+
+### “Prompt 设计和基础设施无关”
+
+不对。
+prompt 的稳定性和结构会影响 prefix caching 命中。
+
+## 学完应该能回答
+
+读完这一页后，你应该能回答：
+
+1. KV Cache、Prefix Caching、Response Cache 分别复用什么？
+2. Prefix caching 主要优化 prefill 还是 decode？
+3. 为什么 cache 会带来显存和并发取舍？
+4. 为什么 prompt 组织方式会影响 cache 命中？
+5. 当前仓库的 gateway cache 和未来真实后端 prefix cache 有什么不同？
+
+## 继续阅读
+
+- [Prefill、Decode 与 KV Cache](/01-llm-fundamentals/02-prefill-decode-kv-cache)
+- [vLLM](/02-inference-serving/04-vllm)
+- [SGLang](/02-inference-serving/05-sglang)
+- [Gateway Router、Fallback 与 Cache](/03-ai-gateway-platform/03-gateway-router-fallback-cache)

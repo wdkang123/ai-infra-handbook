@@ -1,138 +1,224 @@
 # SGLang
 
-## 先把 SGLang 放在什么位置理解
+SGLang 也属于 LLM serving runtime，但它值得学习的地方，不只是“也能跑模型”。
 
-SGLang 也是推理服务框架，但它特别值得学的地方，不只是“也能跑模型”，而是它对生成过程、共享前缀和结构化控制有更鲜明的强调。
+它更鲜明地提醒你：
 
-如果说 vLLM 让很多人第一次清楚看到“高效 serving 是怎么组织起来的”，那 SGLang 往往会让你进一步意识到：
+- 生成过程可以被编排。
+- 请求之间可能共享大量前缀。
+- 结构化生成不是接口层小功能，而会影响运行时设计。
+- prefill 和 decode 可以继续拆开看。
 
-- serving 不只是吐 token
-- prompt 的共享结构非常重要
-- 结构化生成和运行时调度可以放在同一条设计主线上考虑
+如果说 vLLM 很适合建立标准 LLM serving 直觉，那么 SGLang 很适合继续建立：
 
-## 为什么它经常和 vLLM 被放在一起
+> 共享前缀 + 结构化生成 + 生成流程编排的系统直觉。
 
-因为它们都站在推理执行层，都在解决：
+## 它在系统里处在哪一层
 
+可以把 SGLang 放在这里：
+
+```text
+client / app
+  -> ai-gateway
+  -> inference-service
+  -> SGLang runtime
+  -> GPU / model weights
+```
+
+它和 vLLM 一样，主要属于推理执行层。
+它不替代 gateway，也不替代 eval 或 finetune。
+
+它回答的是：
+
+- 生成请求如何被执行？
+- 共享前缀如何被复用？
+- 结构化生成如何被表达？
+- runtime 如何协调 prefill/decode 和调度？
+
+## 为什么它经常和 vLLM 一起比较
+
+因为二者都站在 LLM serving runtime 这一层。
+
+它们都关心：
+
+- latency
+- throughput
 - batching
-- cache
+- KV Cache
 - streaming
-- latency / throughput tradeoff
+- OpenAI-compatible integration
 
-但它们的强调点不完全一样。
+但学习时不要只问“谁更快”。
+更有价值的问题是：
 
-学习时最值得看的，不是“功能列表谁长”，而是：
+- 它们分别把什么问题放在设计中心？
+- 它们如何处理共享前缀？
+- 它们如何表达结构化生成？
+- 它们如何暴露可观察信号？
 
-- vLLM 更容易帮助你建立标准 serving 直觉
-- SGLang 更容易帮助你建立“前缀共享 + 生成控制 + 系统编排”的直觉
+这样比较才不会停在排行榜思维。
 
-## SGLang 的关键学习点
+## RadixAttention 应该怎么理解
 
-### 1. RadixAttention 让“共享前缀”变成一等公民
+SGLang 常被提到的一个点是 RadixAttention。
 
-这件事很重要。  
-因为在真实工作负载里，很多请求不是完全随机的。
+学习阶段可以先这样理解：
 
-比如：
+> 它让共享前缀复用在运行时里变得更自然。
 
-- 大量请求共享同一个 system prompt
-- 一个 agent 循环里，前面多轮上下文高度重复
-- few-shot 模板经常复用
+很多真实请求不是完全随机的。
+例如：
 
-SGLang 会让你更直观地看到：  
-如果请求之间不是完全独立，那么调度器就不该把它们都当成无关样本。
+- 多个请求共享同一个 system prompt。
+- 业务模板固定，只是用户输入变化。
+- few-shot 示例大量复用。
+- agent loop 中前文上下文高度重复。
+- 评测时同一 prompt template 被反复使用。
 
-### 2. 结构化生成不只是“功能增强”
+如果 runtime 能更好识别和复用这些共享前缀，就可能降低重复 prefill 成本。
 
-很多人把 JSON mode、guided decoding、structured output 看成接口层的小扩展。  
-但 SGLang 的价值之一，是它把这些能力更明显地放进运行时思考里。
+这和 [Cache 与 Prefix Caching](/02-inference-serving/06-cache-prefix-caching) 强相关。
 
-这会帮助你建立一个更实用的判断：
+## 结构化生成为什么重要
 
-- 推理服务并不只是“给我一段自然语言”
-- 很多工程场景里，稳定的结构化输出比开放式文本更重要
+很多工程场景里，调用方不想要一段随意文本，而是想要稳定结构：
 
-### 3. Prefill / Decode 可以继续拆分
+```json
+{
+  "decision": "promote",
+  "reasons": ["accuracy improved", "no critical regression"],
+  "risk_level": "low"
+}
+```
 
-学到 SGLang 时，你会更容易接受一件事：  
-prefill 和 decode 虽然都属于一次生成，但它们并不一定必须永远绑死在同一部署单元里。
+如果输出结构不稳定，后续系统就会失败：
 
-这也是为什么 PD 分离这种思路值得知道。  
-即使你现在不去实现，它也会帮你打开一个更真实的工程视角：
+- JSON parse 失败
+- 字段缺失
+- schema 不匹配
+- downstream workflow 卡住
 
-- 模型服务不是单体黑盒
-- 同一个生成请求内部也可能有不同资源形态
+所以 structured output 不是“体验增强”，而是工程可靠性的一部分。
 
-## 和 vLLM 对照着看时，最值得问的问题
+SGLang 的学习价值之一，就是让你更自然地把结构化生成和 runtime 结合起来看，而不是只当作 prompt trick。
 
-### 问题一：它们在解决同一层问题吗
+## Prefill / Decode 分离的直觉
 
-大体是，但不是完全同一种回答。
+SGLang 相关讨论里，经常会看到 prefill/decode disaggregation 这类思路。
 
-你可以把它们都放在“LLM serving framework”这一层，  
-但再往里看，它们对 cache 复用、调度重点、结构化生成友好度的表达就开始分化了。
+学习阶段不需要马上实现。
+你只要先建立直觉：
 
-### 问题二：我现在需要学的是“谁更强”吗
+- prefill 处理已有上下文，通常受 prompt length 影响。
+- decode 逐 token 生成，通常受输出长度和调度影响。
+- 两个阶段的资源形态不同。
+- 真实系统可能把它们分开优化。
 
-不是。  
-更好的学习问题是：
+这会帮助你理解为什么“一次生成请求”内部也不是单一黑盒。
 
-- 它们各自把什么问题看得更重要
-- 为什么系统设计会朝那个方向长
+## SGLang 更适合哪些学习场景
 
-这个视角比“性能排行榜思维”更适合你建立长期理解。
+你可以优先用 SGLang 思考这些场景：
 
-## 学习时常见误区
+| 场景 | 为什么适合 |
+| --- | --- |
+| 大量共享 system prompt | 前缀复用价值高 |
+| agent / workflow | 生成流程有结构 |
+| JSON / schema 输出 | 结构化生成很重要 |
+| few-shot 模板反复使用 | 前缀高度重复 |
+| 复杂推理编排 | 不只是单轮文本生成 |
+
+这不意味着 SGLang 只适合 agent。
+更准确地说，它让这些场景的运行时特征更容易被看见。
+
+## 和当前仓库怎么对应
+
+当前仓库没有直接嵌入 SGLang。
+但它已经把理解 SGLang 需要的服务边界留出来：
+
+- 普通响应
+- streaming
+- request id
+- metrics
+- events
+- gateway 与 inference 分层
+- engine adapter 边界
+
+未来如果接 SGLang，更合理的路径是：
+
+```text
+inference-service engine adapter
+  -> OpenAI-compatible SGLang backend
+```
+
+然后继续保留：
+
+- `/v1/chat/completions`
+- `/health`
+- `/metrics`
+- `/events`
+- `x-request-id`
+- usage 字段
+
+这样真实 runtime 进入系统，但学习站的外壳和观测不丢。
+
+## 一个最小实践场景
+
+后续你真实试 SGLang 时，可以做两个小实验。
+
+### 实验一：共享前缀
+
+1. 准备一个很长的 system prompt。
+2. 连续发送多个只改变 user message 的请求。
+3. 观察整体延迟和 TTFT 是否出现趋势变化。
+4. 对比没有共享前缀的请求。
+
+目标不是得出严格 benchmark，而是感受前缀复用对服务行为的影响。
+
+### 实验二：结构化输出
+
+1. 设计一个固定 JSON schema。
+2. 让模型输出严格 JSON。
+3. 检查 parse 成功率。
+4. 观察失败时如何通过 retry、guard 或 schema 约束处理。
+
+目标是理解 structured output 为什么是工程问题。
+
+## 常见误区
 
 ### “SGLang 就是更适合 Agent”
 
-这句话有一定来源，但容易把它说窄。  
-更准确的理解应该是：  
-SGLang 对共享前缀、结构化生成、生成流程编排这些场景更有存在感，但它不只属于 Agent。
+这句话有来源，但太窄。
+它确实对生成流程编排和共享前缀更有存在感，但不只属于 agent。
 
 ### “RadixAttention 就等于 prefix caching”
 
-不完全一样。  
-更稳妥的理解是：RadixAttention 是让前缀复用变得更自然的一种组织方式，而 prefix caching 是你在系统行为上感受到的效果之一。
+不完全一样。
+可以把它理解成更有利于前缀复用的一种运行时组织方式，而 prefix caching 是系统行为层看到的复用效果之一。
 
-### “学 SGLang 就要一开始理解所有 DSL 细节”
+### “学 SGLang 要先学完所有 DSL”
 
-不用。  
-学习顺序更适合是：
+不用。
+先理解共享前缀、结构化生成和 prefill/decode 分离，再下钻接口更稳。
 
-1. 先理解它为什么重视共享前缀
-2. 再理解它为什么重视结构化控制
-3. 最后再看具体接口和 DSL
+### “SGLang 和 vLLM 必须二选一”
 
-## 在当前仓库里怎么对照学习
+学习阶段不需要这么看。
+更重要的是理解它们各自强调的系统问题。
 
-当前仓库的 `inference-service` 没有直接嵌入 SGLang，但它已经把你理解 SGLang 最需要的几个观察点留出来了：
+## 学完应该能回答
 
-- 普通响应和流式响应的边界
-- request id 和 metrics 这些可观测性钩子
-- gateway 与 inference 层的清晰分层
+读完这一页后，你应该能回答：
 
-你可以这样学：
+1. SGLang 在系统里属于哪一层？
+2. 为什么共享前缀是 LLM serving 的重要工作负载特征？
+3. 结构化生成为什么不是简单 UI 或 prompt 小技巧？
+4. Prefill/decode 分离能帮助你理解什么工程问题？
+5. 当前仓库未来接 SGLang 时应该保留哪些边界？
 
-1. 先用当前仓库理解“一个最小推理服务骨架长什么样”
-2. 再回到 SGLang，思考如果把真实后端换成它，哪些地方会受影响
-3. 最后再去看 prefix caching、structured output、PD 分离这些更偏框架内部的问题
+## 继续阅读
 
-这会比一上来就啃大段框架文档更稳。
-
-## 最小实践建议
-
-你后面真开始试 SGLang 时，最适合优先观察的是两件事：
-
-1. 结构化输出能不能稳定给出你想要的 JSON 形状
-2. 共享前缀场景下，第二次请求是否体现出更好的整体延迟趋势
-
-这里先不要追求性能论文式结论。  
-只要你能感受到“相同前缀会影响系统行为”，这一章的主线就抓到了。
-
-## 下一步建议怎么接
-
-读完 SGLang 后，最自然的下一步是 [Cache 与 Prefix Caching](/02-inference-serving/06-cache-prefix-caching)。
-
-因为你这时已经不再只是把 cache 看成“一个优化词”，而会开始意识到：  
-它其实是推理服务里非常核心的一层资源组织问题。
+- [vLLM](/02-inference-serving/04-vllm)
+- [Cache 与 Prefix Caching](/02-inference-serving/06-cache-prefix-caching)
+- [Streaming、Batching、Metrics](/02-inference-serving/09-streaming-batching-metrics)
+- [Serving 后端迁移](/12-production-migration/01-serving-backend-migration)

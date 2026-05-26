@@ -1,104 +1,277 @@
 # Tracing、Metrics、Logs
 
-## 为什么这三件事要一起看
+Tracing、metrics、logs 经常被一起称为 observability。
+但它们不是同一个东西。
 
-因为它们经常被统称为“可观测性”，但它们其实回答的是不同问题。
+如果你只看 metrics，你会知道“系统好像变差了”，但未必知道哪条请求出了问题。
+如果你只看 logs，你会看到很多细节，但很难判断整体趋势。
+如果你只看 traces，你能看到单次路径，但不一定知道这是不是普遍问题。
 
-如果你只看 metrics，你会知道“系统变差了”；  
-如果你只看 logs，你可能会看到很多细节，但很难形成整体视角；  
-如果你只看 traces，你能看单次路径，但不一定知道整体趋势。
+真正有用的可观测性，是三者一起工作。
 
-真正有用的 observability，通常是这三者一起存在。
+## 三者分别回答什么
 
-## Tracing 在回答什么
+| 对象 | 主要回答 | 更适合看 |
+| --- | --- | --- |
+| Metrics | 最近整体状态如何 | 趋势、告警、容量、错误率 |
+| Tracing | 某一条请求经过哪些环节 | 单次请求路径、耗时拆分 |
+| Logs | 当时发生了哪些细节 | 原始错误、上下文、debug 信息 |
 
-tracing 回答的是：  
-**这一条请求经过了哪些环节，每个环节花了多久。**
+一句话：
 
-对于 AI Infra，这很重要，因为一条请求往往不是单段直线：
+- metrics 看整体。
+- tracing 看路径。
+- logs 看细节。
 
-- 应用把请求打到 gateway
-- gateway 做鉴权、路由、限流
-- inference-service 执行模型请求
-- 结果再返回上来
+## Metrics：先发现系统不对
 
-如果没有 trace，你只能猜卡在了哪。  
-有 trace 以后，你才真正拥有“单次请求级”的视角。
+metrics 更像仪表盘。
 
-## Metrics 在回答什么
+对 AI Infra 来说，常见 metrics 包括：
 
-metrics 回答的是：  
-**整体系统最近是什么状态。**
+- 请求数
+- 成功数
+- 失败数
+- 运行中请求数
+- prompt token 总量
+- completion token 总量
+- 429 / 502 数量
+- fallback attempts
+- cache hits / misses
+- latency 分布
+- TTFT / ITL
+- tokens/sec
 
-比如：
+metrics 的价值是让你发现趋势：
 
-- 请求数有没有上升
-- 错误率有没有升高
-- P99 latency 有没有抖动
-- token 消耗是不是异常
+- 错误率是不是上升？
+- token 使用是不是异常？
+- fallback 是否突然增多？
+- 某个模型是否请求量暴涨？
+- cache hit rate 是否下降？
 
-所以 metrics 更像驾驶舱仪表盘。  
-它不一定能告诉你为什么有问题，但能告诉你“现在是不是出问题了”。
+但 metrics 通常不够解释单条请求为什么失败。
 
-## Logs 在回答什么
+## Tracing：把一条请求拆成路径
 
-logs 回答的是：  
-**当时到底发生了什么。**
+tracing 回答的是：
 
-它通常更原始、更细碎，但对排障特别重要。  
-你可能会在 log 里看到：
+> 这一条请求经过了哪些环节，每个环节发生了什么？
 
-- 原始错误消息
-- 具体哪个模型名没有命中
-- 哪个 request id 出了问题
-- 某次转发为什么失败
+AI Infra 的请求经常跨多层：
 
-所以 logs 常常是从 metrics 告警、trace 定位之后，最后下钻到具体细节的地方。
+```text
+client
+  -> ai-gateway
+  -> inference-service
+  -> model backend
+  -> inference-service
+  -> ai-gateway
+  -> client
+```
 
-## 这三者最好的配合方式
+如果没有 tracing 或 request timeline，你只能猜：
 
-一个很实用的理解顺序是：
+- 是 gateway 慢？
+- 是 inference 慢？
+- 是上游模型慢？
+- 是 fallback 了？
+- 是 cache miss？
+- 是 streaming 中途断了？
 
-1. 先用 metrics 发现“哪里不对”
-2. 再用 tracing 看“卡在哪一段”
-3. 最后用 logs 找“具体是怎么坏的”
+有 tracing 后，你可以沿一条 request id 查路径。
 
-这个顺序非常适合 AI Infra，因为它天然就是跨层系统。
+## Logs：找到具体细节
 
-## 在当前仓库里能对应到什么
+logs 更像现场记录。
 
-当前仓库不是完整 observability 平台，但它已经把最小观察点做出来了：
+它适合回答：
 
-- `inference-service` 和 `ai-gateway` 都有 `/metrics`
-- gateway 和 inference 之间已经开始透传 `x-request-id`
-- smoke 测试已经覆盖 health、metrics、streaming、request id 这些基础行为
+- 具体错误消息是什么？
+- 哪个模型名没有命中？
+- 哪个 upstream 返回了什么状态？
+- 哪个 dataset record 校验失败？
+- 哪个 export 缺少 adapter 文件？
 
-也就是说，这套仓库已经能让你形成“可观测性不是另一个独立产品，而是系统本身的一部分”这个直觉。
+Logs 的价值不在于越多越好，而在于：
 
-## 学习时常见误区
+- 结构化
+- 可检索
+- 能和 request id 对齐
+- 不泄露敏感信息
+- 能连接 metrics/traces
+
+没有结构的海量日志，会让排障更难。
+
+## 最好的配合顺序
+
+一个实用顺序是：
+
+1. 用 metrics 发现“哪里不对”。
+2. 用 tracing 找“卡在哪一段”。
+3. 用 logs 看“具体怎么坏的”。
+4. 用 eval 判断“输出质量有没有退化”。
+
+注意最后一步：observability 不等于 evaluation。
+系统行为正常，不代表答案质量好。
+
+## Observability 和 Evaluation 的边界
+
+这两个概念关系很近，但不能混。
+
+| 问题 | 更接近 |
+| --- | --- |
+| 请求有没有成功 | observability |
+| 首 token 为什么慢 | observability |
+| 上游是否 fallback | observability |
+| 模型回答是否正确 | evaluation |
+| 新模型是否退化 | evaluation |
+| 输出格式是否符合任务 | evaluation |
+| 退化请求在哪些样本 | evaluation + observability |
+
+真实发布判断通常需要两者一起看：
+
+- observability 说明系统怎么运行。
+- evaluation 说明输出质量如何。
+
+## 当前仓库怎么表达
+
+当前仓库不是完整 observability 平台，但已经有最小观察面。
+
+### Inference Service
+
+```text
+GET /health
+GET /metrics
+GET /events
+GET /events/summary
+GET /events/requests
+GET /events/requests/{request_id}
+```
+
+重点信号：
+
+- request received
+- engine generate start
+- stream start
+- engine error
+- request success
+- prompt/completion token counters
+
+### Gateway
+
+```text
+GET /health
+GET /metrics
+GET /events
+GET /events/summary
+GET /events/failures
+GET /events/requests
+GET /events/requests/{request_id}
+```
+
+重点信号：
+
+- auth failed
+- rate limited
+- route not found
+- cache hit/miss
+- upstream attempt
+- fallback attempt/success
+- request success
+
+这些 endpoint 不是生产级 tracing，但足够帮助学习者建立可观测性直觉。
+
+## 一个具体排查场景
+
+用户反馈：
+
+> 刚才请求很慢，而且最后回答也不太对。
+
+合理拆法：
+
+### 先看 observability
+
+1. 找 `x-request-id`。
+2. 查 gateway timeline。
+3. 看是否 cache miss、fallback、upstream error。
+4. 查 inference timeline。
+5. 看 prompt/completion token。
+6. 看 metrics 是否整体异常。
+
+### 再看 evaluation
+
+1. 是否有同类样本退化？
+2. candidate 和 baseline compare 是否通过？
+3. sample analysis 中是否出现同类错误？
+4. release recommendation 是否应该 block/review？
+
+这样你不会把“系统慢”和“答案差”混成一个问题。
+
+## 未来接真实 Observability 工具
+
+后续可以接：
+
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Loki / ELK
+- Langfuse
+- Phoenix
+- 自研 dashboard
+
+接工具时不要只看产品名。
+要问它解决哪类问题：
+
+- metrics？
+- tracing？
+- logs？
+- eval traces？
+- prompt/version tracking？
+- dashboard？
+
+工具越多，越需要保持概念分层。
+
+## 常见误区
 
 ### “有 metrics 就够了”
 
-不够。  
-metrics 很适合看趋势，但通常不够解释单次失败。
+不够。
+metrics 适合看趋势，但不能解释单条请求细节。
 
-### “trace 只是高级功能，后面再说”
+### “Trace 是高级功能，后面再说”
 
-也不对。  
-就算你现在不接完整 tracing 平台，也应该先理解 request id、span、链路边界这些概念。  
-它们会直接影响你如何设计 gateway 和 inference 层。
+不对。
+就算没有完整 tracing 平台，也应该先保留 request id 和 timeline。
 
-### “logs 越多越好”
+### “Logs 越多越好”
 
-不是。  
-logs 的价值在于可检索、可对齐、能和 request id 对上，而不是无穷无尽地堆文本。
+不是。
+logs 要结构化、可检索、可关联，还要避免敏感信息泄露。
 
-## 这一章学完应该带走什么
+### “Observability 能判断模型质量”
 
-你最应该带走的是这个结构：
+不能完全判断。
+它能说明系统行为，质量判断还需要 evaluation。
 
-- metrics 看整体
-- tracing 看单次路径
-- logs 看原始细节
+### “接了外部平台，本地 events 就没价值”
 
-把这个结构建立起来后，后面再看 Langfuse、OpenTelemetry、Phoenix、Grafana 这类工具时，你就不会只看到产品名，而能看到它们在系统里分别解决哪类问题。
+不建议这样想。
+本地 events 是学习、测试和案例复盘的重要入口。
+
+## 学完应该能回答
+
+读完这一页后，你应该能回答：
+
+1. metrics、tracing、logs 分别回答什么问题？
+2. 为什么 request id 是跨层排障的主键？
+3. Observability 和 evaluation 的边界是什么？
+4. 当前仓库如何用 `/events/requests/{request_id}` 模拟最小 tracing？
+5. 未来接 OpenTelemetry/Grafana/Langfuse 时应该先问什么？
+
+## 继续阅读
+
+- [健康检查、Metrics、Request ID](/03-ai-gateway-platform/02-health-metrics-request-id)
+- [Run、Compare、History](/04-evaluation-observability/01-run-compare-history)
+- [Benchmark 与生产质量不是一回事](/04-evaluation-observability/08-benchmark-vs-production-quality)
+- [请求失败排查案例](/11-case-studies/01-request-incident-walkthrough)
