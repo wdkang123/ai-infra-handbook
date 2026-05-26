@@ -180,7 +180,7 @@ Compare 回答的是：
 - metrics 是否可比
 - delta 是否超过门槛
 - 是否有退化
-- recommendation 是 promote、review 还是 block
+- recommendation 是 approve、review 还是 block
 
 所以 compare 是从 evaluation 走向 release decision 的中间层。
 

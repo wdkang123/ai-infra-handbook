@@ -93,6 +93,7 @@
 - 将 Gateway Router/Fallback/Cache、Streaming 错误与 Upstream Health、LLM Evaluation、Benchmark/Arena/Leaderboard、文档项目映射、Serving 可观测性 Lab、Serving/Gateway 自测和 Eval/Finetune 自测扩写为更强调边界、证据链、失败路径和跨模块判断的教程页。
 - 将示例输出与证据库总览、项目成熟度地图、公开路线图、维护节奏、Issue triage、GitHub Pages 发布、v0.1 首发发布手册和案例复盘总览扩写为更完整的证据、发布、维护和案例复盘指南。
 - 将首页、从 0 到 1、学习路线、文档到代码映射、讲师带练指南、学习者工作簿和复盘评审模板扩写为更强调场景、证据、操作步骤和公开分享沉淀的教程入口。
+- 将学习检查点、面向分享的学习方式、深度实战总览和 5 个案例复盘页扩写为更完整的掌握标准、反馈改进、lab 验收、证据链和生产边界说明，并统一 eval 发布建议术语为 `approve / review / block`。
 
 ### Verified
 

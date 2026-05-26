@@ -245,7 +245,7 @@ candidate 看起来涨了 0.0050。
 - 失败样本是否集中在关键任务
 - token 成本是否明显上升
 - judge reason 是否出现新问题
-- release recommendation 是否是 promote、review 还是 block
+- release recommendation 是否是 approve、review 还是 block
 
 这就是 compare 的价值：它把“涨了一点”变成“是否足以发布”的判断。
 

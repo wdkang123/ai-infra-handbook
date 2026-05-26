@@ -137,7 +137,7 @@ Eval Task
 | regression | 是否有关键退化 |
 | sample evidence | 样本级证据是否支持结论 |
 | observability signals | 延迟、错误、fallback、cache 是否异常 |
-| recommendation | 建议 promote、review、reject 还是 rerun |
+| recommendation | 建议 approve、review 还是 block |
 | rollback evidence | 如果发布后出问题，如何回退和解释 |
 
 这些字段不一定都要在一个文件里，但决策时必须能找到。
@@ -183,7 +183,7 @@ Compare report 显示：
 - TTFT 基本不变
 - 总延迟增加
 
-这时推荐动作不一定是 promote。
+这时推荐动作不一定是 approve。
 
 更合理的决策可能是：
 
@@ -201,13 +201,11 @@ Compare report 显示：
 
 | 状态 | 含义 | 下一步 |
 | --- | --- | --- |
-| `promote` | 候选明显更好且风险可接受 | 准备发布或进入灰度 |
-| `review` | 有改善但证据不足或存在局部退化 | 人工复核样本和配置 |
-| `rerun` | 评测配置、样本或运行证据不稳定 | 重新跑 run 或补数据 |
-| `reject` | 候选退化或风险不可接受 | 不发布，记录原因 |
-| `hold` | 技术上可用，但依赖外部条件 | 等待成本、合规或平台准备 |
+| `approve` | 候选明显更好且设置一致 | 可以进入更大样本、灰度或下一轮发布评审 |
+| `review` | 结果基本持平、证据不足，或评测设置发生变化 | 人工复核样本、配置和风险 |
+| `block` | 候选退化超过阈值 | 不发布，记录原因并补回归证据 |
 
-当前仓库不一定已经完整实现所有状态，但学习时可以用这个框架思考。
+真实团队还可能把 `review` 继续细分成 rerun、hold、manual review 等状态。当前仓库先使用 `approve / review / block`，目的是让学习者先把最小发布门禁跑通。
 
 ## 发布前检查清单
 

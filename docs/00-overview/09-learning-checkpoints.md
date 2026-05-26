@@ -13,6 +13,30 @@
 如果你想做更正式的阶段验收，可以继续看 [学习自测总览](/10-assessments/00-overview)。  
 这里偏快速定位，自测页偏完整答题、演示和复盘。
 
+## 使用方式
+
+这页最适合在三个时间点打开：
+
+1. 第一次跑完 [第一次实操演练](/00-overview/04-first-walkthrough) 后。
+2. 每完成一个 hands-on lab 后。
+3. 准备写公开复盘、README 或分享稿之前。
+
+不要把检查点当成“看过就算完成”的目录。每个检查点都应该能落到一段口头解释、一条命令或一份证据。比如“我理解 request id”不算完成；“我能用同一个 request id 在 gateway 和 inference 的 events timeline 里找到同一条请求”才更接近完成。
+
+建议你每次只评估 2 到 3 个检查点。全量检查适合阶段复盘，不适合每天做。每天做全量检查会让学习变成打卡，而不是判断能力是否真的稳固。
+
+## 三档掌握程度
+
+每个检查点都可以按三档判断。
+
+| 档位 | 表现 | 典型问题 |
+| --- | --- | --- |
+| 看过 | 能复述页面里的定义 | 换一个场景就不知道怎么用 |
+| 跑过 | 能执行命令并找到输出 | 不确定输出说明什么 |
+| 讲清楚 | 能用证据解释系统行为和边界 | 可以进入下一阶段 |
+
+这个仓库最希望你达到的是第三档。不是每个点都要一次到位，但至少要知道自己在哪一档。
+
 ## 检查点 1：系统地图
 
 如果你已经能不看文档，自己说出这四层分别在解决什么问题，说明第一层已经站稳了：
@@ -28,6 +52,17 @@
 - [项目学习总览](/06-projects/00-projects-overview)
 - [四个项目怎么连成系统](/06-projects/06-end-to-end-system-map)
 
+合格输出：
+
+```text
+我能用 5 句话说明：
+1. inference-service 负责什么，不负责什么。
+2. ai-gateway 为什么单独存在。
+3. eval-module 为什么是质量闭环。
+4. finetune-demo 为什么是训练资产层。
+5. 四层如何组成一条学习链路。
+```
+
 ## 检查点 2：最小联调闭环
 
 如果你已经能跑通：
@@ -41,6 +76,16 @@
 
 - [最小运行手册](/00-overview/03-runbook)
 - [第一次实操演练](/00-overview/04-first-walkthrough)
+
+合格输出：
+
+```text
+我能说明：
+- infra-test 主要验证什么。
+- infra-smoke 串起了哪些项目。
+- 如果 smoke 失败，我会先看哪一段输出。
+- 哪些失败属于环境问题，哪些失败属于项目行为回退。
+```
 
 ## 检查点 3：请求生命周期
 
@@ -62,6 +107,17 @@
 - [inference-service](/06-projects/01-inference-service)
 - [Serving 与 Gateway 输出证据](/13-output-gallery/01-serving-gateway-evidence)
 
+合格输出：
+
+```text
+我能拿一条 request id 说明：
+- gateway 什么时候收到请求。
+- 是否经过 cache、fallback 或 upstream attempt。
+- inference 是否收到同一条请求。
+- metrics 中哪些计数可能变化。
+- 普通响应和 streaming 的证据有什么不同。
+```
+
 ## 检查点 4：平台层边界
 
 如果你已经能比较稳定地区分：
@@ -75,6 +131,17 @@
 
 - [平台层与模型服务层边界](/03-ai-gateway-platform/05-platform-vs-model-service)
 - [外部模型名与内部目标映射](/03-ai-gateway-platform/06-model-name-to-target-mapping)
+
+合格输出：
+
+```text
+我能判断这些问题该先查哪一层：
+- token 缺失。
+- 外部模型名不存在。
+- 下游返回 5xx。
+- streaming 已经开始后中途失败。
+- fallback 成功但质量变差。
+```
 
 ## 检查点 5：评测不是一个分数
 
@@ -93,6 +160,17 @@
 - [从 Run 到发布决策](/04-evaluation-observability/07-from-run-to-release-decision)
 - [eval-module](/06-projects/03-eval-module)
 - [Eval 报告证据](/13-output-gallery/02-eval-report-evidence)
+
+合格输出：
+
+```text
+我能解释：
+- result、sample outputs、sample analysis 分别解决什么问题。
+- compare 为什么要求 task 和设置可比。
+- min_delta 为什么能减少误判。
+- release recommendation 为什么需要 reasons。
+- leaderboard 为什么不能替代发布评审。
+```
 
 ## 检查点 6：训练是资产，不只是命令
 
@@ -113,6 +191,18 @@
 - [finetune-demo](/06-projects/04-finetune-demo)
 - [Finetune 产物证据](/13-output-gallery/03-finetune-artifact-evidence)
 
+合格输出：
+
+```text
+我能从一个 export 目录追回：
+- source checkpoint。
+- run manifest。
+- dataset summary。
+- dataset version / sha256。
+- checkpoint index。
+- export history。
+```
+
 ## 检查点 7：能公开讲清当前阶段
 
 如果你已经能说明：
@@ -130,6 +220,17 @@
 - [两周学习计划](/00-overview/15-two-week-learning-plan)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [公开演示脚本](/13-output-gallery/06-public-demo-script)
+
+合格输出：
+
+```text
+我能在公开介绍里同时说明：
+- 这个项目已经能帮助读者学什么。
+- 它保留了哪些工程边界。
+- 它还不是生产平台。
+- 公开前已经跑过哪些检查。
+- 后续欢迎贡献哪些类型的改进。
+```
 
 ## 检查点 8：能整理输出证据包
 
@@ -149,6 +250,18 @@
 - [端到端复盘证据包](/13-output-gallery/04-end-to-end-review-packet)
 - [失败症状到证据地图](/13-output-gallery/05-failure-evidence-map)
 
+合格输出：
+
+```text
+我能写一份证据包，包含：
+- 目标和范围。
+- 运行命令。
+- 关键 header / events / metrics。
+- eval 或 finetune 产物。
+- 我能确认的结论。
+- 我还不能确认的风险。
+```
+
 ## 检查点 9：能用案例讲工程判断
 
 如果你已经能选一个案例，讲清：
@@ -167,6 +280,18 @@
 - [请求失败排查案例](/11-case-studies/01-request-incident-walkthrough)
 - [模型发布判断案例](/11-case-studies/02-model-release-decision-walkthrough)
 - [训练产物复现案例](/11-case-studies/03-finetune-to-eval-asset-lineage)
+
+合格输出：
+
+```text
+我能讲一个案例，不只是讲结果，而是讲：
+- 现象。
+- 初始假设。
+- 证据收集顺序。
+- 被排除的可能性。
+- 最终判断。
+- 还需要补的生产级能力。
+```
 
 ## 检查点 10：能组织一次共学或公开分享
 
@@ -188,6 +313,18 @@
 - [贡献者协作手册](/14-workshop-kit/05-contribution-playbook)
 - [GitHub 发布计划](/14-workshop-kit/06-github-release-plan)
 
+合格输出：
+
+```text
+我能设计一次 90 分钟共学，包含：
+- 目标读者。
+- 前置准备。
+- 演示链路。
+- 学习者记录模板。
+- 现场验收方式。
+- 活动后转成 issue 的反馈。
+```
+
 ## 这页怎么用最合适
 
 最好的用法不是一次全看，而是：
@@ -199,7 +336,41 @@
 
 这样会比盲目继续往下翻更有效。
 
+## 阶段复盘表
+
+如果你想做一次更完整的阶段复盘，可以复制这张表。
+
+```text
+本次复盘日期：
+我已经完成的检查点：
+我还停留在“看过”的检查点：
+我已经能用证据说明的内容：
+我仍然只能凭感觉说明的内容：
+下一周最应该补的一个检查点：
+我会用哪条命令或哪份证据验证：
+```
+
+复盘时不要追求全部打勾。真正有价值的是找出最弱的一环。比如你已经能跑通全部命令，但说不清 eval recommendation，那么下一步就不该继续加新功能，而应该回到 eval case 和 sample analysis。
+
+## 常见误判
+
+### 把“能复述定义”当成掌握
+
+定义只是第一层。AI Infra 学习更看重你能不能把定义放回请求链路、评测判断、训练资产和发布流程里。
+
+### 把“命令通过”当成掌握
+
+命令通过说明系统当前没有明显回退，但不代表你知道它验证了什么。至少要能指出一个关键输出和它支持的结论。
+
+### 把“看懂案例结论”当成掌握
+
+案例的价值在过程。只看最后判断，很容易错过证据顺序和排除路径。
+
+### 把“能公开发布”当成生产可用
+
+公开分享说明项目适合学习和协作，不代表已经具备生产 SLA、真实流量治理、GPU 调度、安全审计和线上回滚。
+
 ## 这一页学完应该带走什么
 
-真正的学习进展，不只是“看了多少页”，而是你能不能更稳定地回答一类问题。  
+真正的学习进展，不只是“看了多少页”，而是你能不能更稳定地回答一类问题。
 这些检查点，就是帮你判断这个稳定度的。

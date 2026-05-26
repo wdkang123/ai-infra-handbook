@@ -154,7 +154,7 @@ Leaderboard 是展示层，不是真理层。
 | gateway events | 是否发生 fallback、cache、route 问题 |
 | serving metrics | 请求量、失败率、token counters 是否异常 |
 | latency metrics | TTFT、ITL、总耗时是否可接受 |
-| release recommendation | 是否 promote、review 或 block |
+| release recommendation | 是否 approve、review 或 block |
 
 这些证据合起来，才接近生产发布判断。
 

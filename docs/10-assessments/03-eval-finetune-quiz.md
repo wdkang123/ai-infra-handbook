@@ -21,7 +21,7 @@
 - 说明 `min_delta`、task 校验和 sample evidence 为什么重要
 - 解释 dataset registry、run manifest、checkpoint index、export manifest 的边界
 - 画出 finetune export 到 eval compare 的链路
-- 给一个 candidate 写出 promote / review / reject 判断
+- 给一个 candidate 写出 approve / review / block 判断
 - 找到对应 CLI、代码和输出产物
 
 ## A. Eval 基础题
