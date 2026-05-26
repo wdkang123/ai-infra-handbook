@@ -31,6 +31,22 @@ v0.1.0-learning-site
 
 v0.1 的目标是让新读者可以开始系统学习，让维护者可以持续接住反馈。
 
+## 什么时候不该打 release
+
+如果出现下面情况，建议先不要创建 GitHub release：
+
+| 情况 | 为什么要等 |
+| --- | --- |
+| `public-check` 失败 | 公网级分享前的基本门禁没过 |
+| README 和网站首页说法不一致 | 新读者会不知道该信哪个入口 |
+| 核心 lab 只有命令，没有验收标准 | release 后反馈会集中变成“我不知道算不算跑通” |
+| 证据库没有覆盖关键输出 | 读者无法把实操结果转成复盘 |
+| 安全扫描还有疑点 | 密钥、私有路径、endpoint 一旦公开成本很高 |
+| release notes 承诺了未验证能力 | 会制造错误预期 |
+
+延后 release 不是失败。
+对学习型项目来说，一个可信的 v0.1 比一个匆忙的 v0.1 更有价值。
+
 ## 发布前门禁
 
 发布前建议先跑：
@@ -74,6 +90,26 @@ npm audit --omit=dev --audit-level=moderate
 - 文档站里的核心入口是否都能从导航找到
 - release 说明是否没有把学习型实现包装成生产系统
 - GitHub Pages 是否返回 200
+
+## Release Candidate 流程
+
+真正打 tag 前，可以先按 RC 思路走一遍：
+
+```text
+本地大批量改动
+  -> public-check
+  -> docs build
+  -> 本地 preview 人工抽查
+  -> 整理 release notes 草稿
+  -> 最后一次安全检查
+  -> commit
+  -> push main
+  -> 等待 CI 和 Pages
+  -> 创建 GitHub release
+```
+
+这个流程的好处是把“写内容”和“触发部署”分开。
+平时可以在本地大批量推进，等到一个阶段完成后再提交和推送，减少 GitHub Pages 被频繁触发。
 
 ## Release Notes 模板
 
@@ -183,6 +219,24 @@ AI Infra Handbook v0.1.0-learning-site
 5. 发布后把 release 链接补回 README 或 Changelog。
 
 如果你还没有创建首批 roadmap issues，也可以先不打 release，先把 issue 池整理出来。
+
+## Patch release 与回滚
+
+首发后如果发现问题，不一定要马上做大版本。
+可以按影响范围选择：
+
+| 问题 | 推荐动作 |
+| --- | --- |
+| 错字、断链、描述不清 | 修复后正常合入，不一定打 patch |
+| 某个 lab 命令错误 | 修复、补验证结果，考虑 `v0.1.1` |
+| README 或首页误导读者 | 尽快修复，并在 changelog 说明 |
+| Pages 部署失败 | 先修 workflow/base/source，再确认在线站点恢复 |
+| 发现敏感信息 | 立即移除、轮换相关密钥，并按安全策略处理历史 |
+| release notes 承诺过度 | 修改 release notes 或补一个澄清条目 |
+
+如果需要回滚，先判断是“网站展示问题”还是“仓库内容问题”。
+展示问题通常优先修 Pages 配置；内容问题优先发修复 PR。
+不要为了回滚而丢失未复核的本地改动。
 
 ## 发布失败时怎么办
 

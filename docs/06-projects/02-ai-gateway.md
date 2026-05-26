@@ -17,6 +17,31 @@
 - 平台层和模型服务层到底该怎么分
 - 为什么很多治理能力应该先落在入口，而不是落在模型执行层
 
+## 它在系统图里的位置
+
+可以把 gateway 想成平台入口：
+
+```text
+client / app
+  -> ai-gateway
+     -> auth / route / rate limit / cache / fallback / events
+     -> inference-service
+        -> engine adapter
+        -> model runtime
+```
+
+gateway 不是为了让请求多绕一层，而是为了把这些平台能力集中起来：
+
+- 谁可以调用
+- 调哪个模型名
+- 是否超出限制
+- 下游坏了怎么办
+- 请求如何追踪
+- 错误如何返回给调用方
+- 哪些行为可以被观测和复盘
+
+如果这些都散落在业务代码或模型服务里，系统会更难治理。
+
 ## 先看哪些代码
 
 - `projects/ai-gateway/src/ai_gateway/server.py`
@@ -59,6 +84,26 @@ PYTHONPATH=src ../../.venv/bin/python -m ai_gateway.main serve
 4. 再打 `404`
 5. 再试 `stream=true`
 6. 最后再带上 `X-Request-ID`
+
+## 一次请求的心理模型
+
+一条普通请求大概经历：
+
+```text
+HTTP request
+  -> auth
+  -> route lookup
+  -> rate limit
+  -> cache lookup
+  -> upstream attempt
+  -> fallback if needed
+  -> response headers
+  -> metrics/events
+```
+
+不是每一步都会改变业务结果，但每一步都可能影响排障。
+
+例如：返回内容看起来一样，但 `x-cache: HIT` 和 `x-cache: MISS` 代表完全不同的路径；`x-fallback-used: true` 说明结果来自备用候选；`x-request-id` 则让你能把 header、events 和 logs 串起来。
 
 ## 你应该观察什么
 
@@ -127,6 +172,17 @@ curl -s 'http://localhost:8080/events/requests/req_demo_gateway_1'
 9. 为什么 `/events/failures` 适合先看失败类型、状态码和失败上游分布
 10. 为什么 `/events/requests` 和 `/events/requests/{request_id}` 适合把最近请求索引、单次路由、fallback 和成功路径串成 timeline
 
+## 四类错误怎么解释
+
+| 状态码 | 平台语义 | 先看哪里 |
+| --- | --- | --- |
+| `401` | 身份问题 | Authorization header、auth event |
+| `404` | 模型名/路由问题 | `/v1/models`、models.yaml、route_not_found event |
+| `429` | 限流保护 | rate limit config、rate_limited event |
+| `502` | 下游失败 | upstream health、request timeline、fallback event |
+
+这张表要形成肌肉记忆。gateway 的价值之一，就是让调用方和维护者能从错误码知道下一步该查哪一层。
+
 ## 这部分当前已经做到什么
 
 - 最小鉴权
@@ -169,3 +225,22 @@ curl -s 'http://localhost:8080/events/requests/req_demo_gateway_1'
 3. [从 Demo Gateway 到真实平台](/03-ai-gateway-platform/07-from-demo-gateway-to-real-platform)
 
 这样你就不会只把 `ai-gateway` 理解成一段代理代码，而会开始把它看成平台层骨架。
+
+## 贡献建议
+
+第一次贡献 `ai-gateway` 时，适合做小而清楚的任务：
+
+- 给某个错误路径补测试
+- 给 events 增加字段解释
+- 给 lab 补一个 curl 示例
+- 给 metrics 增加文档说明
+- 给 fallback/cache 添加一个更明确的复盘案例
+
+不建议一上来做：
+
+- 完整生产级网关
+- 分布式限流
+- 多租户账单系统
+- 复杂策略语言
+
+这些方向未来有价值，但当前更重要的是保持学习可读性和证据可复盘。

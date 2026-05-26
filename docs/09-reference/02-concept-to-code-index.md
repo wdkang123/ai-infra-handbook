@@ -5,6 +5,27 @@
 它和 [文档与代码怎么对应](/00-overview/05-docs-to-code-map) 的区别是：  
 这里更像索引，适合查找。
 
+## 怎么使用这页
+
+如果你刚读完一页文档，不知道该看哪个文件，可以这样走：
+
+1. 找到对应概念。
+2. 先打开代码入口文件，不要全项目搜索。
+3. 再打开测试文件，看行为怎么被验证。
+4. 最后回到输出证据页，看运行后应该留下什么。
+
+这个索引不是让你记路径，而是让你把“概念、实现、测试、证据”连起来。
+
+推荐阅读动作：
+
+```text
+概念页
+  -> 本页找代码入口
+  -> 测试文件看行为边界
+  -> Lab 跑命令
+  -> 输出证据页做复盘
+```
+
 ## 请求入口
 
 概念：
@@ -29,6 +50,13 @@
 
 - [从请求到首个 Token](/01-llm-fundamentals/04-from-request-to-first-token)
 - [Serving 可观测性 Lab](/07-hands-on-labs/01-serving-observability-lab)
+
+验证动作：
+
+```bash
+PYTHON=.venv/bin/python make infra-check
+PYTHON=.venv/bin/python make infra-smoke
+```
 
 ## 模型发现
 
@@ -55,6 +83,13 @@
 
 - [inference-service](/06-projects/01-inference-service)
 - [ai-gateway](/06-projects/02-ai-gateway)
+
+验证动作：
+
+```bash
+curl -s http://localhost:8000/v1/models
+curl -s http://localhost:8080/v1/models
+```
 
 ## Engine Adapter
 
@@ -131,6 +166,12 @@
 
 - [鉴权、路由、限流](/03-ai-gateway-platform/01-auth-routing-rate-limit)
 
+典型证据：
+
+- HTTP `401`
+- `auth_failed` event
+- gateway metrics
+
 ## 路由与模型名映射
 
 概念：
@@ -194,6 +235,12 @@
 
 - [Cache 与 Prefix Caching](/02-inference-serving/06-cache-prefix-caching)
 - [Gateway 韧性 Lab](/07-hands-on-labs/02-gateway-resilience-lab)
+
+典型证据：
+
+- `x-cache: BYPASS / MISS / HIT`
+- cache hit/miss metrics
+- request timeline
 
 ## Eval Run / Compare / Leaderboard
 
@@ -291,3 +338,134 @@
 
 - [质量与维护入口](/06-projects/07-quality-and-maintenance)
 - [系统 Capstone 与验收 Rubric](/07-hands-on-labs/05-capstone-review-rubric)
+
+## 文档质量与导航
+
+概念：
+
+- Markdown 本地链接
+- heading anchor
+- VitePress nav/sidebar
+- 首页入口
+- 首页组件链接
+- README 到站点入口
+
+代码：
+
+- `scripts/check_docs_quality.py`
+- `docs/.vitepress/config.mts`
+- `docs/index.md`
+- `docs/.vitepress/theme/components/HomeCourseMatrix.vue`
+
+命令：
+
+```bash
+PYTHON=.venv/bin/python make docs-quality
+npm run docs:build
+```
+
+相关页面：
+
+- [GitHub Pages 发布指南](/08-publication/01-github-pages)
+- [公开仓库卫生规范](/08-publication/06-public-repo-hygiene)
+
+## 公开安全检查
+
+概念：
+
+- high-confidence secrets
+- private key block
+- connection string
+- local path
+- risky public file types
+- personal markers
+
+代码：
+
+- `scripts/security_scan.py`
+- `scripts/tests/test_security_scan.py`
+- 根级 `Makefile`
+
+命令：
+
+```bash
+PYTHON=.venv/bin/python make security-check
+PYTHON=.venv/bin/python make public-check
+```
+
+相关页面：
+
+- [公开仓库卫生规范](/08-publication/06-public-repo-hygiene)
+
+## 自动生成课程/发布产物
+
+概念：
+
+- learning inventory
+- course catalog
+- evidence packet
+- release brief
+- workshop packet
+- assessment pack
+- roadmap pack
+- launch pack
+
+代码：
+
+- `scripts/build_learning_inventory.py`
+- `scripts/build_course_catalog.py`
+- `scripts/build_evidence_packet.py`
+- `scripts/build_release_brief.py`
+- `scripts/build_workshop_packet.py`
+- `scripts/build_assessment_pack.py`
+- `scripts/build_roadmap_pack.py`
+- `scripts/build_launch_pack.py`
+
+测试：
+
+- `scripts/tests/test_build_learning_inventory.py`
+- `scripts/tests/test_build_course_catalog.py`
+- `scripts/tests/test_build_evidence_packet.py`
+- `scripts/tests/test_build_release_brief.py`
+- `scripts/tests/test_build_workshop_packet.py`
+- `scripts/tests/test_build_assessment_pack.py`
+- `scripts/tests/test_build_roadmap_pack.py`
+- `scripts/tests/test_build_launch_pack.py`
+
+命令：
+
+```bash
+PYTHON=.venv/bin/python make docs-inventory
+PYTHON=.venv/bin/python make course-catalog
+PYTHON=.venv/bin/python make release-brief
+PYTHON=.venv/bin/python make workshop-packet
+PYTHON=.venv/bin/python make launch-pack
+```
+
+相关页面：
+
+- [学习站清单生成器](/09-reference/08-learning-inventory)
+- [课程目录生成器](/09-reference/10-course-catalog)
+- [发布摘要生成器](/09-reference/09-release-brief)
+- [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
+
+## 查代码时的经验
+
+优先顺序：
+
+1. 先看项目页给出的入口。
+2. 再看 tests，因为 tests 会告诉你行为边界。
+3. 再用 `rg` 搜函数名、header 名、event type。
+4. 最后才做大范围源码阅读。
+
+常用搜索例子：
+
+```bash
+rg "x-request-id" projects
+rg "fallback" projects/ai-gateway
+rg "release_recommendation" projects/eval-module scripts
+rg "checkpoint_index" projects/finetune-demo docs
+```
+
+不要只搜概念词。更稳的是搜实际出现在代码或输出里的字段名。

@@ -141,6 +141,49 @@ Evaluation 才是真正的下一层。
 
 优势是可解释性强，缺点是覆盖不了很多开放式质量问题。
 
+## 如何设计一套最小 Eval
+
+如果你要从零开始给一个 AI 应用加 eval，不要一开始就追求大而全。
+
+先做一套最小闭环：
+
+1. 选 20 到 50 条代表性样本。
+2. 每条样本写清 task、input、expected behavior。
+3. 至少准备一种自动评分方式：rule、exact match、schema validation 或 LLM-as-Judge。
+4. 保存每次 run 的 raw output 和 sample analysis。
+5. 选一个 baseline，再跑 candidate。
+6. 生成 compare，并写 release recommendation。
+7. 把失败样本转成 prompt、数据、代码或产品问题。
+
+这套最小 eval 不一定很准，但它能让团队开始用证据讨论质量，而不是凭印象讨论“模型好不好”。
+
+## Golden Set 与回归集
+
+学习 evaluation 时，可以先区分两类样本：
+
+| 类型 | 作用 | 特点 |
+| --- | --- | --- |
+| Golden set | 固定回归检查 | 小而稳定，适合每次改动都跑 |
+| Exploration set | 发现新问题 | 更大、更杂，适合阶段性分析 |
+
+Golden set 不应该频繁改。它像单元测试，帮助你判断新 prompt、新模型、新 adapter 有没有破坏关键行为。
+
+Exploration set 可以不断扩充。它来自真实失败、用户反馈、case study、red team、边界问题，用来发现下一批改进方向。
+
+## Judge 需要校准
+
+LLM-as-Judge 很有用，但 judge 不是天然可靠。
+
+至少要做三类校准：
+
+- 和人工标注对齐：抽样看 judge 是否符合人类标准
+- 和规则指标交叉：比如 JSON 合法性、字段完整性不能只靠 judge
+- 和历史结果对比：judge prompt 改动后不要直接和旧分数混看
+
+judge 输出里最好保留 reason。reason 不一定总是对，但它能帮助 reviewer 判断分数为什么变化。
+
+如果 judge 只输出一个数字，而没有样本、理由、版本和 prompt，长期会很难维护。
+
 ## 一次 Eval Run 应该留下什么
 
 真正有用的 evaluation，通常至少要留下：
@@ -268,6 +311,19 @@ Compare 回答的是：
 
 Leaderboard 是展示层。Evaluation 的核心是任务、运行、比较、证据和判断。
 
+## 和常见工具怎么连接
+
+不同工具适合不同层：
+
+| 工具/形态 | 更适合 |
+| --- | --- |
+| lm-evaluation-harness | 标准 benchmark、few-shot/zero-shot 任务执行 |
+| promptfoo | prompt、RAG、应用输出、CI/CD 和 red teaming |
+| 自研 eval-module | 项目内 run/compare/history/release recommendation |
+| dashboard | 查询、趋势、drill-down 和公开展示 |
+
+这个仓库不需要复制所有工具能力。更重要的是理解工具背后的对象：task、run、sample、metric、judge、compare、history。
+
 ## 这一章学完应该带走什么
 
 Evaluation 是输出质量层。
@@ -275,3 +331,11 @@ Evaluation 是输出质量层。
 它和 inference、gateway、observability 一起，才构成一条完整的 AI Infra 学习主线。
 
 学完这一章，你应该从“看一个分数”转向“看一组可解释证据”。
+
+## 继续阅读
+
+- [Run、Compare、History](/04-evaluation-observability/01-run-compare-history)
+- [评测工具与展示面](/04-evaluation-observability/04-evaluation-tools-and-surfaces)
+- [Benchmark、Arena、Leaderboard](/04-evaluation-observability/06-benchmark-arena-leaderboard)
+- [lm-evaluation-harness 官方接口文档](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/interface.md)
+- [promptfoo 官方文档](https://www.promptfoo.dev/docs/intro/)

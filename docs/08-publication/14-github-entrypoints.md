@@ -8,6 +8,19 @@
 
 这页的目标，就是把两者接起来。
 
+## 三类访客入口
+
+公开项目的入口要同时照顾三类人：
+
+| 访客 | 他们最想知道 | 推荐入口 |
+| --- | --- | --- |
+| 第一次学习的人 | 这个项目适不适合我，从哪里开始 | 在线学习站、从 0 到 1 学习路径、第一次实操 |
+| 准备贡献的人 | 有什么任务、怎么验证、PR 要写什么 | Issues、贡献指南、验证矩阵、PR 模板 |
+| 关注项目状态的人 | 当前质量如何、Pages 是否可用、最近改了什么 | README、Actions、release notes、公开路线图 |
+
+所以 GitHub 入口不应该只是一个仓库链接。
+它应该让读者从“我想学”顺滑地走到“我能复现”，再走到“我能反馈或贡献”。
+
 ## 公开入口
 
 | 入口 | 链接 | 适合做什么 |
@@ -57,6 +70,19 @@
 
 对公开学习站来说，好的解释和好的复盘同样重要。
 
+## GitHub Profile 区块怎么用
+
+站点里加入维护者 GitHub 信息时，不需要写成个人简历。
+更好的方式是把它当成公开协作入口：
+
+- Profile 链接帮助读者确认维护者身份和其他公开项目。
+- Repository 链接帮助读者回到源码、README、issue templates 和历史提交。
+- Issues / PR 链接帮助读者把问题转成可追踪任务。
+- Actions 链接帮助读者看到公开验证记录。
+
+首页和本页都可以放这些入口，但要避免重复成“链接墙”。
+读者在首页看到的是项目可信度和行动入口；在这页看到的是协作路径和使用规则。
+
 ## 可以提什么 Issue
 
 首批最适合提这些问题：
@@ -79,6 +105,20 @@ Issue 最好包含：
 - 你是否愿意补一个 PR
 
 这样维护者能更快判断问题类型。
+
+### 一个好的 Issue 示例
+
+```text
+标题：Serving 可观测性 Lab 中 events timeline 的观察点不够清楚
+
+页面：/07-hands-on-labs/01-serving-observability-lab
+我跑的命令：curl -s http://localhost:8000/events/requests/req_lab_serving_json_1
+我看到的输出：能看到 request_started 和 request_success，但不确定每个字段代表哪一层
+我期望补充：解释 timeline 里 model、status、duration、event_type 的含义
+我愿意贡献：可以补一段字段说明和一个复盘模板
+```
+
+这个 issue 有页面、命令、输出、困惑和可贡献方向，维护者很容易判断它是不是文档缺口。
 
 ## 不应该贴什么
 
@@ -155,6 +195,27 @@ Issue 最好包含：
 ```bash
 PYTHON=.venv/bin/python make public-check
 ```
+
+### 一个好的 PR 描述示例
+
+```text
+## 改动
+- 扩写 Serving 可观测性 Lab 的事件观察点
+- 增加 request timeline 复盘模板
+
+## 学习影响
+- 读者能区分 metrics 和 events 的作用
+- 读者能把 x-request-id 串到 request timeline
+
+## 验证
+- PYTHON=.venv/bin/python make docs-quality
+- npm run docs:build
+
+## 安全检查
+- 没有新增密钥、私有 endpoint 或个人路径
+```
+
+PR 描述的目标不是写得很长，而是让维护者能快速判断：改了什么、为什么改、怎么验证、是否适合公开。
 
 ## GitHub Actions 怎么看
 

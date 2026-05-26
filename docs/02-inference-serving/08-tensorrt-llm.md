@@ -179,6 +179,64 @@ TensorRT-LLM 可能会让你面对：
 
 执行优化必须接回质量和平台观测。
 
+## 什么时候不该先上 TensorRT-LLM
+
+学习路线里也要知道“不上”的理由。
+
+如果你还处在这些状态，先不要把 TensorRT-LLM 放进主线：
+
+- 还没有稳定的模型服务 API
+- 还没有 request id、metrics、events
+- 还没有 eval baseline
+- 还不知道目标是降低 TTFT、提高 throughput，还是降低显存
+- 还没有固定硬件环境
+- 团队还不能稳定维护 CUDA、driver、container、engine build
+
+这时更好的顺序是先把服务边界跑稳，再把运行证据和评测链路补齐。否则性能优化会把注意力从“系统是否可解释”带到“环境为什么跑不起来”。
+
+## 接入前要先定义指标
+
+TensorRT-LLM 这类执行优化层不应该用一句“更快”来验收。
+
+建议至少定义四组指标：
+
+| 维度 | 观察点 | 为什么重要 |
+| --- | --- | --- |
+| 延迟 | TTFT、TPOT、端到端 latency | 区分首 token 和持续生成体验 |
+| 吞吐 | requests/sec、tokens/sec、并发下吞吐 | 判断 GPU 是否被更充分利用 |
+| 资源 | 显存、GPU 利用率、CPU、网络 | 防止把瓶颈转移到其他层 |
+| 质量 | eval score、sample regression、格式成功率 | 确认优化没有伤害输出 |
+
+如果没有指标，迁移后很容易只剩“感觉快了”。
+
+## 一个迁移检查清单
+
+从当前学习项目迁移到 TensorRT-LLM 路线，可以按这个清单推进：
+
+```text
+[ ] 保留 /v1/chat/completions 或清楚的 adapter contract
+[ ] 保留 request id、events、metrics
+[ ] 记录 model、engine、quantization、GPU、driver、container version
+[ ] 建立 baseline/candidate eval
+[ ] 对比 TTFT、TPOT、tokens/sec、error rate
+[ ] 记录 streaming 是否保持稳定
+[ ] 记录 fallback 和错误映射是否仍然可解释
+[ ] 把 migration notes 写回文档或 case study
+```
+
+真正的迁移不是“把 backend 换掉”，而是让新 backend 进入同一套服务、观测和评测链路。
+
+## 学习时可以怎么读官方文档
+
+读 TensorRT-LLM 官方资料时，可以按这条路径走：
+
+1. 先看产品总览，确认它是 NVIDIA GPU 上的 LLM 推理优化工具。
+2. 再看 quick start，理解它如何构建和运行 LLM 请求。
+3. 然后看 architecture，理解 toolkit、runtime、engine、backend 的分层。
+4. 最后看 support matrix 和 release notes，确认模型、硬件、软件版本约束。
+
+不要一开始就陷入单个 kernel 或 API。先把“它进入系统哪一层”想清楚，后面的细节才有位置。
+
 ## 常见误区
 
 ### “TensorRT-LLM 是完整服务平台”
@@ -222,3 +280,4 @@ TensorRT-LLM 可能会让你面对：
 - [Triton 与 TensorRT-LLM](/02-inference-serving/02-triton-tensorrt-llm)
 - [服务选型与取舍](/02-inference-serving/03-serving-tradeoffs)
 - [Benchmark 与生产质量不是一回事](/04-evaluation-observability/08-benchmark-vs-production-quality)
+- [NVIDIA TensorRT-LLM 官方文档](https://docs.nvidia.com/tensorrt-llm/index.html)

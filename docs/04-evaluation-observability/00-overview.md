@@ -54,6 +54,20 @@ Observability 关注的是：
 
 成熟的 AI 系统需要两者互补：质量变化要能追溯到运行证据，运行异常也要能影响发布判断。
 
+## 为什么这一章是 AI Infra 的分水岭
+
+很多学习项目到“接口能返回内容”就结束了。但真实 AI Infra 的难点常常从这里才开始：
+
+- 模型回答变长了，是能力提升还是啰嗦？
+- 平均分提高了，关键样本是否退化？
+- 延迟降低了，是否因为 fallback 走了更短输出？
+- cache 命中率提高了，是否把旧答案错误复用？
+- 训练后输出更像目标风格，是否牺牲了事实性？
+
+这些问题不能靠一次肉眼体验回答。你需要把一次变化拆成可比较对象，把运行过程拆成可追溯证据，再把两者放到同一张判断表里。
+
+所以这一章训练的不是“会跑 eval 命令”，而是“能解释系统变化”。这是从 demo 走向工程系统的分水岭。
+
 ## 当前仓库如何体现这两条线
 
 `projects/eval-module` 是评测侧的学习型项目。它保留了几类关键对象：
@@ -89,6 +103,28 @@ Serving/Gateway 产生运行证据
 
 这比单独一个分数更接近真实工程。
 
+## 最小证据模型
+
+一次靠谱的评测至少应该留下四层证据。
+
+| 层级 | 代表对象 | 解决的问题 |
+| --- | --- | --- |
+| Task | task definition、dataset id、metric | 这次到底在测什么 |
+| Run | run manifest、raw results、sample outputs | 这次是怎么跑出来的 |
+| Compare | baseline、candidate、delta、threshold | 和谁比，变化是否有意义 |
+| Decision | recommendation、risk note、follow-up | 接下来该发布、阻断还是补测 |
+
+Observability 也有类似层次：
+
+| 层级 | 代表对象 | 解决的问题 |
+| --- | --- | --- |
+| Request | request id、status、headers | 单次请求发生了什么 |
+| Service | metrics、health、events | 服务整体是否异常 |
+| Timeline | gateway timeline、inference timeline | 一次请求经过哪些阶段 |
+| Summary | failure summary、cache/fallback stats | 一类问题是否正在聚集 |
+
+当 evaluation 和 observability 放在一起，你就能从“结果变差”继续追问“它为什么变差”。
+
 ## 推荐阅读顺序
 
 1. [Run、Compare、History](/04-evaluation-observability/01-run-compare-history)
@@ -101,6 +137,22 @@ Serving/Gateway 产生运行证据
 8. [Benchmark 与生产质量不是一回事](/04-evaluation-observability/08-benchmark-vs-production-quality)
 
 建议先读 run / compare / history，因为这是最小可复盘单元；再读 benchmark 和 leaderboard；最后读 observability 与发布决策。
+
+## 一个具体判断场景
+
+假设你改了一个 prompt，然后 candidate run 的平均分比 baseline 高了 0.03。
+
+直觉上这像是好事。但一个工程判断应该继续问：
+
+1. 这个 delta 是否超过最小有效阈值？
+2. 退化样本是否集中在关键任务？
+3. candidate 是否和 baseline 使用同一个 task 和 dataset？
+4. judge 配置有没有变化？
+5. 运行期间是否有 fallback、cache 或 timeout？
+6. 输出是否只是变长，导致 judge 更偏好？
+7. 是否需要增加专门回归样本？
+
+这些问题解释了为什么 compare report、sample analysis、settings changed、events 和 metrics 要同时存在。它们不是形式化文件，而是防止你被单一分数误导。
 
 ## 一次质量判断应该包含什么
 
@@ -137,6 +189,19 @@ LLM 输出不是简单分类标签。它可能：
 
 这也是为什么这一章强调“证据包”而不是“排行榜截图”。
 
+## 评测结果的常见误读
+
+| 看到的现象 | 可能的误读 | 更稳的解释方式 |
+| --- | --- | --- |
+| 平均分提高 | 可以发布 | 先看 threshold、关键样本、退化聚类 |
+| Leaderboard 第一 | 模型最好 | 先看任务覆盖、样本来源、评测口径 |
+| Judge reason 很自信 | 判断可靠 | 先检查 reason 是否可审查、是否有偏差 |
+| 运行没有报错 | 质量没问题 | 运行稳定不等于回答有用 |
+| Eval 退化很小 | 可以忽略 | 小退化如果集中在核心能力，可能必须阻断 |
+| Sample 看起来都差不多 | 没必要分析 | LLM 输出差异常常藏在细节和格式里 |
+
+这张表可以当作读 eval 报告时的自检清单。
+
 ## Observability 如何帮助 Evaluation
 
 假设一次 eval 结果变差。原因可能是：
@@ -153,6 +218,21 @@ LLM 输出不是简单分类标签。它可能：
 如果没有 observability，所有问题都会被误以为是“模型质量问题”。
 
 所以 request id、events、metrics、run manifest、dataset id 这些看起来偏工程的东西，最终都会影响质量判断。
+
+## 如何把一次退化排查讲清楚
+
+建议使用这个顺序：
+
+```text
+1. 先说变化：candidate 相比 baseline 发生了什么。
+2. 再说范围：变化影响哪些 task、metric、sample。
+3. 检查可比性：task、dataset、judge、settings 是否一致。
+4. 查运行证据：request、fallback、cache、latency、error 是否异常。
+5. 给出判断：发布、补测、阻断还是继续人工 review。
+6. 留下后续：补哪些样本、改哪些阈值、加哪些观测。
+```
+
+这套叙述会让评测从“分数报告”变成“工程决策”。公开分享时，它也比展示一张 leaderboard 更有教学价值。
 
 ## 学完这一章应该能回答的问题
 
@@ -182,6 +262,23 @@ LLM 输出不是简单分类标签。它可能：
 7. 回到 gateway / serving 的 metrics 和 events，想象一次质量退化如何排查。
 
 这比只看概念更有效，因为你会看到质量证据如何落成文件。
+
+## 进一步实践：设计一个小型发布门禁
+
+读完这一章后，可以自己设计一个最小 release gate：
+
+```text
+必须满足：
+- task 一致
+- dataset 一致
+- candidate 平均分不低于 baseline
+- 关键样本无 P0 退化
+- settings_changed 为 false 或有明确解释
+- sample_analysis 已人工抽查
+- gateway / serving 运行证据无异常集中
+```
+
+这个门禁不需要复杂，但要能解释。真正有价值的是你能说清每条规则防什么风险。
 
 ## 常见误区
 

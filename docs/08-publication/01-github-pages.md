@@ -32,6 +32,27 @@ npm run docs:build
 
 不要把 GitHub Pages 当成替代本地验证的工具。Pages 应该负责发布已经验证过的内容。
 
+## 本地预览和线上发布的分工
+
+推荐把三种环境分清楚：
+
+| 环境 | 用途 | 典型命令 |
+| --- | --- | --- |
+| 本地 dev | 快速写内容、调样式、看交互 | `npm run docs:dev` |
+| 本地 build/preview | 模拟生产构建后的站点 | `npm run docs:build`、`npm run docs:preview` |
+| GitHub Pages | 对外发布稳定批次 | `docs-pages` workflow |
+
+本地 dev 适合高频修改；本地 preview 适合发布前验收；Pages 适合对外展示。
+如果每改一点就 push，Pages 会频繁部署，Actions 历史会很嘈杂，也更容易让读者看到半成品。
+
+所以更推荐：
+
+1. 本地批量修改。
+2. 本地跑构建和质量检查。
+3. 本地预览主要页面。
+4. 阶段性提交并 push。
+5. 让 Pages 自动部署这一批稳定改动。
+
 ## 1. 推送仓库
 
 先把仓库推到 GitHub。
@@ -112,6 +133,19 @@ VITEPRESS_BASE=/ai-infra-handbook/
 
 如果你使用自定义域名或用户根站点，可以删除 workflow 里的 `VITEPRESS_BASE`，或把它设置成 `/`。
 
+### base 的判断口诀
+
+可以用这条规则判断：
+
+| URL 类型 | `VITEPRESS_BASE` |
+| --- | --- |
+| `https://your-name.github.io/` | `/` |
+| `https://your-name.github.io/repo-name/` | `/repo-name/` |
+| `https://docs.example.com/` | `/` |
+
+如果首页能打开但 CSS、JS、图片或字体 404，优先怀疑 `base`。
+如果所有页面都 404，优先检查 Pages source、workflow deploy、仓库 visibility 和 URL。
+
 ## 5. 发布后更新 README
 
 拿到在线地址后，在 README 的文档站部分补一行：
@@ -152,6 +186,16 @@ HTTP/2 200
 - GitHub 入口与协作地图
 
 确认样式、导航、搜索、侧边栏和 GitHub 编辑链接都正常。
+
+还建议检查移动端：
+
+- 首页 hero 按钮没有横向撑破页面
+- 侧边栏能打开和关闭
+- 代码块可以横向滚动
+- 表格在小屏上可读
+- 深色模式文字对比度正常
+
+公开学习站很多读者会从手机打开 README 或文章链接，移动端入口不能只靠桌面体验猜。
 
 ## 7. 常见问题
 
@@ -201,6 +245,27 @@ VITEPRESS_BASE=/
 - GitHub Pages cache
 - 是否打开了正确 URL
 
+### Actions 没有被触发
+
+检查：
+
+- 是否 push 到 `main` 或 `master`
+- 改动路径是否命中 workflow 的 `paths`
+- workflow 是否被禁用
+- 仓库 Actions 权限是否允许运行
+- 是否只是本地 commit 还没有 push
+
+当前项目建议“本地批量推进，阶段性 push”，所以本地修改不触发 Pages 是正常的。
+
+### 自定义域名后资源错位
+
+如果未来使用自定义域名，通常要把 `VITEPRESS_BASE` 改回 `/`，并确认：
+
+- GitHub Pages 的 Custom domain 已填写
+- DNS CNAME 或 A 记录正确
+- 仓库中是否需要 `CNAME` 文件
+- HTTPS enforcement 是否开启
+
 ## 8. 自动发布时注意什么
 
 当前 workflow 已经保留手动触发，也支持文档相关 push 自动发布。
@@ -227,6 +292,17 @@ VITEPRESS_BASE=/
 [ ] docs-quality 通过
 [ ] public-check 通过
 ```
+
+## 推荐发布节奏
+
+内容站在快速建设期，可以采用这样的节奏：
+
+- 平时：只本地改、本地预览、本地检查
+- 小批次：本地 commit，保持历史可回看
+- 大批次：确认没有安全问题后 push，触发 Pages
+- 首发或大版本：打 release，更新 release notes 和首批 issue
+
+这样既不会浪费时间在频繁部署上，也不会把所有改动攒到最后变成难以 review 的巨大黑盒。
 
 ## 下一步
 

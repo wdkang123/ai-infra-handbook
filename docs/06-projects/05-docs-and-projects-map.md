@@ -16,6 +16,18 @@
 
 它不是完整源码导览，而是一张“文档到代码再到证据”的路标。
 
+## 三种阅读模式
+
+你可以按自己的时间选择不同模式。
+
+| 模式 | 适合谁 | 做法 |
+| --- | --- | --- |
+| 30 分钟速览 | 第一次打开项目 | 读首页、系统地图、跑 docs-quality |
+| 半天上手 | 想理解四个项目 | 每个项目读一页、看一个入口文件、跑一次 smoke |
+| 两周学习 | 准备系统学习或分享 | 按模块读文档、做 labs、写复盘和 issue |
+
+不要一开始就追求读完所有页面。学习站的更好用法是：每次带着一个问题进入，然后从文档跳到代码和证据。
+
 ## 先记一张最简单的联动图
 
 ```text
@@ -60,6 +72,17 @@
 - 复盘
 
 连成一条线。
+
+一个好复盘可以很短：
+
+```text
+我读了 gateway fallback，
+看了 ai_gateway/server.py 和 test_proxy.py，
+跑了 gateway resilience lab，
+通过 x-fallback-used 和 /events/requests 确认 fallback 发生在首个响应前。
+```
+
+这种复盘比“我看懂了 gateway”更有学习价值。
 
 ## Inference-service 最适合承接哪些文档
 
@@ -226,6 +249,25 @@ PYTHON=.venv/bin/python make public-check
 - GitHub Actions
 - GitHub Pages 200
 
+## 从问题倒推项目
+
+很多时候你不是按章节学习，而是遇到一个问题。
+
+可以这样倒推：
+
+| 你遇到的问题 | 先看哪里 |
+| --- | --- |
+| 请求返回 401/404/429 | ai-gateway |
+| 请求返回 502 | ai-gateway + inference-service |
+| streaming 没有 `[DONE]` | inference-service + ai-gateway |
+| eval compare 被拒绝 | eval-module |
+| leaderboard 看不懂 | eval-module + 输出证据页 |
+| checkpoint 不知道从哪来 | finetune-demo |
+| Pages 样式丢失 | docs + workflow |
+| public-check 失败 | scripts + docs + 对应项目 |
+
+这样能避免在不相关目录里消耗时间。
+
 ## 一张快速索引表
 
 | 你读到的内容 | 先看项目 | 再看证据 |
@@ -237,6 +279,22 @@ PYTHON=.venv/bin/python make public-check
 | Leaderboard | eval-module | run history、leaderboard JSON/MD |
 | LoRA / export | finetune-demo | checkpoint index、export manifest |
 | Public release | docs + scripts + workflows | public-check、Actions、Pages |
+
+## 一条完整学习闭环
+
+如果你想把一次学习做完整，可以按这个闭环：
+
+```text
+文档解释
+  -> 代码入口
+  -> 测试验证
+  -> 本地命令
+  -> 输出证据
+  -> 复盘问题
+  -> FAQ / issue / 下一页
+```
+
+这也是这个项目后续继续变厚的方向：不是只增加文章，而是让每个关键概念都能落到代码、命令和证据。
 
 ## 常见误区
 

@@ -28,6 +28,27 @@
 
 Gateway 的核心价值，就是把这些治理逻辑从业务代码和模型服务里抽出来。
 
+## 更准确的心智模型：Gateway 是策略边界
+
+把 gateway 理解成“代理”容易低估它。代理强调转发，策略边界强调决策。
+
+一次请求进来时，gateway 至少在做三类判断：
+
+1. 这个请求是否允许进入系统。
+2. 这个请求应该进入哪个内部目标。
+3. 这次调用的过程和结果应该如何被记录。
+
+这三类判断分别对应安全、路由和观测。它们不一定都很复杂，但必须有明确位置。如果每个业务服务都自己做一套鉴权、模型映射、fallback、cache 和日志，系统短期可能能跑，长期会很难解释。
+
+所以 gateway 的真正价值不是“让调用路径多一跳”，而是让治理逻辑有一个统一入口。统一入口意味着：
+
+- 调用方看到稳定模型名，而不是每个内部后端的细节
+- 平台可以在不改调用方代码的情况下调整上游目标
+- 错误、fallback、cache、限流可以用统一字段记录
+- 后续接入计费、审计、配额、灰度和 dashboard 时有落点
+
+这也是为什么学习阶段要先把最小 gateway 做清楚。哪怕它现在只是 mock 上游，边界也应该像真实系统一样存在。
+
 ## Gateway 层负责什么
 
 当前学习站里，gateway 重点覆盖这些能力：
@@ -44,6 +65,23 @@ Gateway 的核心价值，就是把这些治理逻辑从业务代码和模型服
 - events：如何保留结构化运行证据
 
 这些能力合起来，才是“平台”味道。单独一个反向代理并不能自动成为 AI Gateway。
+
+## 一次请求里有哪些关键决策点
+
+可以把 gateway 请求拆成几个检查点。
+
+| 检查点 | 它回答什么 | 失败时常见信号 |
+| --- | --- | --- |
+| Auth | 调用方是谁，是否允许调用 | `401`、auth error event |
+| Rate limit | 这个调用方现在是否超额 | `429`、rate limit counter |
+| Model mapping | 外部模型名映射到哪个 target | unknown model、routing error |
+| Cache lookup | 是否可以复用已有响应 | `x-cache`、cache event |
+| Upstream call | 上游是否可达、是否成功 | `502`、upstream error |
+| Fallback | 主路径失败后是否走备用目标 | `x-fallback-used`、fallback event |
+| Stream proxy | chunk 如何被转发和收尾 | stream event、disconnect |
+| Evidence write | 请求如何进入 metrics 和 events | request id、timeline |
+
+读 gateway 代码时，不要只追“函数怎么调用”。更好的读法是追这些决策点：这个点在哪里做判断，判断结果如何影响后续路径，证据写在哪里。
 
 ## Gateway 不负责什么
 
@@ -85,6 +123,22 @@ Gateway 通常不负责：
 
 当你阅读代码时，可以把它想成一个“调用控制面”的最小模型：调用方不直接认识每个上游，而是通过 gateway 的统一契约进入系统。
 
+## 当前实现最值得看的三个文件方向
+
+第一次读 `ai-gateway` 时，可以按三个方向看，而不是从头到尾扫。
+
+### 1. 入口契约
+
+先看 server 如何暴露 OpenAI-compatible 风格的接口、health、metrics、events 和模型列表。入口契约决定了调用方能依赖什么，也决定后续替换内部实现时哪些外部行为不能随便破坏。
+
+### 2. 路由和上游目标
+
+再看外部模型名如何映射到内部 target。这个映射是 gateway 的核心边界之一。如果外部模型名和内部 target 直接绑死，后续做 fallback、canary、供应商迁移、成本治理都会很痛苦。
+
+### 3. 事件和指标
+
+最后看 events、summary、failures、timeline 和 metrics。它们让 gateway 不只是“转发成功或失败”，而是能解释每次请求发生了什么。公开学习项目尤其应该强调这点，因为读者需要看到证据才能建立直觉。
+
 ## 推荐阅读顺序
 
 1. [鉴权、路由、限流](/03-ai-gateway-platform/01-auth-routing-rate-limit)
@@ -96,6 +150,29 @@ Gateway 通常不负责：
 7. [从 Demo Gateway 到真实平台](/03-ai-gateway-platform/07-from-demo-gateway-to-real-platform)
 
 这个顺序先看最直接的平台控制，再看弹性与观测，最后回到系统边界和真实迁移。
+
+## 读这一章时建议带着一个场景
+
+只读概念容易觉得 gateway 很抽象。建议你带着这个场景读：
+
+```text
+一个业务方调用 gpt-like 模型。
+外部模型名是 ai-infra-chat。
+内部主 upstream 暂时不可用。
+gateway 尝试 fallback。
+最终用户拿到了 200 响应。
+```
+
+然后问：
+
+- 这次请求是否真的健康？
+- 哪个 header 能说明 fallback 发生过？
+- metrics 是否记录了主 upstream 失败？
+- events 里能不能看到 request id 和 target？
+- 如果 fallback 目标质量更差，eval 如何发现？
+- 如果 cache 命中，这次请求还应该算作上游成功吗？
+
+这样读，gateway 就不再是“多一层服务”，而是系统风险和系统证据的交汇点。
 
 ## 一条请求经过 Gateway 时发生什么
 
@@ -162,6 +239,22 @@ Gateway 不应该替代 serving，但它要理解 serving 的契约。
 8. 查看 `/events`、`/events/summary`、`/events/failures`。
 
 这套实践能把“平台治理”从抽象词变成可观察行为。
+
+## 学习型 Gateway 和生产 Gateway 差在哪里
+
+当前仓库故意保留轻量实现，不把它说成生产平台。生产级 gateway 通常还需要：
+
+| 能力 | 学习型实现关注 | 生产级还要补 |
+| --- | --- | --- |
+| 鉴权 | Bearer token 和错误语义 | 租户、密钥轮换、权限范围、审计 |
+| 限流 | 最小频率控制 | 分布式限流、配额、突发预算 |
+| 路由 | 外部模型名到 target | 灰度、权重、地区、成本、能力标签 |
+| Fallback | 失败后备用路径 | 熔断、重试预算、质量风险评估 |
+| Cache | 最小响应缓存 | 用户隔离、隐私、TTL 策略、失效机制 |
+| 观测 | metrics、events、timeline | tracing backend、dashboard、告警 |
+| 配置 | 静态或轻量配置 | 版本化配置、回滚、审批、变更记录 |
+
+学习时不需要一次补满这些能力，但要知道缺口在哪里。知道缺口，才不会把 demo 误当生产系统。
 
 ## 常见误区
 

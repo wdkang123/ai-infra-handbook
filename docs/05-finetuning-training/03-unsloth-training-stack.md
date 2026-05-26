@@ -177,6 +177,69 @@ same train CLI
 
 这样 Unsloth 进入的是训练执行层，而不是推翻整个项目结构。
 
+## 一条更完整的训练工作流
+
+如果用 Unsloth 做轻量微调，推荐把流程拆成这些阶段：
+
+```text
+task definition
+  -> dataset design
+  -> dataset validation
+  -> small dry run
+  -> full training
+  -> checkpoint index
+  -> export
+  -> eval compare
+  -> release decision
+```
+
+Unsloth 主要让 `small dry run` 和 `full training` 更容易跑起来，但它不替代前后的工程动作。
+
+每次训练前先问：
+
+- 这次训练到底想改变什么行为？
+- 数据是否代表这个行为？
+- baseline 是谁？
+- eval 怎么判断有提升？
+- 如果结果变差，能否追溯回数据和参数？
+
+这些问题比“训练脚本能不能启动”更关键。
+
+## 初学者最稳的实践顺序
+
+不要第一次就拿大模型、长上下文、复杂 RL 和一堆参数一起上。
+
+更稳的顺序是：
+
+1. 选一个小 instruct model。
+2. 用极小样本跑通格式和 chat template。
+3. 用 LoRA/QLoRA 跑一个短训练。
+4. 保存 run manifest、checkpoint index 和 export manifest。
+5. 用 eval-module 做 baseline/candidate compare。
+6. 扩大数据或模型之前，先分析失败样本。
+
+这样可以把问题分开：先确认数据格式和训练链路，再谈规模。
+
+## 要记录哪些训练参数
+
+真实训练里，很多“玄学差异”其实来自参数没有记录。
+
+至少记录：
+
+| 参数 | 为什么要记 |
+| --- | --- |
+| base model | 决定起点能力和 tokenizer/chat template |
+| training method | LoRA、QLoRA、full fine-tuning、RL 的含义完全不同 |
+| max sequence length | 影响显存、速度和可学习上下文 |
+| precision/quantization | 影响显存、速度和最终服务一致性 |
+| batch size / gradient accumulation | 影响稳定性和显存 |
+| learning rate / scheduler | 影响收敛和过拟合 |
+| epochs / steps | 影响训练强度 |
+| LoRA rank/alpha/dropout | 影响 adapter 容量和稳定性 |
+| dataset id/version/sha256 | 决定结果可追溯性 |
+
+如果这些没有进入 manifest，后续 eval 结果再好也很难复现。
+
 ## 学习时最该问的问题
 
 学习 Unsloth 时，不要只问：
@@ -222,6 +285,19 @@ vLLM 是 serving runtime，Unsloth 是训练加速层，所处系统阶段不同
 不一定。
 训练是否有价值，要看 eval 和发布判断。
 
+## 什么时候应该停下来复盘
+
+出现这些情况时，不要继续盲目调参：
+
+- loss 下降但 eval 退化
+- 输出风格变了但任务准确率没提升
+- 训练样本表现好，真实样本表现差
+- checkpoint 很多，但不知道哪个该 export
+- export 后服务格式不稳定
+- 评测失败样本集中在同一类数据
+
+这时应该回到数据、目标和 eval，而不是继续加 epoch。
+
 ## 学完应该能回答
 
 读完这一页后，你应该能回答：
@@ -238,3 +314,5 @@ vLLM 是 serving runtime，Unsloth 是训练加速层，所处系统阶段不同
 - [SFT、DPO 与训练目标](/05-finetuning-training/05-sft-dpo-and-training-objectives)
 - [训练产物、Checkpoint、Export](/05-finetuning-training/02-run-artifacts-export)
 - [Finetune 真实训练迁移](/12-production-migration/04-finetune-real-training-migration)
+- [Unsloth 官方文档](https://unsloth.ai/docs)
+- [Unsloth Fine-tuning Guide](https://unsloth.ai/docs/get-started/fine-tuning-llms-guide)

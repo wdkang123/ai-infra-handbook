@@ -12,6 +12,18 @@
 
 这一页按症状整理优先检查的证据。
 
+## 先判断失败类型
+
+失败大致分三类：
+
+| 类型 | 特征 | 第一反应 |
+| --- | --- | --- |
+| 环境失败 | 命令找不到、端口占用、依赖缺失 | 先查 shell、端口、安装 |
+| 合约失败 | 401/404/422、schema 不合法 | 先查请求、配置、数据格式 |
+| 系统行为失败 | fallback、cache、eval、export 不符合预期 | 先查 timeline、manifest、index |
+
+分清类型后，排障会快很多。
+
 ## 总入口
 
 | 症状 | 先看什么 | 可能层级 |
@@ -26,6 +38,20 @@
 | eval compare 失败 | task/backend/few-shot 设置 | 质量层 |
 | finetune train 失败 | dataset schema / dataset summary | 训练层 |
 | export 失败 | checkpoint index / source checkpoint | 训练层 |
+
+## ID 是排障的线索
+
+尽量保留这些 ID：
+
+- `x-request-id`
+- eval `run_id`
+- comparison id
+- finetune `run_id`
+- export id
+- dataset id/version
+
+没有 ID，后续只能在日志和文件里猜。
+有 ID，就可以从 summary/index/timeline 一路追到具体样本或产物。
 
 ## 文档站失败
 
@@ -128,6 +154,30 @@ curl -s "http://localhost:8080/events/requests/<request_id>"
 curl -s http://localhost:8000/health
 ```
 
+### 一次 gateway timeline 应该怎么读
+
+一次健康的普通请求通常像：
+
+```text
+request_received
+auth_ok
+route_selected
+upstream_attempt
+request_success
+```
+
+如果发生 fallback，可能会看到：
+
+```text
+upstream_attempt
+upstream_failure
+fallback_attempt
+fallback_success
+request_success
+```
+
+如果只看最终 HTTP status，你会错过中间层发生的事情。
+
 ## Inference 失败
 
 常见症状：
@@ -172,6 +222,15 @@ compare.json
 comparison_index.json
 ```
 
+如果 `compare` 结果是 `review`，继续看：
+
+- metric delta 是否过小
+- changed eval settings 是否存在
+- failed sample ids 是否集中
+- release reasons 是否提到人工复核
+
+不要只看 verdict。
+
 ## Finetune 失败
 
 如果 train 失败，先看：
@@ -192,6 +251,19 @@ comparison_index.json
 | adapter hash | 文件是否完整 |
 | export history | status 和 duration |
 
+如果训练成功但 eval 退化，再沿着这条路径回查：
+
+```text
+eval failed sample
+  -> export manifest
+  -> source checkpoint
+  -> run manifest
+  -> dataset summary
+  -> training args
+```
+
+这能帮助你判断问题更像数据、参数、checkpoint 选择，还是导出/评测链路。
+
 ## 一个排障动作的好顺序
 
 ```text
@@ -203,6 +275,23 @@ comparison_index.json
 6. 判断是哪一层
 7. 再改代码或配置
 ```
+
+## 最小复盘格式
+
+排完一个问题后，建议留下这几行：
+
+```text
+症状：
+失败层级：
+关键 ID：
+关键证据：
+根因：
+修复：
+验证命令：
+是否需要补文档/FAQ：
+```
+
+这样下一次遇到类似问题，不需要重新从头猜。
 
 ## 关联阅读
 

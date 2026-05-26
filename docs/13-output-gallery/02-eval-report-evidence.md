@@ -17,6 +17,20 @@ Eval 输出最容易被误读成“一个分数”。
 | `comparison_index.json` | 多次 comparison 的 verdict/recommendation 分布是什么 |
 | `leaderboard.json` | 多个 run 的排名和分组是什么 |
 
+## 先用三步读报告
+
+第一次看 eval 产物时，不要从最大 JSON 文件开始。
+
+推荐顺序：
+
+1. 先看 `sample_summary.json`，确认整体通过率和样本数量。
+2. 再看 `sample_analysis.json`，找失败样本和 judge reason 模式。
+3. 最后看 `compare.json`，判断 candidate 相比 baseline 是否值得继续。
+
+这样能避免被 `result.json` 里的总体分数带偏。
+
+一个好习惯是：每看到一个分数，都追问“哪些样本支撑了它”。
+
 ## Run 总体结果
 
 一次 run 通常从命令开始：
@@ -76,6 +90,32 @@ PYTHONPATH=src ../../.venv/bin/python -m eval_module.main run \
 > 分数背后，具体样本长什么样？
 
 如果 `accuracy` 下降，不要先猜模型坏了，先打开 `sample_outputs.json` 看失败样本。
+
+### 失败样本怎么读
+
+读失败样本时，建议记录：
+
+```text
+sample id：
+prompt：
+prediction：
+expected / rubric：
+score：
+judge reason：
+可能原因：
+下一步动作：
+```
+
+下一步动作可能是：
+
+- 修改 prompt
+- 修改 judge rubric
+- 补训练数据
+- 修输出格式约束
+- 标记为人工复核
+- 从发布候选里排除
+
+评测的价值不只是给分，而是把失败样本变成下一轮改进材料。
 
 ## Sample summary
 
@@ -145,6 +185,19 @@ PYTHONPATH=src ../../.venv/bin/python -m eval_module.main run \
 
 如果 task 不一致，当前工具会拒绝比较。这是好事：错误比较比没有比较更危险。
 
+## Compare 里的 review 不等于失败
+
+`release_recommendation` 是 `review` 时，不要直接理解成模型失败。
+
+它通常表示：
+
+- delta 没有超过门槛
+- 评测设置变化了
+- 样本数或 task 上下文需要人工判断
+- candidate 没有明显赢过 baseline
+
+这时更好的动作是打开 `release_reasons` 和 sample-level evidence，而不是调低 `min_delta` 让结果好看。
+
 ## Leaderboard
 
 `leaderboard.json` 适合看多次 run：
@@ -178,6 +231,23 @@ PYTHONPATH=src ../../.venv/bin/python -m eval_module.main run \
 - 哪些 task 经常被比较
 
 这两个文件很适合给 dashboard 做后端数据源，也适合公开分享时做证据索引。
+
+## PR 或发布里怎么引用
+
+如果某个 PR 改了 prompt、模型路由、eval runner、训练 export 或发布判断，建议在 PR 描述里贴简版证据：
+
+```text
+Eval evidence:
+- baseline:
+- candidate:
+- task:
+- metric delta:
+- release recommendation:
+- failed sample ids:
+- report files:
+```
+
+不要只贴“accuracy 从 0.80 到 0.84”。没有 task、样本和 compare context，这个数字很难被 review。
 
 ## 如何避免误读
 

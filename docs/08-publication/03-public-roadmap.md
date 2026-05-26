@@ -12,6 +12,23 @@
 
 公开学习项目的路线图不应该只写宏大方向。它更应该告诉读者：这个项目接下来会如何继续变得更可学、更可跑、更可复盘。
 
+## 路线图的读法
+
+这份路线图不是按日历承诺，而是按成熟度推进。
+
+你可以这样理解：
+
+| 问题 | 看哪一段 |
+| --- | --- |
+| 项目现在能不能公开 | 当前阶段 |
+| 新读者体验先补什么 | Phase 1 |
+| 代码怎么更接近真实工程 | Phase 2 |
+| GitHub 上怎么长期维护 | Phase 3 |
+| 什么时候接真实后端 | Phase 4 |
+| 如何接住反馈 | Phase 5 |
+
+如果你准备贡献，不要只看“可能方向”，更要看每个阶段的验收。验收标准决定了 issue 应该怎么拆。
+
 ## 如何使用路线图
 
 如果准备把路线图拆成 GitHub issue，可以先运行：
@@ -111,6 +128,13 @@ PYTHON=.venv/bin/python make launch-pack
 - 每个新增页面至少有一个上游入口和一个下一步入口
 - docs-quality 通过
 
+适合拆成 issue 的例子：
+
+- 给某个 lab 增加一组成功/失败示例输出
+- 给术语索引补 5 个跨章节高频词
+- 给 troubleshooting 补一个真实报错路径
+- 给 overview 增加“学完你能做什么”
+
 ## Phase 2：项目实现变得更真实
 
 目标：在不牺牲学习可读性的前提下，让实现更接近真实工程。
@@ -129,6 +153,13 @@ PYTHON=.venv/bin/python make launch-pack
 - 每个新增行为都有对应文档
 - `infra-check` 和 `infra-smoke` 保持稳定
 - 输出证据进入 [示例输出与证据库](/13-output-gallery/00-overview)
+
+适合拆成 issue 的例子：
+
+- 给 gateway fallback 增加更细 failure reason
+- 给 eval sample analysis 增加新聚合字段
+- 给 finetune checkpoint index 增加 best/latest 区分
+- 给 smoke 增加一个失败路径证据断言
 
 ## Phase 3：公开站点运营
 
@@ -153,6 +184,13 @@ PYTHON=.venv/bin/python make launch-pack
 - 贡献者能通过 CONTRIBUTING 快速开始
 - 维护者能按 [维护节奏与运营清单](/08-publication/08-maintainer-rhythm) 处理反馈
 
+适合拆成 issue 的例子：
+
+- 首发后整理 5 个学习问题进 FAQ
+- 根据 GitHub Pages 首发结果更新发布手册
+- 把共学反馈模板里的高频问题转成 lab 改进
+- 给 release notes 补一次真实验证记录
+
 ## Phase 4：真实后端接入
 
 目标：保留学习型路径，同时提供更真实的接入方式。
@@ -172,6 +210,13 @@ PYTHON=.venv/bin/python make launch-pack
 - 失败时有明确排查文档
 - 真实依赖不会破坏公开学习门槛
 
+适合拆成 issue 的例子：
+
+- 增加 OpenAI-compatible vLLM 接入说明
+- 增加 SGLang adapter 迁移边界文档
+- 增加真实 judge adapter 的最小接口说明
+- 增加真实训练前置条件和失败排查清单
+
 ## Phase 5：更强的学习社区反馈闭环
 
 目标：把真实读者反馈稳定转成项目改进。
@@ -190,6 +235,13 @@ PYTHON=.venv/bin/python make launch-pack
 - good first issue 不只是占位，而是有清楚验收
 - release notes 能说明学习体验如何改善
 
+适合拆成 issue 的例子：
+
+- 每月整理一次 learning question issue
+- 把重复报错合并进 troubleshooting
+- 把读者提交的 evidence packet 脱敏后加入 output gallery
+- 把 capstone 薄弱点转成 assessment 题目
+
 ## 暂不优先做什么
 
 这些方向暂时不优先：
@@ -204,6 +256,18 @@ PYTHON=.venv/bin/python make launch-pack
 原因不是这些不重要，而是它们会让学习主线变散。
 
 当前项目最重要的价值，仍然是让读者在小系统里看懂 AI Infra 的主干关系。
+
+## 维护者如何更新路线图
+
+每次大批量推进后，可以按这个顺序更新路线图：
+
+1. 先跑 `make docs-inventory` 和 `make course-catalog`。
+2. 看新增内容落在哪些主线。
+3. 把已经完成的方向从“下一步”挪到“当前阶段”。
+4. 把新暴露的问题转成 Phase 1 或 Phase 2 的小 issue。
+5. 如果涉及公开发布，再跑 `make roadmap-pack` 和 `make launch-pack`。
+
+路线图应该跟着证据变化，而不是凭感觉更新。
 
 ## 路线图 issue 应该怎么写
 

@@ -19,6 +19,26 @@
 - finetune export 是否成功
 - 当前项目应该如何被公开定位
 
+## 它解决的真实问题
+
+公开学习项目很容易出现四种漂移：
+
+- 文档页越来越多，但主线不清楚
+- smoke 能跑，但读者不知道这些输出证明了什么
+- release notes 写得很好，但和实际验证结果脱节
+- 共学和公开演示依赖个人记忆，而不是结构化证据
+
+release brief 的作用是把这些材料收束成一次“发布前体检”。它不是替你做判断，而是把判断所需的信号放在同一份报告里。
+
+阅读 release brief 时，可以按这个顺序：
+
+1. 先看 `summary.release_readiness`
+2. 再看 `validation.ready_for_public_review`
+3. 然后看缺路由、缺证据、eval recommendation 和 export status
+4. 最后读 `Public Positioning` 和 `Next Review Questions`
+
+如果第一屏已经是 `review`，不要急着改 release notes，先回到缺失的上游产物。
+
 ## 生成命令
 
 推荐先跑完整链路：
@@ -65,6 +85,25 @@ release-brief
 ```
 
 它适合发布前最后一轮，不适合每次小改都跑。
+
+## ready 和 review 怎么理解
+
+`ready` 的含义是：自动检查没有发现阻断公开复盘的问题。
+它不等于“内容已经完美”，也不等于“生产可用”。
+
+`review` 的含义是：至少有一个关键输入不满足发布前门禁，需要人工回到上游修复或解释。
+
+常见情况：
+
+| 状态 | 应该怎么做 |
+| --- | --- |
+| `ready` + 内容刚大改 | 继续人工读 README、首页、核心章节和 release notes |
+| `ready` + eval recommendation 不理想 | 在公开叙事里说明这是学习演示，不把结果包装成生产批准 |
+| `review` + missing route | 回到 nav/sidebar 或课程目录修路由 |
+| `review` + missing evidence | 重新跑 smoke/evidence，或修证据生成脚本 |
+| `review` + public positioning 不准确 | 修改文档定位，避免生产化误导 |
+
+release brief 更像仪表盘，不是盖章机。真正发布前仍然需要人读一遍关键入口。
 
 ## JSON 结构
 
@@ -160,6 +199,58 @@ npm audit --omit=dev --audit-level=moderate
 - 如果要整理首批路线图 issue，再运行 `make roadmap-pack`
 - 如果要写第一个 GitHub release，再运行 `make launch-pack`，并对照 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
 
+## 常见失败和修复方向
+
+### 学习主线缺路由
+
+现象通常是 `missing_track_routes` 大于 0。
+
+优先检查：
+
+- 新增页面是否真实存在
+- VitePress sidebar 是否包含该页面
+- 文档链接路径是否和文件路径一致
+- 页面是否缺少标题或被误放到错误目录
+
+修复后先跑：
+
+```bash
+PYTHON=.venv/bin/python make docs-quality
+PYTHON=.venv/bin/python make release-brief
+```
+
+### 证据包缺关键产物
+
+如果 release brief 提示 evidence artifact 缺失，先不要改报告脚本。优先确认 smoke 是否真的生成了对应文件。
+
+常见原因：
+
+- 没有先运行 `make infra-smoke`
+- `.tmp/` 被清理后直接运行 release brief
+- 某个子项目输出路径改变，但 evidence collector 没同步
+- eval 或 finetune 阶段失败，被后续报告吞掉了上下文
+
+### eval recommendation 与叙事冲突
+
+如果 eval 给出的 recommendation 不适合“发布候选”，公开表达要诚实：
+
+```text
+当前 eval 证据用于学习如何做模型比较和发布判断，
+不代表真实生产模型已经获批上线。
+```
+
+不要为了让 release notes 更好看而改 recommendation。应该改的是数据、比较策略、阈值，或者公开叙事。
+
+### export status 不成功
+
+finetune export 失败时，要回到资产链：
+
+```text
+dataset_summary -> run_manifest -> checkpoint_index -> export_manifest
+```
+
+缺哪一环，就先修哪一环。release brief 只负责暴露问题，不负责替训练流程补产物。
+
 ## 和其他产物的关系
 
 | 产物 | 回答的问题 | 适合谁看 |
@@ -183,3 +274,36 @@ npm audit --omit=dev --audit-level=moderate
 6. 模块测评可落地
 7. 路线图 issue 可创建
 8. 首发运营包可复核
+
+## 可以复制到 PR 的摘要模板
+
+当 PR 改动影响文档站、生成脚本、证据链或公开发布流程时，可以在 PR 描述里贴一个简版 release brief 摘要：
+
+```text
+Release brief:
+- readiness:
+- docs pages:
+- missing track routes:
+- missing evidence artifacts:
+- eval recommendation:
+- finetune export:
+- ready for public review:
+
+Verification:
+- PYTHON=.venv/bin/python make docs-quality
+- PYTHON=.venv/bin/python make release-brief
+```
+
+这样 reviewer 不需要在大量命令输出里找重点。
+
+## 不要过度解读
+
+release brief 不能证明：
+
+- 站点内容已经足够深入
+- 所有读者都能看懂
+- 生产迁移已经完成
+- 模型效果真实优于其他方案
+- 开源发布没有任何安全风险
+
+它能证明的是：当前自动化链路已经把学习站、课程主线、运行证据和公开定位放到同一份摘要里，方便人做最后判断。

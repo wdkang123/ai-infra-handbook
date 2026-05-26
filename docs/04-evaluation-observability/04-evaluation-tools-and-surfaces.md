@@ -181,6 +181,53 @@ run artifacts / comparison artifacts / history
 
 这样 UI 可以迭代，证据不会丢。
 
+## 工具选择不要先从品牌开始
+
+选评测工具时，不要先问“哪个最流行”。先问自己要解决哪一层问题：
+
+| 需求 | 更适合的方向 |
+| --- | --- |
+| 跑标准 benchmark | evaluation harness |
+| 验证 prompt / RAG 输出 | prompt/app eval 工具 |
+| 做发布前 baseline/candidate compare | 项目内 compare/report |
+| 做可视化查询 | dashboard |
+| 收集人类偏好 | arena/human review workflow |
+| 做安全和 red teaming | red-team eval 工具 |
+
+一个成熟系统往往会同时使用多种工具，但它们要接在同一条证据链上，而不是各自生成一堆孤立报告。
+
+## CI 里应该放什么
+
+不是所有 eval 都适合每次 CI 跑。
+
+可以分三档：
+
+| 档位 | 触发时机 | 内容 |
+| --- | --- | --- |
+| 快速回归 | 每个 PR | 小 golden set、schema/rule checks、核心 prompt |
+| 中等评测 | 合并前或每日 | 更多样本、LLM-as-Judge、compare |
+| 深度评测 | release 前 | 全量 benchmark、人工抽检、成本/延迟复盘 |
+
+这样既能及时发现退化，又不会让每个 PR 都被昂贵评测拖死。
+
+## 一个 dashboard 应该从哪里钻下去
+
+如果后续做 dashboard，不建议只做总分表。
+
+更有用的 drill-down 路径是：
+
+```text
+leaderboard
+  -> task result
+  -> run metadata
+  -> sample outputs
+  -> sample analysis
+  -> comparison reasons
+  -> release recommendation
+```
+
+当 reviewer 看到一个分数变化时，应该能一路点到“哪些样本变了、为什么变了、是否影响发布”。
+
 ## 当前仓库怎么对应
 
 当前 `eval-module` 不是完整评测平台，但已经表达了关键骨架：
@@ -265,3 +312,5 @@ dashboard 是视图，artifact 才是可复盘证据。
 - [Run、Compare、History](/04-evaluation-observability/01-run-compare-history)
 - [Benchmark、Leaderboard 与 Observability](/04-evaluation-observability/02-benchmark-leaderboard-observability)
 - [Eval 评测系统迁移](/12-production-migration/03-eval-judge-dashboard-migration)
+- [lm-evaluation-harness 官方接口文档](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/interface.md)
+- [promptfoo 官方文档](https://www.promptfoo.dev/docs/intro/)

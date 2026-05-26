@@ -212,6 +212,64 @@ dataset
 
 任何一环断了，后续复盘都会变难。
 
+## 推荐目录形态
+
+真实训练项目可以参考这种目录结构：
+
+```text
+runs/
+  run_2026_05_26_001/
+    run_manifest.json
+    artifacts_manifest.json
+    training_args.json
+    trainer_state.json
+    data/
+      dataset_summary.json
+      dataset_registry_entry.json
+    checkpoints/
+      checkpoint_index.json
+      checkpoint-0001/
+      checkpoint-0002/
+    exports/
+      export_manifest.json
+```
+
+目录不一定完全一样，但要保证读者能从 run 入口一路追到数据、参数、checkpoint、export。
+
+如果一个目录只能靠维护者口头解释，说明 manifest 还不够清楚。
+
+## Metadata 最少应该包含什么
+
+一份可复盘的训练 metadata 至少包含：
+
+| 字段 | 说明 |
+| --- | --- |
+| `run_id` | 唯一标识一次训练 |
+| `created_at` | 时间戳 |
+| `base_model` | 基座模型 |
+| `method` | LoRA、QLoRA、SFT、DPO 等 |
+| `dataset_id` / `dataset_version` | 数据版本 |
+| `dataset_sha256` | 数据不可变校验 |
+| `training_args` | 关键训练参数 |
+| `checkpoint_policy` | 保存频率、latest/best 规则 |
+| `export_status` | 是否已导出 |
+| `eval_run_id` | 后续评测关联 |
+
+metadata 不需要一开始就完美，但必须能回答“这次实验从哪里来、怎么跑、流向哪里”。
+
+## 训练资产的生命周期
+
+可以把一次训练资产分成四个阶段：
+
+1. Draft：数据和配置还在试验，只允许本地小跑。
+2. Candidate：已经能稳定训练，产物可以进入 eval。
+3. Reviewed：eval 和人工复盘完成，知道是否保留。
+4. Archived：不再继续使用，但保留 manifest 和关键结论。
+
+不是所有 checkpoint 都值得永久保存。长期保留的应该是 manifest、index、export、eval conclusion 和少量关键 checkpoint。
+
+如果要删除大文件，先确认 manifest、hash、评测结论和复盘已经保留。
+
 ## 当前仓库怎么对应
 
 相关文件：
@@ -251,6 +309,39 @@ list-exports
 7. 对比 baseline run。
 
 如果 dataset、run、checkpoint 没有被对象化，这个过程会变成猜。
+
+## 数据安全和公开边界
+
+训练数据比代码更容易带来公开风险。
+
+进入公开仓库前要确认：
+
+- 没有真实用户隐私
+- 没有内部业务数据
+- 没有未授权语料
+- 没有真实账号、邮箱、手机号、地址
+- 没有把 prompt/response 中的敏感日志原样放进样本
+- dataset summary 不暴露不该公开的来源
+
+如果数据不能公开，至少要公开数据 schema、脱敏样例和生成/验证方法，让读者理解训练链路，而不是让真实数据进仓库。
+
+## 从 eval 反推数据问题
+
+当 eval 退化时，不要只看模型。
+
+可以按这个路径反推：
+
+```text
+失败样本
+  -> 对应 task
+  -> 对应训练目标
+  -> 数据集中是否有类似样本
+  -> 标签/回答是否一致
+  -> 是否过拟合某类模板
+  -> 是否需要补数据或删数据
+```
+
+很多训练问题不是“模型没学会”，而是数据没有表达你想要的行为，或者数据里混入了互相冲突的目标。
 
 ## 常见误区
 

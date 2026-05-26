@@ -34,6 +34,24 @@
 - `projects/eval-module/src/eval_module/results/result_store.py`
 - `projects/eval-module/tests/test_runner.py`
 
+## Lab 记录表
+
+跑之前先准备一张记录表。
+这会让你在 compare 和 leaderboard 阶段更容易解释结果，而不是只复制最终分数。
+
+| 项目 | baseline | candidate | 说明 |
+| --- | --- | --- | --- |
+| task |  |  | 例如 `mmlu` |
+| model |  |  | 模型名或本地别名 |
+| backend url |  |  | mock/local/upstream 都要写清 |
+| few-shot / 参数 |  |  | 参数不同不能直接比较 |
+| result file |  |  | `results/*.json` |
+| sample summary |  |  | 通过数、失败数、平均分 |
+| run manifest |  |  | 记录执行环境和输入 |
+| 备注 |  |  | 记录异常、重跑或人工观察 |
+
+发布门禁的关键不是“有一个分数”，而是分数背后的条件可追踪。
+
 ## 操作步骤
 
 ### 1. 跑 baseline
@@ -88,6 +106,17 @@ PYTHONPATH=src ../../.venv/bin/python -m eval_module.main compare \
 
 重点看 `summary.release_recommendation` 和 `summary.release_reasons`。  
 它们会把结果分成 `approve / review / block`，并说明为什么不能只看 delta。
+
+三种分支可以这样处理：
+
+| recommendation | 含义 | 下一步 |
+| --- | --- | --- |
+| `approve` | candidate 在当前条件下超过门槛 | 仍要抽查 sample、确认配置一致，再进入发布讨论 |
+| `review` | 变化不够显著或存在需要人工判断的因素 | 看 `release_reasons`、sample analysis、run manifest，必要时重跑或补任务 |
+| `block` | candidate 明显退化或比较条件不可信 | 不进入发布，先定位退化样本或配置问题 |
+
+把这一步写下来很重要。
+真实团队里，门禁系统很少直接“替你发布”，它更多是把风险显性化，让人做可复盘决策。
 
 ### 4. 生成 run index
 
@@ -193,6 +222,35 @@ comparison index 则回答第三个问题：“我们过去做过哪些发布判
 `best_result_file` 和 `latest_result_file` 很关键：best 告诉你当前排行榜分数来自哪次 run，latest 告诉你最近一次结果在哪里。没有这两个指针，排行榜很容易只剩展示数字，失去回到证据文件的能力。
 
 这正好对应真实评测平台里的分层：run 负责产生事实，compare 负责做两两判断，leaderboard 负责展示多个结果。
+
+## 常见卡点
+
+| 现象 | 可能原因 | 先检查 |
+| --- | --- | --- |
+| compare 报 task 不一致 | baseline 和 candidate 不是同一任务 | 两个 result JSON 的 task 字段 |
+| delta 很小但想直接发布 | 忽略了 `min_delta` | `summary.verdict` 和 `release_reasons` |
+| leaderboard 数字看起来奇怪 | 混入了不同 backend 或 few-shot | `backend_groups`、`fewshot_groups` |
+| sample summary 看不出原因 | 只看了汇总，没有看逐样本输出 | `sample_outputs.json` 和 `sample_analysis.json` |
+| history 缺记录 | 输出目录或 history 文件不一致 | `results/run_history.jsonl`、`comparison_history.jsonl` |
+
+遇到这些问题时，不要先改代码。
+先确认比较对象、评测参数和结果文件是否一致。
+
+## 可贴进 PR 的证据块
+
+完成 lab 或修改 eval 逻辑后，可以在 PR 里贴这样的摘要：
+
+```text
+Eval evidence:
+- baseline: results/lab_baseline.json
+- candidate: results/lab_candidate.json
+- compare: results/lab_compare.json
+- recommendation: review
+- reason: delta did not exceed min_delta; sample analysis requires manual review
+- checked artifacts: sample_outputs.json, sample_summary.json, sample_analysis.json, comparison_manifest.json
+```
+
+这比只写“eval passed”更有价值，因为维护者可以回到具体文件复核。
 
 ## 扩展任务
 

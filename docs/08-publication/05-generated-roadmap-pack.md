@@ -14,6 +14,25 @@
 如果你准备进入真正的 GitHub 首发阶段，可以再运行 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 它会读取 roadmap pack，把 issue 种子整理成 starter issues，并把自定义标签规范化为新仓库默认可用的 GitHub labels。
 
+## 它解决的真实维护问题
+
+公开仓库最怕两种路线图：
+
+- 太宏大：比如“完善评测系统”“接入真实训练”
+- 太碎片：比如只有几十个没有学习价值的 TODO
+
+roadmap pack 的目标是在中间找平衡：
+
+```text
+学习价值清楚
+范围足够小
+建议文件明确
+验收标准能检查
+验证命令能运行
+```
+
+这会让路线图更适合 GitHub 协作，而不是只适合维护者自己看。
+
 ## 生成命令
 
 在仓库根目录运行：
@@ -45,6 +64,18 @@ PYTHON=.venv/bin/python make roadmap-pack
 - assessment pack 至少有一个模块和一个题目
 
 如果其中任一项不满足，命令会失败。这能避免把“还不能公开复盘”的材料包装成路线图。
+
+## 生成后先看什么
+
+打开 `.tmp/roadmap/roadmap_pack.md` 后，建议先看：
+
+1. `Validation`：是否 ready。
+2. `Roadmap Principles`：是否仍然保持学习项目边界。
+3. `Issue Seeds`：任务是否足够小。
+4. `Recommended Labels`：是否能映射到现有 GitHub labels。
+5. `Publication Flow`：首发后如何使用。
+
+如果 issue seed 看起来像“大项目”，不要直接创建。先拆小，或者放到 public roadmap 作为长期方向。
 
 ## JSON 结构
 
@@ -128,6 +159,25 @@ publication_flow
 5. 保留路线图包里的 learning value、suggested files、acceptance criteria 和 verification commands
 
 这样新贡献者看到的 issue 既有结构，也有学习价值。
+
+## 选择首批 issue 的原则
+
+首批公开 issue 建议满足：
+
+- 读者不用理解全仓库也能开始
+- 改动范围限定在 1 到 3 个文件
+- 验收命令清楚
+- 不需要真实密钥、GPU 或私有资源
+- 能改善一个明确学习卡点
+
+不建议首批 issue 做：
+
+- 大规模目录重组
+- 生产级架构迁移
+- 引入重型依赖
+- 需要维护者大量口头解释的任务
+
+首批 issue 是读者对项目协作体验的第一印象。小而清楚，比大而模糊更好。
 
 ## 和发布检查的关系
 

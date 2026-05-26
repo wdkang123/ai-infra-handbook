@@ -36,6 +36,20 @@
 
 如果你只想先跑 lab，可以暂时不读完所有代码；但跑完后建议回到这些文件，把输出和实现连起来。
 
+## Lab 记录表
+
+建议边跑边记录。
+Serving lab 的重点不是请求成功，而是每个请求能不能留下可追踪证据。
+
+| 请求 | request id | status | response 证据 | metrics 变化 | events/timeline | 备注 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 普通 JSON | `req_lab_serving_json_1` |  | `choices`、`usage`、header |  |  |  |
+| Streaming | `req_lab_serving_stream_1` |  | `data: ...`、`[DONE]` |  |  |  |
+| Unknown model | `req_lab_serving_bad_model_1` |  | 统一 error |  |  |  |
+| Empty messages | `req_lab_serving_empty_messages_1` |  | validation error |  |  |  |
+
+跑完后，至少挑一条成功请求和一条失败请求，说明它们分别留下了哪些证据。
+
 ## 操作步骤
 
 ### 1. 启动服务
@@ -105,6 +119,17 @@ curl -s 'http://localhost:8000/events/requests/req_lab_serving_json_1'
 - summary 是否统计了模型或事件类型
 
 这一步的意义是让你看到：响应返回只是结果之一，事件才是后续复盘的证据。
+
+到这里，你应该能看到一组“前后变化”：
+
+| 观察对象 | 请求前 | 请求后 |
+| --- | --- | --- |
+| `/metrics` request counter | 初始值 | 至少增加一次成功请求 |
+| prompt token counter | 初始值 | 随输入文本增加 |
+| completion token counter | 初始值 | 随 mock 输出增加 |
+| `/events/requests/{id}` | 不存在或为空 | 能看到 request timeline |
+
+如果响应成功但 metrics 或 events 没变化，要优先怀疑观测链路，而不是只看 API 返回体。
 
 ### 4. 发送 streaming 请求
 
@@ -211,6 +236,20 @@ Metrics 看趋势，events 看具体事件。
 - 什么时候失败
 - 请求模型是什么
 - 最终 status 是什么
+
+## 常见卡点
+
+| 现象 | 可能原因 | 先检查 |
+| --- | --- | --- |
+| `/health` 正常但 completion 失败 | 模型名不在服务注册表里 | `/v1/models` 和请求体里的 `model` |
+| 没有看到 `x-request-id` | 请求 header 没传，或响应头没有回传 | `curl -i` 是否打印 header |
+| streaming 没有逐段输出 | curl 没用 `-N` 或终端缓冲 | 命令是否使用 `curl -N` |
+| metrics 没变化 | 请求没有真正进入目标服务，或看的是旧输出 | 重新读取 `/metrics` 并记录前后值 |
+| timeline 查不到 | request id 写错或请求失败路径没记录 | `/events/summary` 和具体 request id |
+| 422 和 404 分不清 | 一个是请求校验失败，一个是业务对象不存在 | 对比 empty messages 和 unknown model |
+
+这些卡点都适合写进复盘。
+你真正要练的是：看到一个现象后，知道该找哪个证据，而不是直接猜原因。
 
 ## 扩展任务
 

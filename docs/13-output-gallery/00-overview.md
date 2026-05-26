@@ -44,6 +44,21 @@ AI Infra 学习很容易卡在两个极端：
 
 证据不是装饰，它是学习、排障、发布判断和公开分享的共同语言。
 
+## 证据质量分级
+
+不是所有输出都同样有用。
+可以按这四档判断证据质量：
+
+| 档位 | 表现 | 是否适合公开复盘 |
+| --- | --- | --- |
+| 截图式证据 | 只有一张成功截图或一句“跑通了” | 不够 |
+| 字段式证据 | 摘出了 status、header、metrics、artifact 路径 | 勉强可用 |
+| 解释式证据 | 说明字段属于哪一层、能证明什么、不能证明什么 | 推荐 |
+| 链路式证据 | 能把请求、事件、评测、训练产物或发布检查串起来 | 最好 |
+
+公开学习站应尽量追求解释式和链路式证据。
+这会让读者看到工程判断，而不是只看到运行结果。
+
 ## 证据库和普通日志有什么不同
 
 普通日志通常是过程记录，可能很碎。
@@ -140,6 +155,18 @@ AI Infra 学习很容易卡在两个极端：
 - 是否影响文档/脚本/API/CLI
 - 是否通过 public-check
 
+PR 里可以直接使用这个证据块：
+
+```text
+Evidence:
+- scope: docs + eval lab
+- validation: PYTHON=.venv/bin/python make docs-quality
+- build: npm run docs:build
+- key artifacts: results/lab_compare.json, results/lab_compare.md
+- checked risk: no secrets, no private endpoint, no personal path
+- remaining boundary: learning scaffold, not production eval platform
+```
+
 ### 公开演示
 
 最少展示：
@@ -159,6 +186,23 @@ AI Infra 学习很容易卡在两个极端：
 - 跑过哪些验证
 - 当前仍然不是生产平台
 - 下一步路线图
+
+## 公开分享前的脱敏规则
+
+证据越完整，越要注意公开边界。
+发布到 GitHub、博客、社交媒体或演示材料前，先检查：
+
+| 风险 | 处理方式 |
+| --- | --- |
+| API key、token、cookie | 直接删除，不要只打码前几位 |
+| 私有 endpoint、内网域名 | 改成 `http://localhost:8000` 或示例域名 |
+| 个人本机路径 | 改成 `/path/to/ai-infra` |
+| 公司内部模型名或数据集名 | 改成公开模型名或合成名称 |
+| 用户输入样本 | 确认没有个人信息、业务数据或聊天记录 |
+| 截图 | 检查浏览器地址栏、终端 prompt、账号信息 |
+| 生成式图片 | 不要暗示真实公司或开源项目官方背书 |
+
+脱敏的目标不是把内容删空，而是在保留学习价值的同时移除个人和私有信息。
 
 ## 和案例复盘的关系
 

@@ -4,6 +4,23 @@
 
 真正重要的不是第一次 push，而是让第一次来的读者、未来贡献者和你自己都能持续判断：这个项目现在能做什么，下一步该做什么。
 
+## 当前推荐节奏
+
+在当前快速打磨阶段，建议：
+
+```text
+本地大批量修改
+  -> 本地 public-check
+  -> 本地预览抽查
+  -> 阶段性 commit
+  -> 准备发布时再 push
+  -> GitHub Pages 自动部署
+```
+
+不要每改一小段就推远端。这样会频繁触发 Pages，也会让 Actions 历史变得嘈杂。
+
+公开发布时，远端 main 应该代表一批已经本地验证过的改进。
+
 ## 发布前一周
 
 发布前先完成这些检查：
@@ -51,6 +68,28 @@ npm audit --omit=dev --audit-level=moderate
 
 当前 README 已经覆盖这些方向，后续可以在真正部署线上站点后增加站点链接。
 
+## 首发前一天
+
+首发前一天更适合做“收口”，不是继续大改。
+
+建议只做：
+
+- 修 broken link
+- 修 README/首页入口
+- 修 public-check 失败
+- 修明显错别字或安全问题
+- 更新 release notes、roadmap、首批 issue
+
+不建议做：
+
+- 大改 UI
+- 重构项目目录
+- 引入新依赖
+- 改 smoke 主链路
+- 批量新增未验证内容
+
+首发前一天的目标是降低风险。
+
 ## GitHub 仓库设置建议
 
 推荐设置：
@@ -94,6 +133,24 @@ npm audit --omit=dev --audit-level=moderate
 | 第 22 到 30 天 | 整理路线图 | 把大想法拆成小 issue |
 
 30 天内不要急着大改架构。公开学习项目早期最有价值的是把第一批读者的卡点转成稳定入口。
+
+## 首发当天检查清单
+
+发布当天按这个顺序：
+
+```text
+[ ] 本地 public-check 通过
+[ ] 本地预览首页和核心页面正常
+[ ] commit message 清楚
+[ ] push 后 Actions 成功
+[ ] GitHub Pages 首页 200
+[ ] README 在线链接可打开
+[ ] About Website 正确
+[ ] release notes 里的验证命令真实跑过
+[ ] 首批 issue 边界清楚
+```
+
+如果 Pages 失败，先看 Actions 日志和 Pages Source，不要立刻怀疑所有内容都坏了。
 
 ## 版本节奏
 

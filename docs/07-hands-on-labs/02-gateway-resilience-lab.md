@@ -34,6 +34,25 @@
 - `projects/ai-gateway/src/ai_gateway/middleware/auth.py`
 - `projects/ai-gateway/tests/test_proxy.py`
 
+## Lab 记录表
+
+建议边做边记录：
+
+```text
+正常请求 request id：
+401 现象：
+404 现象：
+429 现象：
+streaming 是否有 [DONE]：
+fallback header：
+cache header：
+events 里看到的关键 event：
+metrics 里变化的字段：
+我还不能解释的地方：
+```
+
+这个 lab 的目标不是把命令跑完，而是让你能用证据解释 gateway 的每种行为。
+
 ## 操作步骤
 
 ### 1. 启动 inference 和 gateway
@@ -77,6 +96,14 @@ curl -s http://localhost:8080/v1/chat/completions \
 - 返回内容来自下游 inference
 - gateway metrics 的 successful requests 增加
 - `/events` 里能看到 `request_received`、`upstream_attempt`、`request_success`
+
+如果你想更明确地追踪一次请求，可以用刚才传入的 `X-Request-ID`：
+
+```bash
+curl -s "http://localhost:8080/events/requests/req_lab_gateway_ok_1"
+```
+
+这一步能把 header、metrics 和 events 串起来。
 
 ### 3. 验证三个入口错误
 
@@ -128,6 +155,24 @@ curl -N http://localhost:8080/v1/chat/completions \
 - gateway 不生成 chunk，只透传下游事件流
 - 正常流最后有 `[DONE]`
 
+### 5. 查看失败摘要
+
+跑完前面的错误请求后，查看失败聚合：
+
+```bash
+curl -s "http://localhost:8080/events/failures"
+curl -s "http://localhost:8080/events/summary"
+```
+
+观察：
+
+- 是否出现 `auth_failed`
+- 是否出现 `route_not_found`
+- 是否出现 `rate_limited`
+- 是否能按最近事件判断失败主要集中在哪一层
+
+这比只看最后一个 curl 输出更接近真实排障。
+
 ## 关键观察点
 
 ### 观察点 1：gateway 的失败不是一种失败
@@ -175,6 +220,21 @@ vllm-local -> vllm-backup
 - `MISS`：查过缓存，但需要访问下游
 - `HIT`：直接命中 gateway 缓存
 
+### 观察点 4：错误码是平台契约
+
+这个 lab 里的 `401 / 404 / 429 / 502` 不只是 HTTP 数字。
+
+它们表达的是平台对调用方的承诺：
+
+| 状态码 | 调用方应该怎么理解 |
+| --- | --- |
+| `401` | 身份没有通过，不要重试同一 token |
+| `404` | 模型名或路由不存在，应该检查请求 |
+| `429` | 请求太多，应该退避或降级 |
+| `502` | 下游失败，可以稍后重试或走备用策略 |
+
+把错误语义讲清楚，是 gateway 的重要价值。
+
 ## 扩展任务
 
 任选一个完成：
@@ -200,3 +260,36 @@ PYTHON=.venv/bin/python make infra-smoke
 - `x-cache: BYPASS / MISS / HIT` 分别代表什么
 - `x-upstream-model` 和 `x-fallback-used` 分别回答什么问题
 - 为什么 `/health` 要包含 upstream 状态
+
+## 常见卡点
+
+### curl 一直没有 streaming 输出
+
+确认使用了 `curl -N`，并确认请求体包含：
+
+```json
+{"stream": true}
+```
+
+### 429 没出现
+
+限流和配置、时间窗口有关。可以先读 `configs/config.yaml`，确认当前限制，再增加短时间内请求次数。
+
+### fallback 看不到
+
+默认教学配置可能让主候选和备选都指向本地服务。你需要结合 events、headers 和 metrics 判断是否真的发生 fallback。不要只看响应内容。
+
+### cache 一直是 BYPASS
+
+先确认 response cache 是否启用。默认关闭时 `BYPASS` 是正确结果，不是失败。
+
+## 复盘问题
+
+完成后写下：
+
+```text
+我认为 gateway 的核心职责是：
+这次 lab 里最能说明 gateway 价值的证据是：
+如果要接真实上游，我会保留的契约是：
+我还想补一个测试来覆盖：
+```

@@ -12,6 +12,50 @@
 - finetune-demo
 - smoke
 
+## 排障的基本方法
+
+大多数问题都可以按这个顺序处理：
+
+```text
+1. 记录你运行的命令
+2. 记录错误码、异常或失败阶段
+3. 判断是哪一层
+4. 找对应 summary/index/timeline/manifest
+5. 缩小到一个文件或一个配置
+6. 修复后跑最小验证命令
+```
+
+不要一上来全量重装依赖，也不要一上来改代码。很多问题只是环境没激活、端口占用、模型名写错、token 缺失、路径大小写不一致。
+
+## 0. `npm` 找不到或 Node 版本不对
+
+现象：
+
+```text
+make: npm: No such file or directory
+```
+
+常见原因：
+
+- 当前 shell 没加载 nvm
+- 没执行 `nvm use 22`
+- CI 或本地终端的 Node 版本和项目不一致
+
+处理方式：
+
+```bash
+nvm use 22
+npm run docs:build
+```
+
+如果通过脚本运行，可以用：
+
+```bash
+/bin/zsh -lc "source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm run docs:build"
+```
+
+学习重点：这是环境问题，不是 VitePress 或 Markdown 内容问题。
+
 ## 1. `make infra-check` 找不到 Python 包
 
 现象：
@@ -86,6 +130,29 @@ VITEPRESS_BASE=/
 相关页面：
 
 - [GitHub Pages 发布指南](/08-publication/01-github-pages)
+
+## 3.1 本地 preview 样式或资源 404
+
+现象：
+
+- 页面能打开，但 CSS/JS 资源 404
+- 刚 build 后 preview 仍显示旧样式
+- 浏览器控制台有 hashed asset 找不到
+
+常见原因：
+
+- `docs/.vitepress/dist` 被重新构建，但旧 preview 服务还在
+- 浏览器缓存了旧资源
+
+处理方式：
+
+```bash
+lsof -nP -iTCP:4173 -sTCP:LISTEN
+kill <pid>
+npm run docs:preview
+```
+
+如果只是本地调样式，优先用 `npm run docs:dev`；如果要模拟线上构建，先 `docs:build` 再 `docs:preview`。
 
 ## 4. inference-service 请求返回 404
 
@@ -183,6 +250,50 @@ curl -s http://localhost:8080/health
 - `projects/ai-gateway/src/ai_gateway/router.py`
 - `projects/ai-gateway/src/ai_gateway/server.py`
 
+## 8.1 fallback 没有按预期发生
+
+先判断请求类型：
+
+- 非 streaming：主 upstream 在返回前失败，可以尝试 fallback
+- streaming：只有首个 chunk 之前失败才适合 fallback
+
+检查顺序：
+
+```bash
+curl -s "http://localhost:8080/events/requests/<request_id>"
+curl -s "http://localhost:8080/events?event_type=fallback_attempt"
+curl -s "http://localhost:8080/metrics"
+```
+
+再看响应 header：
+
+```text
+x-upstream-model
+x-fallback-used
+```
+
+如果请求已经开始 streaming 并发出了 chunk，中途失败不应该切换备用模型。否则客户端会收到两个模型拼在一起的输出。
+
+## 8.2 cache 没有 HIT
+
+先确认当前配置是否启用 response cache。默认学习路径可能是 `BYPASS`。
+
+如果启用了 cache，还要确认：
+
+- 请求体是否完全一致
+- token 是否一致
+- 是否是非 streaming 请求
+- TTL 是否过期
+- max entries 是否淘汰了旧条目
+
+观察 header：
+
+```text
+x-cache: BYPASS / MISS / HIT
+```
+
+学习重点：response cache 和 KV cache 不是一回事。response cache 是 gateway 层缓存完整响应，KV cache 是模型执行层复用中间状态。
+
 ## 9. streaming 没有看到 `[DONE]`
 
 优先确认使用了 `curl -N`：
@@ -244,6 +355,22 @@ Cannot compare different tasks
 相关文件：
 
 - `projects/eval-module/src/eval_module/results/result_store.py`
+
+## 11.1 leaderboard 第一但不能发布
+
+这是正常的。
+
+Leaderboard 是展示层，不是发布批准。
+
+发布前还要看：
+
+- candidate 和 baseline 是否同 task
+- backend/few-shot/limit 是否一致
+- sample outputs 是否有关键失败
+- comparison recommendation 是什么
+- latency、cost、error rate 是否能接受
+
+如果只是 leaderboard 排名高，但 sample-level evidence 不稳，应该继续 review。
 
 ## 12. finetune 训练数据被拒绝
 
@@ -309,3 +436,36 @@ PYTHON=.venv/bin/python make infra-smoke
 
 - `scripts/integration_smoke_test.sh`
 - 根级 `Makefile`
+
+## 15. public-check 失败
+
+`public-check` 是发布前综合检查。它失败时先看失败阶段：
+
+| 阶段 | 常见原因 |
+| --- | --- |
+| security scan | 候选文件里有疑似密钥、路径、危险文件 |
+| project tests | 某个项目行为退化 |
+| docs-quality | Markdown 链接、sidebar、首页入口问题 |
+| docs-build | VitePress 构建失败或 Node 环境问题 |
+
+处理方式：
+
+1. 先修第一个失败点。
+2. 不要因为后面没跑到就假设后面都通过。
+3. 修完后重新跑完整 `public-check`。
+
+## 16. 写 issue 或 PR 前怎么描述问题
+
+好的排障报告至少包含：
+
+```text
+命令：
+预期：
+实际：
+错误码/日志：
+request id / run id：
+已检查的证据：
+可能层级：
+```
+
+如果是公开 issue，不要贴真实 token、真实 endpoint、私有路径或完整敏感日志。用占位值和截取后的关键字段即可。

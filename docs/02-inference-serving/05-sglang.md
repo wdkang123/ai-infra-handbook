@@ -184,6 +184,53 @@ inference-service engine adapter
 
 目标是理解 structured output 为什么是工程问题。
 
+## 观察 SGLang 时应该看什么
+
+学习 SGLang 不要只看“能不能返回文本”。更有价值的是观察请求形态和运行时行为：
+
+| 观察点 | 说明 |
+| --- | --- |
+| TTFT | 共享前缀、prefill 成本和排队会影响首 token |
+| TPOT | decode 阶段吞吐和调度会影响持续生成 |
+| prefix cache 命中 | 模板化请求是否真的复用了上下文 |
+| structured output 成功率 | JSON/schema 是否稳定可解析 |
+| streaming 稳定性 | 长输出和错误路径是否能被调用方处理 |
+| 并发下错误 | 复杂 workflow 下是否有超时、取消、资源耗尽 |
+
+这些信号应该进入同一套 gateway/inference/eval 证据链，而不是只停在 runtime 自己的日志里。
+
+## 迁移时如何保留项目边界
+
+如果未来把当前 `inference-service` 接到 SGLang，可以用 adapter 方式切入：
+
+```text
+OpenAI-compatible request
+  -> inference-service adapter
+  -> SGLang backend
+  -> response / stream
+  -> metrics / events / eval
+```
+
+迁移时要避免两个极端：
+
+- 直接让前端或业务代码调用 runtime，绕过 gateway 和观测。
+- 为了适配 runtime，把现有 learning API、events、metrics 全部推翻。
+
+更好的做法是保留外部契约，只替换执行层。这样读者能清楚看到：runtime 变了，但平台边界没有丢。
+
+## 结构化生成的验收方式
+
+结构化输出不能只看“这次生成了 JSON”。建议至少记录：
+
+- parse success rate
+- schema missing field rate
+- retry count
+- invalid token/error examples
+- judge 或 rule-based validation 结果
+- downstream 是否能消费
+
+如果结构化输出要进入真实工作流，失败样本比成功样本更有价值。它们会告诉你是 schema 太严、prompt 不稳、runtime 约束不够，还是下游容错不足。
+
 ## 常见误区
 
 ### “SGLang 就是更适合 Agent”
@@ -222,3 +269,4 @@ inference-service engine adapter
 - [Cache 与 Prefix Caching](/02-inference-serving/06-cache-prefix-caching)
 - [Streaming、Batching、Metrics](/02-inference-serving/09-streaming-batching-metrics)
 - [Serving 后端迁移](/12-production-migration/01-serving-backend-migration)
+- [SGLang 官方文档](https://docs.sglang.io/)

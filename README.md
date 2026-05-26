@@ -4,6 +4,8 @@
 [![Docs Pages](https://github.com/wdkang123/ai-infra-handbook/actions/workflows/docs-pages.yml/badge.svg)](https://github.com/wdkang123/ai-infra-handbook/actions/workflows/docs-pages.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
+![AI Infra Handbook social preview](./docs/public/og-image.png)
+
 > 一套能边学边跑的 AI 基础设施学习手册：从 LLM 请求链路、推理服务、AI Gateway、评测观测到微调资产化，用文档站、可运行代码、hands-on labs 和证据包把学习过程连起来。
 
 这个仓库现在的主目标，不是做一个花哨产品，而是把 AI Infra 的学习内容、可运行脚手架和最小联调链路收成一套能边学边跑的手册。

@@ -74,6 +74,15 @@ const rows = [
       </template>
     </div>
 
+    <div class="matrix-mobile-list" aria-label="learning outcome cards">
+      <a v-for="row in rows" :key="row.module" class="matrix-mobile-card" :href="row.href">
+        <span class="matrix-mobile-kicker">{{ row.module }}</span>
+        <strong>{{ row.question }}</strong>
+        <p>{{ row.artifact }}</p>
+        <span class="matrix-mobile-meta">{{ row.validation }}</span>
+      </a>
+    </div>
+
     <div class="matrix-actions">
       <a href="/00-overview/14-project-maturity-map">查看当前项目成熟度</a>
       <a href="/00-overview/15-two-week-learning-plan">按两周计划学习</a>

@@ -3,6 +3,24 @@
 `launch-pack` 用来把发布摘要和路线图包合成一份首发运营包。
 它解决的是公开发布前最后一公里的问题：release notes、首批 issues、发布后检查表和验证命令要来自同一套结构化材料，而不是散落在几篇手写文档里。
 
+## 它在发布链路里的位置
+
+首发前可以把自动产物想成一条流水线：
+
+```text
+docs inventory -> course catalog -> evidence packet -> release brief -> assessment pack -> roadmap pack -> launch pack
+```
+
+前面的产物回答“内容是否完整、证据是否齐全、课程是否能带练、问题能否拆成 issue”。
+`launch-pack` 最后回答：
+
+- 这次 release 应该怎么介绍
+- 哪些 issue 适合作为首批公开任务
+- 发布后 2 小时、24 小时、7 天和 30 天要检查什么
+- 默认 GitHub labels 是否足够支撑首发
+
+它不是自动发布工具，而是公开发布前的运营检查包。
+
 ## 什么时候使用
 
 适合在这些时机运行：
@@ -45,6 +63,18 @@ PYTHON=.venv/bin/python make launch-pack
 这两个文件位于临时目录，默认不会进入公开提交。
 真正需要沉淀到仓库里的，是这页文档、发布手册、首批 issue 草稿和 release notes 草稿。
 
+## 生成前人工确认
+
+运行前建议先确认：
+
+- 本地没有准备提交的真实 `.env` 或密钥
+- README、首页和发布总览已经是最新定位
+- `release_brief.md` 不是过期产物
+- `roadmap_pack.md` 的 issue seeds 确实来自当前内容缺口
+- 你准备发布的是一个阶段性批次，而不是临时半成品
+
+如果刚做过大规模内容扩写，最好先重新跑完整链路。否则 launch pack 可能还在引用旧的页面数量、旧的 issue seeds 或旧的 release readiness。
+
 ## 输入产物
 
 `launch-pack` 读取两份上游产物：
@@ -67,6 +97,20 @@ PYTHON=.venv/bin/python make launch-pack
 
 这能避免你在材料还没准备好时误把半成品当成首发材料。
 
+## validation 怎么读
+
+`validation` 不是装饰字段，它决定这份 launch pack 是否适合拿去 GitHub 创建 release 和 issue。
+
+| 信号 | 说明 | 处理 |
+| --- | --- | --- |
+| release brief 不是 ready | 发布摘要认为当前不适合公开复盘 | 回到 release brief 修缺失项 |
+| roadmap pack 不是 ready | 路线图还不能稳定转成 issue | 回到 assessment 或 roadmap pack |
+| issue seeds 为空 | 没有首批公开任务 | 补充路线图或手写首批 issue |
+| ready_for_public_review 为 false | 公开定位或证据链不足 | 先修文档和证据 |
+| ready_for_public_roadmap 为 false | issue 缺学习价值或验收 | 先修 issue seeds |
+
+只有 validation 全部通过时，才建议把 release notes draft 和 starter issues 复制到 GitHub。
+
 ## 输出结构
 
 JSON 产物主要包含：
@@ -83,6 +127,28 @@ JSON 产物主要包含：
 
 Markdown 产物适合直接人工阅读和复核。
 如果你要创建 GitHub release，可以先打开 `.tmp/launch/launch_pack.md`，再把 `Release Notes Draft` 按实际验证结果删改后复制到 GitHub。
+
+## Release notes 怎么改
+
+生成的 release notes 是草稿，不应该原封不动粘贴。
+
+人工精修时重点改：
+
+- 把“本轮真实验证命令”补准确
+- 删除当天没有验证过的夸张表述
+- 明确说明这是学习型项目
+- 把在线文档站、README 和首批 issue 链接补上
+- 保留 known limitations，避免读者误解生产能力
+
+一份好的 v0.1 release notes 应该让读者知道：
+
+```text
+我能在线读什么？
+我能本地跑什么？
+我能看到哪些证据？
+我能从哪些 issue 开始贡献？
+这个版本还不能做什么？
+```
 
 ## 标签规范化
 
@@ -110,6 +176,31 @@ Markdown 产物适合直接人工阅读和复核。
 这样首批 issue 可以直接创建，不会因为引用未创建标签而增加维护噪音。
 等贡献变多后，再按 [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels) 创建更细标签。
 
+## Starter issues 怎么落地
+
+从 launch pack 创建首批 issue 时，建议每条都保留这几块：
+
+```text
+## Learning value
+这条 issue 能帮读者理解什么？
+
+## Suggested files
+- docs/...
+- scripts/...
+
+## Acceptance criteria
+- ...
+
+## Verification
+- PYTHON=.venv/bin/python make docs-quality
+
+## Out of scope
+- 不引入生产级依赖
+- 不提交真实密钥或大文件
+```
+
+首批 issue 不要太多。3 到 6 条通常更好：足够说明项目欢迎贡献，又不会制造一堆没人维护的任务。
+
 ## 如何使用生成结果
 
 推荐流程：
@@ -121,6 +212,19 @@ Markdown 产物适合直接人工阅读和复核。
 5. 从 `Starter Issues` 挑 3 到 6 条创建到 GitHub。
 6. 保留 issue 中的 learning value、suggested files、acceptance criteria 和 verification commands。
 7. 发布后按 `Post-release Checklist` 做 2 小时、24 小时、7 天和 30 天复盘。
+
+## 发布后怎么用
+
+launch pack 不是发布前用完就扔。
+
+发布后可以用它做四件事：
+
+- 2 小时内：确认 Pages、README、release、starter issues 都能打开
+- 24 小时内：检查是否有 Dependabot、Actions 或读者反馈需要处理
+- 7 天内：把第一批反馈转成 FAQ、lab、case 或 issue
+- 30 天内：复盘哪些 starter issues 真正被点击、讨论或贡献
+
+如果发现 release notes 和实际站点不一致，优先修公开入口。公开项目的第一印象不只来自代码，也来自你是否让读者知道当前状态。
 
 ## 和其他发布材料的关系
 
@@ -138,3 +242,17 @@ Markdown 产物适合直接人工阅读和复核。
 
 如果 launch pack 的 `launch_readiness` 是 `review`，先回到 release brief 或 roadmap pack 修输入。
 只有当上游证据都清楚时，再去 GitHub 上创建 release 和 issue。
+
+## 常见误区
+
+### 把 launch pack 当成自动发布
+
+它不会创建 GitHub release，也不会替你开 issue。这样设计是有意的：首发运营材料必须经过人读，因为公开定位、措辞边界和首批 issue 质量都需要判断。
+
+### 首批 issue 太大
+
+新读者更适合做可完成的小任务。比如“补一个 fallback 输出字段解释”比“重构 gateway”更适合作为首批 issue。
+
+### 只改 release notes 不改上游材料
+
+如果发现 release notes 不准确，通常说明 release brief、roadmap pack 或文档本身需要更新。只改最终文案会让自动产物和真实状态分叉。

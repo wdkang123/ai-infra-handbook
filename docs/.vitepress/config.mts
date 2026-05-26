@@ -2,27 +2,38 @@ import { defineConfig } from "vitepress";
 
 const base = process.env.VITEPRESS_BASE || "/";
 const siteUrl = "https://wdkang123.github.io/ai-infra-handbook/";
+const siteTitle = "AI Infra Handbook";
+const siteDescription =
+  "一套能边学边跑的 AI Infra 学习站，覆盖推理服务、AI Gateway、评测观测、微调训练和公开分享材料。";
+const socialImage = `${siteUrl}og-image.png`;
 
 export default defineConfig({
   lang: "zh-CN",
-  title: "AI Infra Handbook",
+  title: siteTitle,
   description: "把学习文档、可运行脚手架、hands-on labs 和最小联调链路收成一个可浏览的 AI Infra 学习站。",
   base,
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: "localhostLinks",
   head: [
-    ["meta", { property: "og:title", content: "AI Infra Handbook" }],
+    ["meta", { property: "og:title", content: siteTitle }],
     [
       "meta",
       {
         property: "og:description",
-        content: "一套能边学边跑的 AI Infra 学习站，覆盖推理服务、AI Gateway、评测观测、微调训练和公开分享材料。",
+        content: siteDescription,
       },
     ],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:url", content: siteUrl }],
-    ["meta", { name: "twitter:card", content: "summary" }],
+    ["meta", { property: "og:image", content: socialImage }],
+    ["meta", { property: "og:image:width", content: "1200" }],
+    ["meta", { property: "og:image:height", content: "630" }],
+    ["meta", { property: "og:image:alt", content: "AI Infra Handbook learning site preview" }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:title", content: siteTitle }],
+    ["meta", { name: "twitter:description", content: siteDescription }],
+    ["meta", { name: "twitter:image", content: socialImage }],
   ],
   themeConfig: {
     siteTitle: "AI Infra Handbook",

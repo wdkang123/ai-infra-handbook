@@ -12,6 +12,24 @@
 
 `scripts/build_learning_inventory.py` 会扫描 `docs/`，把页面、章节、课程主线和维护信号汇总成 JSON / Markdown。
 
+## 它解决的不是统计问题
+
+学习站清单表面上是在数页面，实际是在回答：
+
+- 这个站点是否仍然有清晰主线
+- 新增内容有没有被读者路径接住
+- labs、案例、证据库、共学材料是否还在支撑核心课程
+- 公开发布时能不能说明“这不是散文档，而是一套学习体系”
+
+所以不要只看 `page_count`。页数增加不一定代表质量提升。更重要的是：
+
+```text
+页面是否进入正确章节
+章节是否服务课程主线
+课程主线是否能被读者执行
+质量信号是否覆盖阅读、实操、复盘、发布
+```
+
 ## 生成命令
 
 在仓库根目录运行：
@@ -67,6 +85,25 @@ course_tracks
 - `Course Tracks`：7 条推荐学习主线
 - `Section Pages`：每个页面的标题、路由和内容信号
 - `Maintenance Notes`：维护时应该同步检查什么
+
+## 如何阅读 Quality Signals
+
+`quality_signals` 可以用来判断学习站是不是只停留在“讲概念”。
+
+建议关注：
+
+| 信号 | 说明 |
+| --- | --- |
+| labs | 是否有可操作练习 |
+| assessments | 是否有自测和评分 |
+| case studies | 是否有工程故事和复盘 |
+| output gallery | 是否有运行证据 |
+| workshop kit | 是否能组织共学 |
+| publication pages | 是否能公开发布和维护 |
+
+如果概念页很多，但 labs、evidence、case、assessment 很少，读者可能会觉得“看完没抓手”。
+
+当前项目正在持续补厚的重点，就是让每条主线都不只停在解释，而能连接到命令、证据、练习和复盘。
 
 ## 课程主线
 
@@ -181,3 +218,36 @@ PYTHON=.venv/bin/python make infra-check
 9. 用 [共学与公开分享套件](/14-workshop-kit/00-overview) 组织学习者任务和反馈
 
 这样项目就不只是“很多文档”，而是有结构、有路径、有运行证据、也有协作入口的学习站。
+
+## 发现问题后怎么改
+
+如果 inventory 暴露出问题，可以这样处理：
+
+| 问题 | 处理 |
+| --- | --- |
+| 某章节页数太少 | 补 overview、lab、证据页或案例 |
+| 某章节只有概念没有练习 | 增加 hands-on lab 或输出证据 |
+| 主线缺 route | 修 `COURSE_TRACKS` 或补页面/sidebar |
+| 页面很多但入口不清 | 更新 overview、README、首页课程矩阵 |
+| 公开分享材料缺口 | 补 workshop kit、release brief、launch pack 说明 |
+
+不要为了让数字好看硬加页面。每个新增页面都应该回答一个真实读者问题。
+
+## 可以贴到 PR 的摘要
+
+当 PR 大量改文档结构时，可以贴：
+
+```text
+Learning inventory:
+- page count:
+- section count:
+- course tracks:
+- missing tracked routes:
+- quality signals:
+
+Verification:
+- PYTHON=.venv/bin/python make docs-inventory
+- PYTHON=.venv/bin/python make docs-quality
+```
+
+这比只说“更新了很多文档”更容易 review。

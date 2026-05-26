@@ -41,6 +41,19 @@ Finetune 最容易被简化成：
 
 如果一个训练目录没有 manifest，你后面只能靠猜。
 
+## 推荐阅读顺序
+
+面对一个训练 run 目录，可以按这个顺序读：
+
+1. `run_manifest.json`：确认 run 的身份和配置入口。
+2. `dataset_summary.json`：确认数据版本、hash、role 分布。
+3. `training_args.json`：确认训练参数。
+4. `checkpoint_index.json`：确认 checkpoint 是否可导出或 resume。
+5. `export_manifest.json`：确认导出产物和 source checkpoint。
+6. `run_index.json` / `export_index.json`：确认它在历史里处于什么位置。
+
+这个顺序的好处是：先定位，再看数据，再看训练，再看可流转资产。
+
 ## Dataset summary
 
 `dataset_summary.json` 适合先看数据是否可解释。
@@ -61,6 +74,17 @@ Finetune 最容易被简化成：
 > 这次训练到底用了哪份数据？
 
 如果 dataset hash 变了，训练结果就不能只归因于模型或参数变化。
+
+### role_counts 为什么重要
+
+chat-style 训练数据里，role 分布能暴露很多问题：
+
+- 没有 assistant：模型没有目标回答可学
+- system 过多：可能训练成过度依赖固定系统提示
+- user/assistant 数量不平衡：可能数据结构有缺失
+- record_count 很小：更适合做链路演示，不适合得出质量结论
+
+所以 dataset summary 不是“数据统计装饰”，它是训练质量判断的第一层证据。
 
 ## Artifacts manifest
 
@@ -116,6 +140,27 @@ Finetune 最容易被简化成：
 
 如果 export manifest 不能追溯 checkpoint，那么它很难进入 eval 或 serving。
 
+## Export 之后必须接 Eval
+
+export 成功只能说明产物能被导出，不说明它值得使用。
+
+下一步至少要做：
+
+```text
+export_manifest
+  -> eval run
+  -> compare baseline/candidate
+  -> release recommendation
+```
+
+如果 eval 退化，再沿着 export manifest 回查：
+
+```text
+export -> checkpoint -> run -> dataset -> training args
+```
+
+这就是训练资产链路的价值。
+
 ## Dataset registry report
 
 数据集 registry 适合回答：
@@ -152,6 +197,20 @@ Finetune 最容易被简化成：
 - model/dataset summaries 是否可读
 
 它们不是为了好看，而是为了后续 dashboard、CI、发布流程可以读取。
+
+## 公开分享时怎么展示
+
+公开展示训练产物时，不建议贴完整目录或真实大文件。
+
+更好的方式是展示：
+
+- run manifest 的关键字段
+- dataset summary 的 record_count、role_counts、sha
+- checkpoint index 的 latest checkpoint
+- export manifest 的 source checkpoint 和 adapter hash
+- eval compare 的 recommendation
+
+如果涉及真实数据，使用脱敏样例和结构说明，不要把数据原文、真实用户信息或私有路径放进公开仓库。
 
 ## 常见误读
 
