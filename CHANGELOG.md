@@ -88,6 +88,7 @@
 - 将请求到首个 token、Streaming/Batching/Metrics、Gateway 平台边界、模型名映射、SFT/DPO 训练目标、微调决策、实验追踪复现、Benchmark 与生产质量扩写为教程式核心页。
 - 将学习型 Serving/Gateway 到真实系统、四条生产迁移路线、端到端系统地图和质量维护入口扩写为分阶段迁移、风险、验收和证据闭环教程页。
 - 将 LLM Fundamentals、Inference Serving、AI Gateway、Evaluation Observability、Finetuning Training、项目总览、Demo Training 迁移和生产迁移总览扩写为模块导学章，补齐学习目标、系统边界、代码映射、实践路线和常见误区。
+- 将第一次实操后续路线、Run 到发布决策、GitHub 协作入口、参考资料总览、API Surface、自测总览、系统地图自测和 Capstone 答辩扩写为更完整的学习验收、排障定位、公开协作和发布判断指南。
 
 ### Verified
 
