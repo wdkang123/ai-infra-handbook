@@ -1,6 +1,6 @@
 # Changelog
 
-这个文件记录面向学习者和贡献者的重要变化。  
+这个文件记录面向学习者和贡献者的重要变化。
 格式参考 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)，版本语义保持轻量。
 
 ## Unreleased
@@ -62,6 +62,7 @@
 - 新增自动生成首发运营包参考页，把 release notes、starter issues、默认标签规范和发布后检查表接入公开发布流程。
 - 新增 `make security-check` 和 `make public-check`，在公开上传前扫描候选入库文件中的密钥、私钥、连接串、本机路径、个人痕迹和危险文件类型。
 - 新增脱敏后的 `tasks/` / `prompts/` 公开工作台说明，保留项目拆解、研究、评审和 AI 协作方法。
+- 新增深度教程页写作标准，明确核心章节不能停留在提纲，需要覆盖场景、机制、取舍、观察方式、仓库映射和常见误区。
 
 ### Changed
 
@@ -81,6 +82,8 @@
 - 将 CI、PR template、贡献指南、发布计划、README、SECURITY 和发布清单统一到 `public-check` 公开上传检查口径。
 - 将 Node 版本约束收紧到 22，与 `.nvmrc`、CI 和本地推荐命令保持一致。
 - 将 issue templates 的默认 labels 收敛到 GitHub 默认标签，避免新仓库因为未创建自定义 labels 产生提示。
+- 将 Prefill/Decode/KV Cache、vLLM/SGLang、Triton/TensorRT-LLM、Gateway 鉴权路由限流、Benchmark/Leaderboard/Observability、LoRA/QLoRA/PEFT 从提纲式说明扩写为教程式核心章节。
+- 将 Token/Context、TTFT/ITL/Throughput、服务选型取舍、Gateway health/metrics/request id、Eval run/compare/history、Finetune run/artifacts/export 扩写为带场景、机制、观察方式、误区和仓库映射的深度教程页。
 
 ### Verified
 
