@@ -15,6 +15,20 @@
 
 如果你准备把项目分享给别人，证据包会比“我做了一个 AI Infra 项目”更有说服力。
 
+## 什么时候需要端到端证据包
+
+只要你准备对别人说明“这个项目已经跑通并且我理解它”，就应该整理一份端到端证据包。
+
+典型场景包括：
+
+- 完成第一次实操后做学习复盘。
+- 做完全部 hands-on lab 后准备 Capstone。
+- 写 README、博客或公开演示稿。
+- 给 PR reviewer 说明一批改动没有破坏学习链路。
+- 准备 GitHub 首发或 release notes。
+
+端到端证据包不是把所有产物都提交进仓库，而是把关键字段、路径和结论整理成可读材料。原始产物可以留在 `.tmp/` 或本地输出目录，复盘里只引用必要摘要。
+
 ## 最小证据包结构
 
 建议每次复盘都按这个结构收集：
@@ -26,6 +40,21 @@
 | 质量判断 | run、sample analysis、compare | eval-module |
 | 训练资产 | run manifest、checkpoint index、export manifest | finetune-demo |
 | 结论 | 是否通过、风险是什么、下一步是什么 | 人工复盘 |
+
+## 证据强度分级
+
+不同证据能支持的结论强度不同。
+
+| 证据 | 能支持 | 不能支持 |
+| --- | --- | --- |
+| `infra-check` 通过 | 本地基础检查正常 | 端到端链路一定完整 |
+| `infra-smoke` 通过 | 四项目最小链路可运行 | 生产质量足够 |
+| request timeline | 单条请求路径可追踪 | 长期稳定性 |
+| eval comparison | baseline/candidate 的离线比较 | 线上表现 |
+| finetune manifest | 训练产物来源可追溯 | 模型能力一定提升 |
+| public-check | 公开上传前基础风险可控 | 绝对没有安全问题 |
+
+写复盘时要避免把低强度证据解释成高强度结论。比如 smoke 通过只能证明最小学习链路正常，不能证明生产可用。
 
 ## 一份可以公开分享的复盘
 
@@ -84,6 +113,21 @@ curl -s "http://localhost:8080/events/requests/demo_review_1"
 
 如果 gateway 有 timeline，inference 没有 timeline，说明请求可能没有打到 inference，或者 request id 没有传递到下游。
 
+请求链路部分建议写成：
+
+```text
+我确认：
+- gateway 收到请求。
+- gateway 调用了 inference。
+- request id 能在两层对齐。
+- 本次没有 / 有 fallback 或 cache。
+
+我不能确认：
+- 长期错误率。
+- 生产延迟。
+- 多租户隔离。
+```
+
 ## Eval 证据
 
 复盘时不要只写“eval 通过了”。
@@ -107,6 +151,17 @@ release recommendation 是：
 ```
 
 这会比只贴一个分数更像工程判断。
+
+Eval 部分建议补一句“是否进入下一阶段”：
+
+```text
+我的判断：
+- approve / review / block：
+- 依据：
+- 还缺：
+```
+
+这会让证据包从结果罗列变成发布判断练习。
 
 ## Finetune 证据
 
@@ -144,6 +199,14 @@ adapter hash 是：
 
 这样别人才能判断你的结果是否可追溯。
 
+Finetune 部分建议从 export 反推：
+
+```text
+export -> checkpoint -> run -> dataset
+```
+
+如果这条链断了，就不要声称训练产物可复现。可以诚实写成“训练 run 存在，但 export lineage 不完整，需要补证据”。
+
 ## 证据包应该避免什么
 
 | 不推荐 | 原因 |
@@ -159,6 +222,59 @@ adapter hash 是：
 1. 保留原始产物
 2. 摘出关键字段
 3. 写清楚解释边界
+
+## 一份更完整的复盘骨架
+
+```text
+# 端到端复盘
+
+## 目标
+
+我想验证：
+
+## 环境和验证命令
+
+- Node：
+- Python：
+- infra-check：
+- infra-smoke：
+- public-check：
+
+## 请求链路
+
+- request id：
+- gateway timeline：
+- inference timeline：
+- headers：
+- metrics：
+
+## Eval 判断
+
+- task：
+- baseline：
+- candidate：
+- compare：
+- recommendation：
+- sample risk：
+
+## Finetune lineage
+
+- dataset version：
+- run manifest：
+- checkpoint index：
+- export manifest：
+- export status：
+
+## 结论
+
+已确认：
+
+未确认：
+
+下一步：
+```
+
+这份骨架适合用在 Capstone、PR 描述或公开文章草稿里。
 
 ## README 或分享文章可以怎么写
 

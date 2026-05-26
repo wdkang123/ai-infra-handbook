@@ -12,6 +12,24 @@
 `eval-module` 最值得学习的地方，不是它现在已经支持多少 benchmark，  
 而是它已经把“评测不该只剩一个结果文件”这件事结构化地做出来了：总分、样本输出、样本分析、run history、compare 和 leaderboard 都有各自的位置。
 
+## 这层的工程心智模型
+
+可以把 `eval-module` 想成一个“质量判断工厂”：
+
+```text
+task + model + backend
+  -> run
+  -> result bundle
+  -> sample evidence
+  -> compare
+  -> recommendation
+  -> history / index / leaderboard
+```
+
+它不是简单地“跑 benchmark”。它真正训练的是：如何把一次质量观察变成可以比较、可以复盘、可以进入发布讨论的对象。
+
+如果没有这层，模型或 prompt 的变化很容易只剩一句“感觉变好了”。有了 run、sample analysis、compare 和 history，讨论才会从感觉变成证据。
+
 ## 先看哪些代码
 
 - `projects/eval-module/src/eval_module/main.py`
@@ -25,6 +43,14 @@
 2. 再看 `factory.py`，理解 runner 后端为什么应该有统一入口
 3. 再看 `result_store.py`，理解 bundle 和 history 为什么存在
 4. 最后再看 runner，理解“执行一次评测”和“沉淀一次评测”不是同一件事
+
+代码阅读时最重要的分界是：
+
+- runner 负责“怎么跑”。
+- result store 负责“怎么记录和比较”。
+- CLI 负责“学习者如何触发和查看”。
+
+真实评测系统也会有类似边界。执行评测和沉淀证据是两件事，把它们分开，后续才容易接更多后端、更多任务和更多报告形式。
 
 ## 先跑什么
 
@@ -58,6 +84,24 @@ compare 现在还会输出 `release_recommendation`：
 - `block`：candidate 退化超过 `min_delta`
 
 这不是自动发布系统，而是把“是否能发布”从口头判断变成可记录的评测产物。
+
+## 一次 eval 判断怎么形成
+
+可以按这条链理解：
+
+```text
+run result
+  -> sample outputs
+  -> sample summary
+  -> sample analysis
+  -> compare report
+  -> release recommendation
+  -> comparison history
+```
+
+其中最容易被跳过的是 sample analysis。很多初学者只看 overall score，但 LLM 评测的风险往往藏在样本层：某一类样本集中失败、judge reason 重复出现、输出 token 暴涨、低分集中在关键能力上。
+
+所以这页要训练的是：先看分数，但不要停在分数。
 
 如果你已经有多次 run，可以再生成一个最小 leaderboard：
 
@@ -107,6 +151,30 @@ PYTHONPATH=src ../../.venv/bin/python -m eval_module.main list-comparisons \
 8. 再看 `comparison_index.json` / `comparison_index.md`
 9. 再看 `leaderboard.json` / `leaderboard.md`
 10. 最后看 `run_history.jsonl` 和 `comparison_history.jsonl`
+
+## 做一个 30 分钟练习
+
+1. 跑一次 baseline run。
+2. 用同一个结果跑一次 compare，理解报告结构。
+3. 修改 `--min-delta`，观察 recommendation 如何变化。
+4. 生成 run index、comparison index 和 leaderboard。
+5. 写一段发布判断，不超过 8 行。
+
+复盘模板：
+
+```text
+task：
+baseline：
+candidate：
+delta：
+min_delta：
+release recommendation：
+sample analysis 里最重要的发现：
+我是否会进入下一阶段：
+还缺什么证据：
+```
+
+这个练习的重点不是制造真实提升，而是理解发布判断对象怎么长出来。
 
 ## 你应该观察什么
 
@@ -163,12 +231,26 @@ PYTHONPATH=src ../../.venv/bin/python -m eval_module.main list-comparisons \
 
 也就是说，它已经不只是“能跑一次”，而是已经开始具备“能积累判断上下文”的结构。
 
+## 如何判断自己学懂了
+
+| 能力 | 合格表现 |
+| --- | --- |
+| run 理解 | 能说明 result、sample outputs、sample summary、sample analysis 的区别 |
+| compare 理解 | 能解释 task 一致性、min_delta、verdict、release recommendation |
+| history 理解 | 能说明 run history 和 comparison history 为什么需要追加记录 |
+| leaderboard 理解 | 能说明 leaderboard 是展示/汇总层，不是发布门禁 |
+| 发布判断 | 能写出 approve/review/block 的证据和剩余风险 |
+
+如果你只能跑出 `accuracy`，还没有真正掌握 eval-module。合格的学习目标是能把评测结果讲成一段有边界的工程判断。
+
 ## 这部分当前还没做到什么
 
 - 真实多模型批量评测调度
 - 更复杂的 leaderboard 聚合和可视化
 - 在线评测 / 回放
 - 真正接外部评测系统
+
+这些缺口对应真实生产评测平台的复杂度。当前仓库先保留最小对象模型：run、sample、compare、history、leaderboard。对象模型理解清楚后，再接真实任务调度和在线回放会更自然。
 
 ## 最适合的继续学习顺序
 

@@ -13,6 +13,20 @@
 
 参考资料不是替代教程，而是把教程、代码、命令和证据连接起来。
 
+## 参考资料的正确心智模型
+
+参考资料更像“地图索引”，不是第二套教程。
+
+当你已经知道自己卡在哪一类问题时，它很有用：
+
+- 卡在命令，就查命令速查。
+- 卡在代码位置，就查概念到代码索引。
+- 卡在输出含义，就查产物与文件索引。
+- 卡在错误归因，就查排障手册。
+- 卡在发布前跑什么，就查验证矩阵。
+
+如果你还不知道自己卡在哪里，先回到学习路线或检查点。参考资料适合定位，不适合替代学习主线。
+
 ## 什么时候使用参考资料
 
 ### 第一次学习时
@@ -42,6 +56,16 @@
 - 什么场景该跑什么
 - 失败后先查哪里
 
+建议记录这三项：
+
+```text
+我运行的命令：
+我预期它验证：
+我实际看到：
+```
+
+只记录命令本身不够。很多问题来自“命令跑了，但不知道它应该验证什么”。
+
 ### 看代码迷路时
 
 优先看：
@@ -52,6 +76,8 @@
 
 这三页会把抽象概念拉回具体文件、接口和命令。
 
+看代码时最好只带一个问题进去。比如“fallback 在哪里发生”，不要变成“我要读完整个 gateway 项目”。参考资料的作用是把问题缩小到 1 到 3 个入口文件。
+
 ### 看输出看不懂时
 
 优先看：
@@ -61,6 +87,17 @@
 - [端到端复盘证据包](/13-output-gallery/04-end-to-end-review-packet)
 
 这三页会解释 JSON、Markdown、manifest、history、report 和 evidence packet 的意义。
+
+输出文件的阅读顺序通常是：
+
+```text
+先看 summary
+  -> 再看 manifest / index
+  -> 再看样本或 timeline
+  -> 最后看原始 JSONL / 详细事件
+```
+
+不要一开始就打开最长的原始文件。先用 summary 判断方向，再展开细节。
 
 ### 准备公开发布或共学时
 
@@ -75,6 +112,8 @@
 - [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 
 这些页面帮助你把学习站从“内容集合”整理成可发布、可带练、可维护的公开项目。
+
+公开前参考资料最重要的价值是复核一致性：README、首页、课程目录、共学包、测评包、证据包、release brief 和 launch pack 是否在讲同一套系统。
 
 ## 页面列表
 
@@ -91,6 +130,44 @@
 | [发布摘要生成器](/09-reference/09-release-brief) | 发布前证据如何汇总 | 准备 release 或 PR 复盘 |
 | [课程目录生成器](/09-reference/10-course-catalog) | 如何组织可带练课程 | 准备 workshop |
 | [示例输出与证据库](/13-output-gallery/00-overview) | 输出证据如何解释 | 准备展示或复盘 |
+
+## 速查路线
+
+### 我只想确认本地是否健康
+
+1. [命令速查](/09-reference/01-command-cheatsheet)
+2. [验证矩阵](/09-reference/07-validation-matrix)
+3. [常见排障手册](/09-reference/04-troubleshooting)
+
+最小命令通常是：
+
+```bash
+PYTHON=.venv/bin/python make infra-check
+```
+
+### 我想解释一个 HTTP 请求
+
+1. [API Surface 速查](/09-reference/05-api-surface)
+2. [Serving 与 Gateway 输出证据](/13-output-gallery/01-serving-gateway-evidence)
+3. [请求失败排查案例](/11-case-studies/01-request-incident-walkthrough)
+
+重点不是背接口列表，而是能把 status、headers、events 和 metrics 串起来。
+
+### 我想解释一次 eval
+
+1. [CLI Surface 速查](/09-reference/06-cli-surface)
+2. [产物与文件索引](/09-reference/03-artifacts-and-files)
+3. [模型发布判断案例](/11-case-studies/02-model-release-decision-walkthrough)
+
+重点是 run、sample analysis、compare、leaderboard 和 history 的关系。
+
+### 我想解释一次 finetune
+
+1. [产物与文件索引](/09-reference/03-artifacts-and-files)
+2. [Finetune 产物证据](/13-output-gallery/03-finetune-artifact-evidence)
+3. [训练产物复现案例](/11-case-studies/03-finetune-to-eval-asset-lineage)
+
+重点是 dataset、checkpoint、manifest、export 和 history 的 lineage。
 
 ## 参考资料如何和项目配合
 
@@ -115,6 +192,22 @@
 5. 输出证据库告诉你怎么把结果放进复盘。
 
 这样读者不需要在文档和项目之间来回猜。
+
+## 参考资料和生成包的关系
+
+生成包页面也属于参考资料的一部分，但它们解决的是“自动汇总”问题：
+
+| 生成包 | 汇总对象 | 最适合用途 |
+| --- | --- | --- |
+| learning inventory | 文档站结构 | 检查页面和路线是否完整 |
+| course catalog | 课程模块 | 组织学习路线和 workshop |
+| release brief | 发布证据 | 判断是否适合公开展示 |
+| workshop packet | 共学活动 | 带练和学习小组 |
+| assessment pack | 测评题与评分 | 验收学习效果 |
+| roadmap pack | issue 种子 | 把薄弱点转成路线图 |
+| launch pack | release notes 和首发任务 | GitHub 首发运营 |
+
+这些生成包不是为了炫技，而是为了让公开学习项目可以持续维护。每次内容变厚，都可以重新生成这些包，看结构是否仍然一致。
 
 ## 推荐查找路径
 
@@ -171,6 +264,27 @@
 - 常见失败和排查方向
 
 如果新增了接口、CLI、输出文件、脚本或 workflow，也要同步考虑是否更新参考资料。
+
+可以把维护动作写成一个小 checklist：
+
+```text
+我新增或修改了：
+- 接口：
+- CLI：
+- 输出文件：
+- workflow：
+- 文档页面：
+
+我需要同步检查：
+- 命令速查：
+- API / CLI Surface：
+- 产物索引：
+- 验证矩阵：
+- 证据库：
+- README 或首页：
+```
+
+这能避免“代码已经变了，但参考资料还在讲旧行为”。
 
 ## 公开分享时怎么用
 

@@ -17,6 +17,23 @@
 
 只要这层结构清楚了，后面无论你是接真实 vLLM、SGLang，还是继续让别的大模型帮你细化实现，都会容易很多。
 
+## 这层的工程心智模型
+
+可以把 `inference-service` 想成一个“模型执行边界”：
+
+```text
+HTTP request
+  -> request validation
+  -> model / engine selection
+  -> generation or streaming
+  -> usage / metrics / events
+  -> OpenAI-compatible response
+```
+
+它不应该承担所有平台治理责任。鉴权、租户、限流、fallback、cache、模型目录治理更适合放在 gateway。`inference-service` 更关注：给定一个合法请求，如何用某个 engine 生成结果，并留下足够观测证据。
+
+这个边界非常重要。真实系统里如果把执行层和平台层混在一起，后面会很难替换 serving backend，也很难把多租户策略、模型路由和生成执行分开演进。
+
 ## 先看哪些代码
 
 - `projects/inference-service/src/inference_service/main.py`
@@ -24,6 +41,16 @@
 - `projects/inference-service/src/inference_service/engines.py`
 - `projects/inference-service/src/inference_service/runtime.py`
 - `projects/inference-service/src/inference_service/config.py`
+
+第一次看代码时可以按这个顺序：
+
+1. `main.py`：CLI 如何启动服务。
+2. `config.py`：默认模型和 engine 配置如何表达。
+3. `server.py`：HTTP 路由和响应形状。
+4. `engines.py`：mock engine 与 OpenAI-compatible adapter 的边界。
+5. `runtime.py`：metrics、events、request timeline 如何被记录。
+
+不要一开始就追求读完所有实现。先带着“请求如何进入、如何生成、如何留下证据”这三个问题读。
 
 ## 先跑什么
 
@@ -51,6 +78,33 @@ PYTHONPATH=src ../../.venv/bin/python -m inference_service.main serve \
 3. 再打一条普通请求
 4. 再打一条 `stream=true`
 5. 最后再带一条 `X-Request-ID`
+
+## 一条请求怎么走
+
+普通请求可以这样理解：
+
+```text
+client
+  -> POST /v1/chat/completions
+  -> validate model/messages
+  -> engine.generate(...)
+  -> record request events
+  -> update metrics
+  -> return JSON response
+```
+
+streaming 请求则是：
+
+```text
+client
+  -> POST /v1/chat/completions stream=true
+  -> engine.stream(...)
+  -> emit SSE chunks
+  -> record streaming success or error
+  -> finish stream
+```
+
+两条路径共享同一个 API 入口，但响应语义不同。普通请求失败可以返回结构化 JSON error；streaming 已经开始后失败，则更适合发出 SSE error event。这个差异是学习 serving 时非常值得抓住的点。
 
 ## 你应该观察什么
 
@@ -113,6 +167,28 @@ curl -i -s http://localhost:8000/v1/chat/completions \
 现在 mock engine 会用一个轻量 tokenizer 估算 prompt / completion token，而不是固定写死 token 数。  
 它不等于真实模型 tokenizer，但能让你先看到这条边界：prompt token 代表输入处理成本，completion token 代表生成成本，二者应该分开观察。
 
+## 做一个 20 分钟练习
+
+如果你想确认自己真的理解这层，可以做这个小练习：
+
+1. 启动服务。
+2. 打一条普通请求，带 `X-Request-ID: req_inference_practice_1`。
+3. 打一条 streaming 请求，带 `X-Request-ID: req_inference_practice_2`。
+4. 打开 `/events/requests/req_inference_practice_1` 和 `/events/requests/req_inference_practice_2`。
+5. 对比两条 timeline。
+6. 打开 `/metrics`，看 request / token 相关计数是否变化。
+
+复盘时回答：
+
+```text
+普通请求和 streaming 请求的证据有什么不同？
+request id 出现在了哪里？
+metrics 能证明什么，不能证明什么？
+如果 engine 出错，客户端会看到什么？
+```
+
+这比只看一次成功响应更能建立 serving 直觉。
+
 ## 这部分当前已经做到什么
 
 - 最小服务骨架
@@ -130,12 +206,28 @@ curl -i -s http://localhost:8000/v1/chat/completions \
 
 也就是说，这层已经不只是一个 mock 接口，而是一个很合格的学习型 serving 骨架。
 
+## 如何判断自己学懂了
+
+你可以用下面标准自测：
+
+| 能力 | 合格表现 |
+| --- | --- |
+| 接口理解 | 能说明 `/health`、`/metrics`、`/events`、`/v1/models`、`/v1/chat/completions` 各自用途 |
+| 请求路径 | 能解释普通请求和 streaming 请求差异 |
+| 观测证据 | 能用 request id 找到单请求 timeline |
+| 错误语义 | 能说明非流式 `502` 和 SSE error event 的差异 |
+| 扩展边界 | 能说明接真实 vLLM/SGLang 时应该替换 engine，不应该改乱 API 层 |
+
+如果你只能调用接口，但说不清这些边界，建议先不要进入真实 serving 框架。先把这层跑明白，会省很多后续迷路时间。
+
 ## 这部分当前还没做到什么
 
 - 生产级 vLLM / SGLang 生命周期管理
 - 真实 tokenizer / batching / scheduling
 - 更完整的 streaming 取消逻辑和背压处理
 - 生产级 tracing / logging
+
+这些缺口不是失败，而是学习项目刻意保留的边界。当前目标是先理解服务形状、请求生命周期、事件和 metrics；生产级调度、batching、显存管理和 tracing 可以在这个骨架之上继续替换和扩展。
 
 ## 最适合的继续学习顺序
 

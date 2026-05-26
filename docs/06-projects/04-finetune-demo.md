@@ -18,6 +18,25 @@
 - 一次训练 run 为什么不该只剩一个 checkpoint
 - 为什么输出目录、manifest、history 会决定后面你能不能复现和比较
 
+## 这层的工程心智模型
+
+可以把 `finetune-demo` 想成一个“训练资产流水线”：
+
+```text
+dataset
+  -> validation / summary / registry
+  -> train run
+  -> metrics / logs / checkpoint
+  -> run manifest / history
+  -> export
+  -> export manifest / export history
+  -> eval lineage
+```
+
+这条线的重点不是模型效果，而是可追溯性。训练系统里最可怕的问题之一是：文件还在，但没人能解释它怎么来的、能不能复现、能不能进入下一轮 eval。
+
+当前 demo 用 mock 训练保留这条资产链，让你先学会“训练工程对象”怎么组织。
+
 ## 先看哪些代码
 
 - `projects/finetune-demo/src/finetune_demo/main.py`
@@ -26,6 +45,17 @@
 - `projects/finetune-demo/src/finetune_demo/dataset_registry.py`
 - `projects/finetune-demo/src/finetune_demo/trainer/lora_trainer.py`
 - `projects/finetune-demo/src/finetune_demo/export/adapter_exporter.py`
+
+第一次读代码可以按资产流顺序：
+
+1. `config.py`：训练配置如何被表达。
+2. `dataset_registry.py`：数据输入如何登记。
+3. `trainer/lora_trainer.py`：训练 run 如何生成产物。
+4. `artifacts.py`：manifest、hash、history 如何组织。
+5. `export/adapter_exporter.py`：checkpoint 如何变成交付资产。
+6. `main.py`：CLI 如何把这些动作串起来。
+
+这样读会比直接打开 trainer 更稳，因为你会先看到训练资产的全貌。
 
 ## 先跑什么
 
@@ -105,6 +135,21 @@ PYTHONPATH=src ../../.venv/bin/python -m finetune_demo.main list-runs \
 
 它会列出 method、model、dataset id、dataset version、output dir、checkpoint、`run_manifest_file` 和 `checkpoint_index_file`，并生成 `method_counts`、`model_summaries`、`dataset_summaries`。这层报告回答的是“训练 run 本身有哪些、证据 manifest 和 checkpoint 索引在哪里”，和 export index 回答的“导出了哪些 adapter”不是同一个问题。
 
+## 一次训练产物怎么复盘
+
+训练完成后，不要只看 `checkpoint-0001/`。建议按这个顺序复盘：
+
+1. 先看 `data/dataset_summary.json`，确认训练输入。
+2. 看 `data/dataset_registry_entry.json`，确认数据如何登记。
+3. 看 `trainer_state.json`，确认 run 状态和 dataset version。
+4. 看 `metrics/train_metrics.json` 和 `logs/events.jsonl`，确认训练过程。
+5. 看 `checkpoints/checkpoint_index.json`，确认 checkpoint 是否完整。
+6. 看 `run_manifest.json`，确认这次 run 的总说明。
+7. 跑 export 后看 `export_manifest.json`，确认 lineage。
+8. 最后看 run/export history，确认记录能跨 run 查询。
+
+这个顺序能避免一个常见误区：只要 checkpoint 存在，就以为训练资产完整。
+
 ## 你应该观察什么
 
 - `trainer_state.json`
@@ -157,6 +202,31 @@ PYTHONPATH=src ../../.venv/bin/python -m finetune_demo.main list-exports \
 
 它会列出 output dir、export manifest、status、duration seconds、base model、dataset id、dataset version、adapter sha256、model summaries 和 dataset summaries，适合回答“这些 adapter 分别来自哪份训练输入、导出是否成功、耗时大概是多少、按模型或数据集怎么汇总，以及证据 manifest 在哪里”。
 
+## 做一个 30 分钟练习
+
+1. 跑一次 train。
+2. 跑一次 export。
+3. 生成 `list-runs`、`list-datasets`、`list-exports`。
+4. 从 export manifest 反向追到 dataset summary。
+5. 写一段 lineage 说明。
+
+复盘模板：
+
+```text
+base model：
+dataset id：
+dataset version：
+run manifest：
+checkpoint index：
+export manifest：
+export status：
+adapter hash：
+我能确认的 lineage：
+我还不能确认的风险：
+```
+
+这份复盘可以直接接到 [训练产物复现案例](/11-case-studies/03-finetune-to-eval-asset-lineage)。
+
 ## 这部分当前已经做到什么
 
 - 最小 train / save / export CLI
@@ -181,12 +251,26 @@ PYTHONPATH=src ../../.venv/bin/python -m finetune_demo.main list-exports \
 
 也就是说，它已经很适合你拿来建立“训练工程对象”这层直觉。
 
+## 如何判断自己学懂了
+
+| 能力 | 合格表现 |
+| --- | --- |
+| 数据输入 | 能解释 dataset summary、dataset version、dataset registry |
+| 训练 run | 能解释 trainer state、metrics、logs、run manifest |
+| checkpoint | 能解释 latest checkpoint、checkpoint index、adapter hash |
+| export | 能解释 export manifest、export history、lineage |
+| 接入 eval | 能说明后续 eval 应该记录哪些训练来源 |
+
+如果你只能说“训练命令成功了”，还停在 Level 2。真正理解这层，需要能从 export 反向追到 dataset 和 checkpoint。
+
 ## 这部分当前还没做到什么
 
 - 真实 Trainer / GPU 训练
 - 真实 PEFT 权重保存逻辑
 - resume / multi-checkpoint 策略
 - 真正接实验追踪系统
+
+这些能力属于真实训练平台。当前 demo 的目标是先把资产边界摆正：数据要有指纹，checkpoint 要有索引，export 要有 lineage，history 要能长期查询。
 
 ## 最适合的继续学习顺序
 
