@@ -9,15 +9,25 @@
 - 怎么让贡献者知道哪些内容值得补、补到什么程度算合格
 - 怎么把 GitHub 发布从一次上传，变成持续迭代的学习项目
 
+如果说前面的模块更像课程内容，这一章更像课程运营和协作手册。
+
 ## 这一章解决什么问题
 
 公开学习项目最容易卡在三个地方：
 
-1. 页面很多，但第一次来的读者不知道该怎么走
-2. 能跑通命令，但不知道怎么记录过程和复盘证据
-3. 想让别人贡献内容，但没有统一的模板和验收标准
+1. 页面很多，但第一次来的读者不知道该怎么走。
+2. 能跑通命令，但不知道怎么记录过程和复盘证据。
+3. 想让别人贡献内容，但没有统一的模板和验收标准。
 
 所以这一章不再继续堆 AI Infra 概念，而是把学习组织方式、带练节奏、输出模板、贡献规则和发布节奏收成一组可以直接复用的材料。
+
+它适合三类人：
+
+| 角色 | 关心的问题 |
+| --- | --- |
+| 自学者 | 我怎么记录学习、确认自己真的理解了 |
+| 组织者 | 我怎么带一群人跑完并产出复盘 |
+| 维护者 | 我怎么把反馈转成 issue、PR 和路线图 |
 
 ## 推荐阅读顺序
 
@@ -72,32 +82,84 @@
 
 不是页面数量越多越好，而是第一次来的读者能独立回答：
 
-1. 我应该先读哪一页
-2. 我应该跑哪几个命令
-3. 跑完以后应该看到什么
-4. 如果失败，我该查哪一类证据
-5. 我能交付什么学习产物
-6. 我想贡献时应该从哪里开始
+1. 我应该先读哪一页？
+2. 我应该跑哪几个命令？
+3. 跑完以后应该看到什么？
+4. 如果失败，我该查哪一类证据？
+5. 我能交付什么学习产物？
+6. 我想贡献时应该从哪里开始？
+7. 我如何判断自己达到了 Level 3？
 
-当这六个问题都有明确入口时，项目就已经从“个人笔记”往“公开学习站”迈了一大步。
+当这些问题都有明确入口时，项目就已经从“个人笔记”往“公开学习站”迈了一大步。
 
 ## 最小共学流程
 
 一次最小共学可以这样安排：
 
-1. 读 [什么是 AI Infra](/00-overview/01-what-is-ai-infra)，统一系统地图
-2. 跑 [最小运行手册](/00-overview/03-runbook)，确认环境可用
-3. 做 [第一次实操演练](/00-overview/04-first-walkthrough)，打通四个项目
-4. 用 [示例输出与证据库](/13-output-gallery/00-overview)，对照输出证据
-5. 填 [学习者工作簿](/14-workshop-kit/02-learner-workbook)，留下个人复盘
-6. 生成 [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)，整理讲师备忘和交付要求
-7. 生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)，准备模块题目和评分标准
-8. 生成 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)，筛选首批 issue 种子
-9. 生成 [自动生成首发运营包](/08-publication/13-generated-launch-pack)，复核 release notes、starter issues 和发布后检查表
-10. 做 [系统 Capstone 与验收 Rubric](/07-hands-on-labs/05-capstone-review-rubric)，完成一次端到端讲解
+1. 读 [什么是 AI Infra](/00-overview/01-what-is-ai-infra)，统一系统地图。
+2. 跑 [最小运行手册](/00-overview/03-runbook)，确认环境可用。
+3. 做 [第一次实操演练](/00-overview/04-first-walkthrough)，打通四个项目。
+4. 用 [示例输出与证据库](/13-output-gallery/00-overview)，对照输出证据。
+5. 填 [学习者工作簿](/14-workshop-kit/02-learner-workbook)，留下个人复盘。
+6. 生成 [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)，整理讲师备忘和交付要求。
+7. 生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)，准备模块题目和评分标准。
+8. 生成 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)，筛选首批 issue 种子。
+9. 生成 [自动生成首发运营包](/08-publication/13-generated-launch-pack)，复核 release notes、starter issues 和发布后检查表。
+10. 做 [系统 Capstone 与验收 Rubric](/07-hands-on-labs/05-capstone-review-rubric)，完成一次端到端讲解。
+
+## 共学交付模板
+
+每个参与者至少交付：
+
+```text
+我选择的主线：
+我跑通的命令：
+我看到的关键输出：
+我最能解释的一条证据：
+我遇到的一个失败或疑问：
+我下一步要补的页面或代码：
+```
+
+这个模板能让学习从“听过一遍”变成“留下证据”。
+
+## 组织者检查清单
+
+组织一次共学前，建议确认：
+
+```text
+[ ] README 入口清楚
+[ ] 在线站点可访问
+[ ] 本地 runbook 可运行
+[ ] public-check 当前通过
+[ ] 示例输出可解释
+[ ] 学习者工作簿已准备
+[ ] Capstone 标准已说明
+[ ] issue/PR 入口已说明
+```
+
+如果这些没准备好，共学很容易变成临时排障会。
 
 ## 下一步
 
-- 如果你要带别人学，继续看 [讲师与带练指南](/14-workshop-kit/01-facilitator-guide)
-- 如果你是学习者，继续看 [学习者工作簿](/14-workshop-kit/02-learner-workbook)
-- 如果你准备发到 GitHub，继续看 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan)
+- 如果你要带别人学，继续看 [讲师与带练指南](/14-workshop-kit/01-facilitator-guide)。
+- 如果你是学习者，继续看 [学习者工作簿](/14-workshop-kit/02-learner-workbook)。
+- 如果你准备发到 GitHub，继续看 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan)。
+- 如果你想直接生成材料，继续看 [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)。
+
+## 常见误区
+
+### 误区一：共学就是大家一起看文档
+
+不够。共学必须有交付物，否则很难判断是否真的理解。
+
+### 误区二：讲师要把所有内容讲完
+
+不需要。讲师更重要的是帮大家建立地图、跑通链路、解释证据、暴露卡点。
+
+### 误区三：公开分享只需要漂亮首页
+
+首页是入口，但真正留住读者的是路线、输出证据、自测、排障和贡献路径。
+
+### 误区四：反馈收集在聊天里就行
+
+聊天适合即时讨论，但长期维护需要把问题沉淀成 issue、PR、路线图和 release notes。

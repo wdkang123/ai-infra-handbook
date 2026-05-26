@@ -89,6 +89,7 @@
 - 将学习型 Serving/Gateway 到真实系统、四条生产迁移路线、端到端系统地图和质量维护入口扩写为分阶段迁移、风险、验收和证据闭环教程页。
 - 将 LLM Fundamentals、Inference Serving、AI Gateway、Evaluation Observability、Finetuning Training、项目总览、Demo Training 迁移和生产迁移总览扩写为模块导学章，补齐学习目标、系统边界、代码映射、实践路线和常见误区。
 - 将第一次实操后续路线、Run 到发布决策、GitHub 协作入口、参考资料总览、API Surface、自测总览、系统地图自测和 Capstone 答辩扩写为更完整的学习验收、排障定位、公开协作和发布判断指南。
+- 将 AI Infra 总入口、按目标选择学习路径、常见学习误区、FAQ、公开仓库卫生、依赖维护、共学套件总览和学习小组议程扩写为更适合新读者进入、公开维护和组织共学的教程页。
 
 ### Verified
 
