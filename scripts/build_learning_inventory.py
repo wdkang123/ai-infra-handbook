@@ -121,6 +121,7 @@ COURSE_TRACKS = [
             "/14-workshop-kit/06-github-release-plan",
             "/08-publication/05-generated-roadmap-pack",
             "/08-publication/13-generated-launch-pack",
+            "/08-publication/14-github-entrypoints",
         ],
     },
     {

@@ -33,6 +33,11 @@ export default defineConfig({
     search: {
       provider: "local",
     },
+    editLink: {
+      pattern: "https://github.com/wdkang123/ai-infra-handbook/edit/main/docs/:path",
+      text: "在 GitHub 编辑此页",
+    },
+    socialLinks: [{ icon: "github", link: "https://github.com/wdkang123/ai-infra-handbook" }],
     nav: [
       {
         text: "开始",
@@ -83,8 +88,10 @@ export default defineConfig({
           { text: "首批 Issues", link: "/08-publication/11-first-public-issues" },
           { text: "Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
           { text: "首发运营包", link: "/08-publication/13-generated-launch-pack" },
+          { text: "GitHub 入口", link: "/08-publication/14-github-entrypoints" },
         ],
       },
+      { text: "GitHub", link: "https://github.com/wdkang123/ai-infra-handbook" },
     ],
     sidebar: [
       {
@@ -265,6 +272,7 @@ export default defineConfig({
           { text: "首批公开 Issues 草稿", link: "/08-publication/11-first-public-issues" },
           { text: "v0.1 Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
           { text: "自动生成首发运营包", link: "/08-publication/13-generated-launch-pack" },
+          { text: "GitHub 入口与协作地图", link: "/08-publication/14-github-entrypoints" },
         ],
       },
       {

@@ -130,6 +130,7 @@
 }
 
 .home-launch-pads,
+.github-panel,
 .course-matrix,
 .evidence-flow,
 .path-explorer,
@@ -247,6 +248,90 @@
 
 .stat-pill strong {
   font-size: 1rem;
+}
+
+.github-panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 18px;
+}
+
+.github-profile,
+.github-link-list a {
+  border: var(--manual-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--manual-shadow-md);
+}
+
+.github-profile {
+  padding: 26px;
+}
+
+.github-profile h3 {
+  margin: 0;
+  font-size: 1.42rem;
+}
+
+.github-profile p {
+  margin: 12px 0 20px;
+  color: var(--vp-c-text-2);
+}
+
+.github-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.github-actions a,
+.github-link-list a {
+  text-decoration: none;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.github-actions a {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 700;
+}
+
+.github-actions a:hover {
+  background: rgba(226, 145, 84, 0.18);
+}
+
+.github-link-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.github-link-list a {
+  display: flex;
+  min-height: 128px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  color: inherit;
+}
+
+.github-link-list a:hover {
+  transform: translateY(-5px);
+  border-color: rgba(23, 108, 114, 0.24);
+  box-shadow: var(--manual-shadow-lg);
+}
+
+.github-link-list span {
+  color: var(--manual-accent);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.github-link-list strong {
+  color: var(--vp-c-text-1);
+  font-size: 1.02rem;
 }
 
 .path-tabs {
@@ -507,6 +592,8 @@
 
 @media (max-width: 960px) {
   .launch-grid,
+  .github-panel-grid,
+  .github-link-list,
   .evidence-steps,
   .path-panel,
   .matrix-table {
@@ -533,6 +620,7 @@
 
 @media (max-width: 640px) {
   .home-launch-pads,
+  .github-panel,
   .course-matrix,
   .evidence-flow,
   .path-explorer,

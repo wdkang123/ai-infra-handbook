@@ -195,6 +195,7 @@ CATALOG_MODULES: list[dict[str, Any]] = [
                 "/09-reference/09-release-brief",
                 "/08-publication/05-generated-roadmap-pack",
                 "/08-publication/13-generated-launch-pack",
+                "/08-publication/14-github-entrypoints",
             ],
         },
         "checkpoints": [

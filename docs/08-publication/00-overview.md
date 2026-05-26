@@ -168,6 +168,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - 首批公开 issues 草稿
 - v0.1 release notes 草稿
 - 首发运营包生成器
+- GitHub 入口与协作地图
 - CI workflow
 - Dependency review workflow
 - Dependabot weekly grouped updates
@@ -214,6 +215,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - [首批公开 Issues 草稿](/08-publication/11-first-public-issues)
 - [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)
 - [自动生成首发运营包](/08-publication/13-generated-launch-pack)
+- [GitHub 入口与协作地图](/08-publication/14-github-entrypoints)
 - [项目成熟度地图](/00-overview/14-project-maturity-map)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [示例输出与证据库](/13-output-gallery/00-overview)

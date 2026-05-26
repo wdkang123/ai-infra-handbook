@@ -3,7 +3,7 @@
     <div class="home-section-head">
       <span class="eyebrow">Evidence Loop</span>
       <h2>从课程地图到运行证据，形成可分享闭环</h2>
-      <p>首页现在直接给出维护和公开演示最常用的八步：先确认学习站结构，再整理课程目录，最后把运行结果变成可复盘、可带练、可测评、可开 issue 的材料。</p>
+      <p>首页现在直接给出维护和公开演示最常用的九步：先确认学习站结构，再整理课程目录，最后把运行结果变成可复盘、可带练、可测评、可开 issue 的材料。</p>
     </div>
 
     <div class="evidence-steps" aria-label="learning site evidence loop">
@@ -54,6 +54,12 @@
         <h3>生成路线图包</h3>
         <p>用 <code>make roadmap-pack</code> 把发布摘要和测评弱点整理成 GitHub issue 种子。</p>
         <span class="step-meta">roadmap_pack.json / .md</span>
+      </a>
+      <a class="evidence-step" href="/08-publication/13-generated-launch-pack">
+        <span class="step-index">09</span>
+        <h3>生成首发运营包</h3>
+        <p>用 <code>make launch-pack</code> 统一 release notes、starter issues 和发布后检查表。</p>
+        <span class="step-meta">launch_pack.json / .md</span>
       </a>
     </div>
   </section>
