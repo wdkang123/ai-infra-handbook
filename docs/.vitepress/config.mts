@@ -80,6 +80,8 @@ export default defineConfig({
           { text: "维护节奏", link: "/08-publication/08-maintainer-rhythm" },
           { text: "Issue 分类", link: "/08-publication/09-issue-triage-and-labels" },
           { text: "v0.1 发布", link: "/08-publication/10-v0-1-release-playbook" },
+          { text: "首批 Issues", link: "/08-publication/11-first-public-issues" },
+          { text: "Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
         ],
       },
     ],
@@ -259,6 +261,8 @@ export default defineConfig({
           { text: "维护节奏与运营清单", link: "/08-publication/08-maintainer-rhythm" },
           { text: "Issue 分类与标签策略", link: "/08-publication/09-issue-triage-and-labels" },
           { text: "v0.1 首发发布手册", link: "/08-publication/10-v0-1-release-playbook" },
+          { text: "首批公开 Issues 草稿", link: "/08-publication/11-first-public-issues" },
+          { text: "v0.1 Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
         ],
       },
       {

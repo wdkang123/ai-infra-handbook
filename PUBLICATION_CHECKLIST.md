@@ -61,6 +61,7 @@
 - [ ] `LICENSE` 已存在，README 已说明许可证
 - [ ] GitHub repo description、topics、About 链接已设置
 - [ ] 第一个 release notes 能说明学习价值、验证命令和项目边界
+- [ ] 首批公开 issues 有学习价值、验收标准和验证命令
 
 ## 5. 敏感信息
 
@@ -94,6 +95,7 @@
 - [ ] 有自动生成路线图包，帮助维护者把测评弱点和发布反馈整理成 GitHub issue 种子
 - [ ] 有维护节奏和 issue triage 文档，帮助公开发布后持续处理反馈
 - [ ] 有 v0.1 首发发布手册，帮助第一个 release 写清楚范围和边界
+- [ ] 有首批公开 issues 和 release notes 草稿，帮助首发后直接落地协作
 - [ ] 有共学套件，帮助读者组织学习小组、公开演示和贡献协作
 - [ ] 有阶段自测题和参考答案
 - [ ] Capstone 可以帮助读者复盘整个系统
@@ -105,6 +107,7 @@
 - [ ] 给 README 增加在线站点链接
 - [ ] 创建 `v0.1.0-learning-site` release
 - [ ] 增加路线图 issue
+- [ ] 从首批公开 issues 草稿中挑选 6 到 10 条创建到 GitHub
 - [ ] 标记适合 first-time contributor 的任务
 - [ ] 按维护节奏定期整理 Dependabot、issue、FAQ 和路线图
 - [ ] 根据共学反馈更新学习者工作簿和带练议程

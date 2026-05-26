@@ -10,7 +10,7 @@
 PYTHON=.venv/bin/python make roadmap-pack
 ```
 
-然后从 `.tmp/roadmap/roadmap_pack.md` 选择 5 到 8 条首批 issue。生成包会把学习价值、建议文件、验收标准和验证命令一起列出来，避免路线图停留在宽泛方向。
+然后从 `.tmp/roadmap/roadmap_pack.md` 选择 5 到 8 条首批 issue。生成包会把学习价值、建议文件、验收标准和验证命令一起列出来，避免路线图停留在宽泛方向。也可以先用 [首批公开 Issues 草稿](/08-publication/11-first-public-issues) 中已经整理好的 10 条任务作为首发 issue 池。
 
 ## 当前阶段
 
@@ -47,6 +47,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - 自动生成路线图包，能把发布摘要和测评弱点整理成 GitHub issue 种子、推荐 label 和发布后反馈闭环
 - 发布维护节奏与 issue triage 文档，帮助公开仓库用低噪音方式持续处理反馈、依赖和路线图
 - v0.1 首发发布手册，帮助第一个 release 说明学习价值、验证命令和项目边界
+- 首批公开 issues 草稿和 v0.1 release notes 草稿，让首发后的任务池和 release 页面可以直接落地
 - 深化案例复盘，新增 Gateway fallback/cache 与 Eval 退化阻断两类更接近真实工程评审的案例
 
 它已经适合开始公开分享和收集反馈。

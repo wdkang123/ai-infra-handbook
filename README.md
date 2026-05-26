@@ -106,6 +106,8 @@ flowchart TB
 - [维护节奏与运营清单](./docs/08-publication/08-maintainer-rhythm.md)
 - [Issue 分类与标签策略](./docs/08-publication/09-issue-triage-and-labels.md)
 - [v0.1 首发发布手册](./docs/08-publication/10-v0-1-release-playbook.md)
+- [首批公开 Issues 草稿](./docs/08-publication/11-first-public-issues.md)
+- [v0.1 Release Notes 草稿](./docs/08-publication/12-v0-1-release-notes-draft.md)
 - [Publication Checklist](./PUBLICATION_CHECKLIST.md)
 
 ## 文档站
@@ -360,6 +362,8 @@ PYTHON=.venv/bin/python make roadmap-pack
 - [维护节奏与运营清单](./docs/08-publication/08-maintainer-rhythm.md)
 - [Issue 分类与标签策略](./docs/08-publication/09-issue-triage-and-labels.md)
 - [v0.1 首发发布手册](./docs/08-publication/10-v0-1-release-playbook.md)
+- [首批公开 Issues 草稿](./docs/08-publication/11-first-public-issues.md)
+- [v0.1 Release Notes 草稿](./docs/08-publication/12-v0-1-release-notes-draft.md)
 
 ## 当前状态
 

@@ -135,7 +135,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 
 具体分类见 [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)。
 
-### 10. 首发 release 要说明边界
+### 10. 首发 release 和首批 issues 要说明边界
 
 如果准备创建第一个 GitHub release，不要只写“initial release”。
 应该说明：
@@ -145,8 +145,9 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - 跑过哪些验证命令
 - 仍然是学习型项目，不是生产平台
 - 发布后 24 小时和 7 天怎么接反馈
+- 首批 issues 的学习价值、验收标准和验证命令是什么
 
-具体模板见 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)。
+具体模板见 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues) 和 [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)。
 
 ## 当前已经准备好的材料
 
@@ -162,6 +163,8 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - GitHub issue templates
 - Learning question 与 roadmap task issue templates
 - Pull request template
+- 首批公开 issues 草稿
+- v0.1 release notes 草稿
 - CI workflow
 - Dependency review workflow
 - Dependabot weekly grouped updates
@@ -176,9 +179,9 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 5. 配置 GitHub Pages 为 GitHub Actions
 6. 手动运行一次 docs-pages workflow，确认 Pages 配置可用
 7. 把在线站点链接补到 README
-8. 根据 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook) 准备首个 release notes
-9. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) 创建第一批 roadmap issues
-10. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 选择首批 good first issue、docs、lab 和 evidence 任务
+8. 根据 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook) 和 [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft) 准备首个 release notes
+9. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) 和 [首批公开 Issues 草稿](/08-publication/11-first-public-issues) 创建第一批 roadmap issues
+10. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 持续补充 good first issue、docs、lab 和 evidence 任务
 
 ## 发布后优先收集什么反馈
 
@@ -205,6 +208,8 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - [维护节奏与运营清单](/08-publication/08-maintainer-rhythm)
 - [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)
 - [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
+- [首批公开 Issues 草稿](/08-publication/11-first-public-issues)
+- [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)
 - [项目成熟度地图](/00-overview/14-project-maturity-map)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [示例输出与证据库](/13-output-gallery/00-overview)
