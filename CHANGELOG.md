@@ -87,6 +87,7 @@
 - 将 Token/Context、TTFT/ITL/Throughput、服务选型取舍、Gateway health/metrics/request id、Eval run/compare/history、Finetune run/artifacts/export 扩写为带场景、机制、观察方式、误区和仓库映射的深度教程页。
 - 将请求到首个 token、Streaming/Batching/Metrics、Gateway 平台边界、模型名映射、SFT/DPO 训练目标、微调决策、实验追踪复现、Benchmark 与生产质量扩写为教程式核心页。
 - 将学习型 Serving/Gateway 到真实系统、四条生产迁移路线、端到端系统地图和质量维护入口扩写为分阶段迁移、风险、验收和证据闭环教程页。
+- 将 LLM Fundamentals、Inference Serving、AI Gateway、Evaluation Observability、Finetuning Training、项目总览、Demo Training 迁移和生产迁移总览扩写为模块导学章，补齐学习目标、系统边界、代码映射、实践路线和常见误区。
 
 ### Verified
 
