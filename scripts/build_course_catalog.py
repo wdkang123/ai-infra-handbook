@@ -194,11 +194,12 @@ CATALOG_MODULES: list[dict[str, Any]] = [
                 "/10-assessments/06-generated-assessment-pack",
                 "/09-reference/09-release-brief",
                 "/08-publication/05-generated-roadmap-pack",
+                "/08-publication/13-generated-launch-pack",
             ],
         },
         "checkpoints": [
             "能为不同读者选择合适的学习主线。",
-            "能用 evidence packet、course catalog、workshop packet、assessment pack、release brief 和 roadmap pack 组织公开复盘。",
+            "能用 evidence packet、course catalog、workshop packet、assessment pack、release brief、roadmap pack 和 launch pack 组织公开复盘。",
             "能把贡献入口和发布边界讲清楚。",
         ],
         "facilitator_notes": [
@@ -290,12 +291,13 @@ def build_course_catalog(inventory_path: Path = DEFAULT_INVENTORY, *, strict: bo
             "PYTHON=.venv/bin/python make workshop-packet",
             "PYTHON=.venv/bin/python make assessment-pack",
             "PYTHON=.venv/bin/python make roadmap-pack",
+            "PYTHON=.venv/bin/python make launch-pack",
             "PYTHON=.venv/bin/python make infra-release",
         ],
         "maintenance_notes": [
             "新增关键学习页后，先把它加入 VitePress sidebar，再决定是否加入课程目录模块。",
             "新增课程主线后，同时更新 build_learning_inventory.py 和 build_course_catalog.py。",
-            "公开带练前优先检查 course_catalog.md、release_brief.md、workshop_packet.md、assessment_pack.md 和 roadmap_pack.md。",
+            "公开带练前优先检查 course_catalog.md、release_brief.md、workshop_packet.md、assessment_pack.md、roadmap_pack.md 和 launch_pack.md。",
         ],
     }
 

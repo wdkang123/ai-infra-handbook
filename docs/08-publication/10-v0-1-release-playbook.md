@@ -34,11 +34,12 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 npm audit --omit=dev --audit-level=moderate
 ```
 
 如果你只是在小范围改文档，`public-check` 已经足够。
-但打 release 之前，建议跑完整链路，因为 release notes 需要能说明“这套学习站不仅能看，还能跑、能复盘、能组织共学、能拆路线图”。
+但打 release 之前，建议跑完整链路，因为 release notes 需要能说明“这套学习站不仅能看，还能跑、能复盘、能组织共学、能拆路线图”，并且首批 issues、默认标签和发布后检查表要能从同一份 launch pack 里复核。
 
 ## 人工检查清单
 
@@ -79,7 +80,7 @@ AI Infra Handbook v0.1.0-learning-site
 - Hands-on labs：Serving、Gateway、Eval、Finetune、Capstone 和公开发布验收
 - 案例复盘：请求失败、模型发布判断、训练产物复现、Gateway fallback/cache、Eval 退化阻断
 - 示例输出与证据库：HTTP header、events、eval report、finetune manifest、失败证据和公开演示脚本
-- 自动生成产物：learning inventory、course catalog、evidence packet、release brief、workshop packet、assessment pack、roadmap pack
+- 自动生成产物：learning inventory、course catalog、evidence packet、release brief、workshop packet、assessment pack、roadmap pack、launch pack
 - 公开协作材料：issue templates、PR template、贡献指南、安全说明、维护节奏和 issue triage
 
 验证：
@@ -89,6 +90,7 @@ AI Infra Handbook v0.1.0-learning-site
 - PYTHON=.venv/bin/python make workshop-packet
 - PYTHON=.venv/bin/python make assessment-pack
 - PYTHON=.venv/bin/python make roadmap-pack
+- PYTHON=.venv/bin/python make launch-pack
 - npm audit --omit=dev --audit-level=moderate
 
 边界：
@@ -143,7 +145,7 @@ AI Infra Handbook v0.1.0-learning-site
 
 1. 先让 `main` 上的 CI 和 Pages 连续通过。
 2. 确认 README、站点首页和发布总览都已经指向在线站点。
-3. 从这页复制 release notes，按实际验证结果删改。
+3. 先运行 [自动生成首发运营包](/08-publication/13-generated-launch-pack)，再从这页或 `.tmp/launch/launch_pack.md` 复制 release notes，按实际验证结果删改。
 4. 在 GitHub Releases 页面创建 `v0.1.0-learning-site`。
 5. 发布后把 release 链接补回 README 或 Changelog。
 
@@ -153,4 +155,5 @@ AI Infra Handbook v0.1.0-learning-site
 
 - 如果要创建公开任务，看 [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)。
 - 如果要从自动产物挑任务，看 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)。
+- 如果要统一 release notes、starter issues 和发布后检查表，看 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 - 如果要持续维护，看 [维护节奏与运营清单](/08-publication/08-maintainer-rhythm)。

@@ -68,6 +68,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 ```
 
 其中：
@@ -82,6 +83,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - `workshop-packet` 把课程目录和发布摘要合成共学议程、模块卡片、学习者交付和复盘问题
 - `assessment-pack` 把课程目录和共学包合成模块题目、证据要求、rubric 和 Capstone review
 - `roadmap-pack` 把发布摘要和测评包合成 GitHub issue 种子、推荐 label 和验收命令
+- `launch-pack` 把发布摘要和路线图包合成 release notes、starter issues、默认标签和发布后检查表
 
 这让项目可以继续大步迭代，而不是每次都靠人工感觉判断有没有改坏。
 
@@ -138,7 +140,8 @@ PYTHON=.venv/bin/python make roadmap-pack
 6. 生成 [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)
 7. 生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)
 8. 生成 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
-9. 对照 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) 做首发前检查
+9. 生成 [自动生成首发运营包](/08-publication/13-generated-launch-pack)
+10. 对照 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) 做首发前检查
 
 ## 一句话结论
 

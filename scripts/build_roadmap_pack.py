@@ -69,6 +69,7 @@ def build_roadmap_pack(
             "PYTHON=.venv/bin/python make release-brief",
             "PYTHON=.venv/bin/python make assessment-pack",
             "PYTHON=.venv/bin/python make roadmap-pack",
+            "PYTHON=.venv/bin/python make launch-pack",
             "PYTHON=.venv/bin/python make infra-release",
             "npm audit --omit=dev --audit-level=moderate",
         ],

@@ -11,6 +11,9 @@
 
 `scripts/build_roadmap_pack.py` 会读取 release brief 和 assessment pack，生成一份 JSON / Markdown 路线图包。它的目标不是替你自动创建 GitHub issue，而是把首批 issue 所需的标题、学习价值、范围、建议文件、验收标准、验证命令和 label 先整理好。
 
+如果你准备进入真正的 GitHub 首发阶段，可以再运行 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
+它会读取 roadmap pack，把 issue 种子整理成 starter issues，并把自定义标签规范化为新仓库默认可用的 GitHub labels。
+
 ## 生成命令
 
 在仓库根目录运行：
@@ -147,6 +150,7 @@ release-brief
 workshop-packet
 assessment-pack
 roadmap-pack
+launch-pack
 ```
 
 这意味着发布前不仅检查“能不能构建、能不能跑、能不能带练、能不能测评”，还会检查：
@@ -155,6 +159,7 @@ roadmap-pack
 - 能不能把发布后 30 天的反馈入口拆小
 - 首批任务是否带有学习价值、建议文件和验收命令
 - 路线图是否仍然保持学习型项目边界
+- release notes、starter issues、默认标签和发布后复盘清单是否能由 launch pack 统一复核
 
 ## 和其他自动产物的关系
 
@@ -167,6 +172,7 @@ roadmap-pack
 | `workshop_packet.md` | 共学如何组织和复盘 | 讲师、组织者 |
 | `assessment_pack.md` | 每个模块怎么测、怎么评分 | 学习者、讲师、reviewer |
 | `roadmap_pack.md` | 哪些改进可以变成首批 GitHub issue | 维护者、贡献者 |
+| `launch_pack.md` | release notes、starter issues、默认标签和发布后检查表是否一致 | 发布者、维护者 |
 
 完整闭环是：
 
@@ -177,5 +183,6 @@ roadmap-pack
 5. 共学活动可执行
 6. 模块测评可落地
 7. 路线图 issue 可创建
+8. 首发运营包可复核
 
 这样项目发到 GitHub 后，不只是“可以看”，也更容易持续接住反馈和贡献。

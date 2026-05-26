@@ -58,6 +58,8 @@
 - 新增自动生成测评包参考页，把模块题目、证据要求、rubric、讲师追问和 Capstone review 接入学习自测。
 - 新增 `scripts/build_roadmap_pack.py`、`make roadmap-pack` 和脚本测试，可把发布摘要与测评包合成 JSON / Markdown 路线图包。
 - 新增自动生成路线图包参考页，把 GitHub issue 种子、推荐 label、验收标准和验证命令接入公开发布流程。
+- 新增 `scripts/build_launch_pack.py`、`make launch-pack` 和脚本测试，可把发布摘要与路线图包合成 JSON / Markdown 首发运营包。
+- 新增自动生成首发运营包参考页，把 release notes、starter issues、默认标签规范和发布后检查表接入公开发布流程。
 - 新增 `make security-check` 和 `make public-check`，在公开上传前扫描候选入库文件中的密钥、私钥、连接串、本机路径、个人痕迹和危险文件类型。
 - 新增脱敏后的 `tasks/` / `prompts/` 公开工作台说明，保留项目拆解、研究、评审和 AI 协作方法。
 
@@ -75,6 +77,7 @@
 - 将 `infra-release`、CI、README、发布清单、贡献指南、PR template、发布验收 Lab 和 GitHub 发布计划接入共学包生成流程。
 - 将 `infra-release`、CI、README、发布清单、贡献指南、PR template、自测总览和发布验收 Lab 接入测评包生成流程。
 - 将 `infra-release`、CI、README、发布清单、贡献指南、PR template、首页证据闭环和公开发布章节接入路线图包生成流程。
+- 将 `infra-release`、README、发布清单、v0.1 发布手册、首批 issues 草稿和 release notes 草稿接入首发运营包生成流程。
 - 将 CI、PR template、贡献指南、发布计划、README、SECURITY 和发布清单统一到 `public-check` 公开上传检查口径。
 - 将 Node 版本约束收紧到 22，与 `.nvmrc`、CI 和本地推荐命令保持一致。
 - 将 issue templates 的默认 labels 收敛到 GitHub 默认标签，避免新仓库因为未创建自定义 labels 产生提示。

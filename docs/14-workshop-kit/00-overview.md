@@ -32,6 +32,7 @@
 | [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet) | 准备直接带练的人 | 议程模板、模块卡片、学习者交付和复盘问题 |
 | [自动生成测评包](/10-assessments/06-generated-assessment-pack) | 准备测评或复盘的人 | 模块题目、证据要求、rubric 和 Capstone review |
 | [自动生成路线图包](/08-publication/05-generated-roadmap-pack) | 准备开放贡献的人 | GitHub issue 种子、推荐 label、验收标准和验证命令 |
+| [自动生成首发运营包](/08-publication/13-generated-launch-pack) | 准备创建 release 的人 | release notes、starter issues、默认标签规范和发布后检查表 |
 | [课程目录生成器](/09-reference/10-course-catalog) | 准备带练或拆班学习的人 | 7 个可分发模块、检查点和讲师提示 |
 
 ## 它和其他章节怎么配合
@@ -43,6 +44,7 @@
 | 生成讲师备忘和学习者任务 | [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet) | [复盘与评审模板](/14-workshop-kit/04-review-templates) |
 | 生成模块题目和评分标准 | [自动生成测评包](/10-assessments/06-generated-assessment-pack) | [参考答案与讲解](/10-assessments/05-answer-key) |
 | 生成首批 issue 种子 | [自动生成路线图包](/08-publication/05-generated-roadmap-pack) | [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) |
+| 生成首发 release 运营材料 | [自动生成首发运营包](/08-publication/13-generated-launch-pack) | [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook) |
 | 组织一次线上共学 | [两周学习计划](/00-overview/15-two-week-learning-plan) | [学习小组议程](/14-workshop-kit/03-study-group-agenda) |
 | 让读者边跑边记录 | [第一次实操演练](/00-overview/04-first-walkthrough) | [学习者工作簿](/14-workshop-kit/02-learner-workbook) |
 | 做一次公开演示 | [公开演示脚本](/13-output-gallery/06-public-demo-script) | [复盘与评审模板](/14-workshop-kit/04-review-templates) |
@@ -60,6 +62,7 @@
 | 共学包 | 让讲师直接拿到议程、模块卡片和交付要求 | [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet) |
 | 测评包 | 让讲师和 reviewer 看到题目、证据要求和评分标准 | [自动生成测评包](/10-assessments/06-generated-assessment-pack) |
 | 路线图包 | 让维护者把反馈和薄弱点拆成 issue | [自动生成路线图包](/08-publication/05-generated-roadmap-pack) |
+| 首发运营包 | 让维护者统一 release notes、starter issues 和发布后检查表 | [自动生成首发运营包](/08-publication/13-generated-launch-pack) |
 | 实操记录 | 证明读者真的跑过 | [学习者工作簿](/14-workshop-kit/02-learner-workbook) |
 | 输出证据 | 证明命令和系统行为对得上 | [示例输出与证据库](/13-output-gallery/00-overview) |
 | 复盘模板 | 把零散命令变成工程故事 | [复盘与评审模板](/14-workshop-kit/04-review-templates) |
@@ -90,7 +93,8 @@
 6. 生成 [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)，整理讲师备忘和交付要求
 7. 生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)，准备模块题目和评分标准
 8. 生成 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)，筛选首批 issue 种子
-9. 做 [系统 Capstone 与验收 Rubric](/07-hands-on-labs/05-capstone-review-rubric)，完成一次端到端讲解
+9. 生成 [自动生成首发运营包](/08-publication/13-generated-launch-pack)，复核 release notes、starter issues 和发布后检查表
+10. 做 [系统 Capstone 与验收 Rubric](/07-hands-on-labs/05-capstone-review-rubric)，完成一次端到端讲解
 
 ## 下一步
 

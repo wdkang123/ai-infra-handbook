@@ -24,6 +24,7 @@
 | `make workshop-packet` | 合成课程目录和发布摘要，生成可带练共学包 | 组织共学、公开分享或课后复盘前 |
 | `make assessment-pack` | 合成课程目录和共学包，生成模块测评包 | 自测、带练测评或 PR review 前 |
 | `make roadmap-pack` | 合成发布摘要和测评包，生成 GitHub issue 种子 | GitHub 首发、公开路线图或反馈回流前 |
+| `make launch-pack` | 合成发布摘要和路线图包，生成首发运营包 | 创建 release、首批 issue 或发布后复盘前 |
 | `make infra-release` | 跑发布前完整本地检查 | 正式公开发布前 |
 | `make infra-clean` | 清理四个项目输出 | 本地环境整理 |
 
@@ -39,6 +40,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 ```
 
 ## inference-service
@@ -194,6 +196,7 @@ PYTHONPATH=src ../../.venv/bin/python -m finetune_demo.main list-exports \
 | 生成公开共学包 | `make workshop-packet` |
 | 生成模块测评包 | `make assessment-pack` |
 | 生成路线图 issue 种子 | `make roadmap-pack` |
+| 生成 release notes、starter issues 和发布后检查表 | `make launch-pack` |
 | 发布前最后一轮本地验收 | `make infra-release` |
 | 观察请求生命周期 | inference/gateway `/events/requests` |
 | 评估候选模型 | eval `run` + `compare` |

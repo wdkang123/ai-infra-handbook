@@ -72,6 +72,7 @@ def build_release_brief(
             "PYTHON=.venv/bin/python make workshop-packet",
             "PYTHON=.venv/bin/python make assessment-pack",
             "PYTHON=.venv/bin/python make roadmap-pack",
+            "PYTHON=.venv/bin/python make launch-pack",
             "npm audit --omit=dev --audit-level=moderate",
         ],
         "next_review_questions": [

@@ -28,6 +28,7 @@
 - 改进共学包生成器、议程模板、模块卡片或学习者交付要求
 - 改进测评包生成器、模块题目、证据要求或 rubric
 - 改进路线图包生成器、issue 种子、推荐 label 或验收命令
+- 改进首发运营包生成器、release notes、starter issues 或发布后检查表
 - 给共学套件补学习者工作簿、带练议程或贡献任务
 - 新增可独立完成的 hands-on lab
 - 给已有行为补测试
@@ -107,6 +108,12 @@ PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
 ```
 
+如果改了 release notes、首批 issue、默认标签规范或发布后运营清单，再跑：
+
+```bash
+PYTHON=.venv/bin/python make launch-pack
+```
+
 如果改了 `tasks/` 或 `prompts/`，请额外确认其中没有个人路径、真实账号、私有 endpoint、真实 key、敏感日志或未脱敏研究材料。
 
 ## 文档贡献标准
@@ -129,8 +136,9 @@ PYTHON=.venv/bin/python make roadmap-pack
 - 必要时更新 `scripts/build_workshop_packet.py` 里的议程、模块卡片或交付要求
 - 必要时更新 `scripts/build_assessment_pack.py` 里的题目、证据要求或评分标准
 - 必要时更新 `scripts/build_roadmap_pack.py` 里的 issue 种子、label 或验收命令
+- 必要时更新 `scripts/build_launch_pack.py` 里的 release notes、starter issues、标签规范或发布后检查表
 
-并运行 `make docs-inventory`、`make course-catalog`、`make workshop-packet`、`make assessment-pack`、`make roadmap-pack` 和 `make docs-quality`，确认课程主线、课程模块、共学材料、测评材料、路线图 issue 种子、内链、heading 锚点、H1 结构、VitePress nav/sidebar 路由、首页配置与 Vue 组件链接和首页文档页统计没有漂移。
+并运行 `make docs-inventory`、`make course-catalog`、`make workshop-packet`、`make assessment-pack`、`make roadmap-pack`、`make launch-pack` 和 `make docs-quality`，确认课程主线、课程模块、共学材料、测评材料、路线图 issue 种子、首发运营包、内链、heading 锚点、H1 结构、VitePress nav/sidebar 路由、首页配置与 Vue 组件链接和首页文档页统计没有漂移。
 
 如果你不确定一类内容应该怎么写，可以先看：
 

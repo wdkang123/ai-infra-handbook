@@ -8,6 +8,7 @@
 - [课程目录](/09-reference/10-course-catalog)：回答“这些内容如何组织成可带练模块”
 - [自动生成证据包](/13-output-gallery/07-generated-evidence-packet)：回答“这轮 smoke 跑出了哪些工程证据”
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)：回答“哪些后续改进可以变成首批 GitHub issue”
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)：回答“release notes、starter issues、默认标签和发布后检查表是否一致”
 
 `scripts/build_release_brief.py` 会把它们合成一份发布摘要，方便你在 GitHub 首发、PR 复盘、公开演示或共学带练前快速确认：
 
@@ -157,7 +158,7 @@ npm audit --omit=dev --audit-level=moderate
 - 如果要直接安排学习活动，再运行 `make workshop-packet`
 - 如果要做模块测评或 PR review，再运行 `make assessment-pack`
 - 如果要整理首批路线图 issue，再运行 `make roadmap-pack`
-- 如果要写第一个 GitHub release，再对照 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
+- 如果要写第一个 GitHub release，再运行 `make launch-pack`，并对照 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
 
 ## 和其他产物的关系
 
@@ -170,8 +171,9 @@ npm audit --omit=dev --audit-level=moderate
 | `workshop_packet.md` | 共学活动如何组织、交付和复盘 | 讲师、组织者、学习小组 |
 | `assessment_pack.md` | 模块如何测评、举证和评分 | 学习者、讲师、reviewer |
 | `roadmap_pack.md` | 哪些改进可以变成 GitHub issue | 维护者、贡献者 |
+| `launch_pack.md` | release notes、starter issues、默认标签和发布后检查表是否一致 | 发布者、维护者 |
 
-七者一起使用时，项目就有了比较完整的公开复盘链路：
+这些产物一起使用时，项目就有了比较完整的公开复盘链路：
 
 1. 课程结构可盘点
 2. 学习模块可分发
@@ -180,3 +182,4 @@ npm audit --omit=dev --audit-level=moderate
 5. 共学活动可执行
 6. 模块测评可落地
 7. 路线图 issue 可创建
+8. 首发运营包可复核

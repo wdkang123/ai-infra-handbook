@@ -43,6 +43,7 @@ REQUIRED_README_LINKS = [
     "docs/10-assessments/00-overview.md",
     "docs/10-assessments/06-generated-assessment-pack.md",
     "docs/08-publication/05-generated-roadmap-pack.md",
+    "docs/08-publication/13-generated-launch-pack.md",
     "docs/09-reference/05-api-surface.md",
     "docs/09-reference/06-cli-surface.md",
     "docs/09-reference/07-validation-matrix.md",
@@ -60,6 +61,7 @@ REQUIRED_PUBLICATION_LINKS = [
     "/14-workshop-kit/07-generated-workshop-packet",
     "/10-assessments/06-generated-assessment-pack",
     "/08-publication/05-generated-roadmap-pack",
+    "/08-publication/13-generated-launch-pack",
     "/09-reference/09-release-brief",
     "/09-reference/10-course-catalog",
 ]

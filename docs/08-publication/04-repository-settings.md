@@ -134,9 +134,10 @@ Actions -> docs-pages -> Run workflow
 
 ```bash
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 ```
 
-然后从 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 里挑选首批 5 到 8 条。这样每条 issue 都能带上学习价值、建议文件、验收标准和验证命令。
+然后从 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 或 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 里挑选首批 5 到 8 条。这样每条 issue 都能带上学习价值、建议文件、验收标准和验证命令，并且首批标签默认不会引用新仓库里还不存在的自定义 labels。
 
 建议首批 issue：
 

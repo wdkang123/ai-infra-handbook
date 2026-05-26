@@ -23,6 +23,7 @@ Please check the commands you ran:
 - [ ] `PYTHON=.venv/bin/python make workshop-packet`
 - [ ] `PYTHON=.venv/bin/python make assessment-pack`
 - [ ] `PYTHON=.venv/bin/python make roadmap-pack`
+- [ ] `PYTHON=.venv/bin/python make launch-pack`
 - [ ] `npm run docs:build`
 
 ## Evidence
@@ -45,6 +46,7 @@ Please check the commands you ran:
 - [ ] Updated workshop packet if the guided sharing path changed
 - [ ] Updated assessment pack if the self-check or review path changed
 - [ ] Updated roadmap pack if public issue seeds or labels changed
+- [ ] Updated launch pack if release notes, starter issues, labels, or post-release checks changed
 - [ ] Updated README/checklist/changelog if the public learning path changed
 
 ## Public safety impact

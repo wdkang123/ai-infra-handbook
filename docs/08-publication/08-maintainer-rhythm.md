@@ -64,6 +64,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 ```
 
 ## 每月维护
@@ -145,3 +146,4 @@ PYTHON=.venv/bin/python make roadmap-pack
 - 如果你要处理公开反馈，继续看 [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)。
 - 如果你要处理 bot PR，继续看 [依赖维护与 Bot PR 处理](/08-publication/07-dependency-maintenance)。
 - 如果你要规划后续任务，继续看 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)。
+- 如果你要复核 release 和首批 issue，继续看 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。

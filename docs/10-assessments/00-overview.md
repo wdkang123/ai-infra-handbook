@@ -6,7 +6,9 @@
 
 如果说 [课程大纲](/00-overview/12-course-syllabus) 是学习路线，[深度实战](/07-hands-on-labs/00-overview) 是动手任务，[示例输出与证据库](/13-output-gallery/00-overview) 是证据解释，那么学习自测就是阶段验收。它适合在你准备分享、写文章、录视频、做 GitHub 项目展示之前使用。
 
-如果你想把当前 7 个课程模块自动整理成题目、证据要求和评分标准，可以先生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)。如果你想把测评薄弱点继续转成 GitHub issue，再看 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)。
+如果你想把当前 7 个课程模块自动整理成题目、证据要求和评分标准，可以先生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)。
+如果你想把测评薄弱点继续转成 GitHub issue，再看 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)。
+如果你准备首发 release 或首批 issues，再看 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 
 ## 怎么使用
 
@@ -45,6 +47,7 @@
 - [参考答案与讲解](/10-assessments/05-answer-key)
 - [自动生成测评包](/10-assessments/06-generated-assessment-pack)
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 
 ## 推荐节奏
 
@@ -57,6 +60,7 @@
 5. 完成所有 lab 后，做 [Capstone 答辩稿](/10-assessments/04-capstone-defense)
 6. 准备带练或公开展示前，生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)
 7. 准备开放贡献前，生成 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
+8. 准备创建 release 或首批 issue 前，生成 [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 
 如果你已经学过一遍，直接从 Capstone 开始也可以。  
 答辩过程中卡住的地方，就是你下一轮最值得回补的地方。

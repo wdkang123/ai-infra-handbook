@@ -8,9 +8,10 @@
 
 ```bash
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 ```
 
-然后从 `.tmp/roadmap/roadmap_pack.md` 选择 5 到 8 条首批 issue。生成包会把学习价值、建议文件、验收标准和验证命令一起列出来，避免路线图停留在宽泛方向。也可以先用 [首批公开 Issues 草稿](/08-publication/11-first-public-issues) 中已经整理好的 10 条任务作为首发 issue 池。
+然后从 `.tmp/roadmap/roadmap_pack.md` 或 `.tmp/launch/launch_pack.md` 选择 5 到 8 条首批 issue。生成包会把学习价值、建议文件、验收标准和验证命令一起列出来，避免路线图停留在宽泛方向。也可以先用 [首批公开 Issues 草稿](/08-publication/11-first-public-issues) 中已经整理好的 10 条任务作为首发 issue 池。
 
 ## 当前阶段
 
@@ -45,6 +46,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - Reference 层新增 API Surface、CLI Surface 和验证矩阵，帮助读者快速定位接口、命令和检查策略
 - 生产迁移路线章节，覆盖 Serving 后端、Gateway 平台化、Eval 评测系统和 Finetune 真实训练迁移
 - 自动生成路线图包，能把发布摘要和测评弱点整理成 GitHub issue 种子、推荐 label 和发布后反馈闭环
+- 自动生成首发运营包，能把 release notes、starter issues、默认标签规范和发布后检查表集中复核
 - 发布维护节奏与 issue triage 文档，帮助公开仓库用低噪音方式持续处理反馈、依赖和路线图
 - v0.1 首发发布手册，帮助第一个 release 说明学习价值、验证命令和项目边界
 - 首批公开 issues 草稿和 v0.1 release notes 草稿，让首发后的任务池和 release 页面可以直接落地
@@ -60,6 +62,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 
 - 根据真实读者反馈补 FAQ
 - 从 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 中选择 2 到 3 条 good first issue
+- 从 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 中复核首批 issue 的默认 labels 和验收命令
 - 给每个 overview 增加“学完你能做什么”
 - 给 lab 增加更多截图、示例输出和证据包模板
 - 根据共学反馈改进学习者工作簿、议程和公开演示材料

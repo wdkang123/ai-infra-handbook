@@ -237,6 +237,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 npm audit --omit=dev --audit-level=moderate
 ```
 
@@ -249,6 +250,7 @@ npm audit --omit=dev --audit-level=moderate
 - 生成一份可直接组织共学的共学包
 - 生成一份可用于模块自测和评分的测评包
 - 生成一份可整理首批 GitHub issue 的路线图包
+- 生成一份可复核 release notes、starter issues 和发布后检查表的首发运营包
 - 整理一段 GitHub 项目介绍
 
 ### Day 13：整理共学材料
@@ -262,6 +264,7 @@ npm audit --omit=dev --audit-level=moderate
 - [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)
 - [自动生成测评包](/10-assessments/06-generated-assessment-pack)
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 
 完成：
 
@@ -276,6 +279,7 @@ npm audit --omit=dev --audit-level=moderate
 - 一份自动生成的共学包
 - 一份自动生成的测评包
 - 一份自动生成的路线图包
+- 一份自动生成的首发运营包
 - 一组可直接筛选成 issue 的贡献任务
 
 ### Day 14：制定 GitHub 首发计划
@@ -284,6 +288,7 @@ npm audit --omit=dev --audit-level=moderate
 
 - [贡献者协作手册](/14-workshop-kit/05-contribution-playbook)
 - [GitHub 发布计划](/14-workshop-kit/06-github-release-plan)
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 
 完成：
 

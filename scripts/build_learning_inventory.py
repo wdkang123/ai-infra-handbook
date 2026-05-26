@@ -120,6 +120,7 @@ COURSE_TRACKS = [
             "/14-workshop-kit/02-learner-workbook",
             "/14-workshop-kit/06-github-release-plan",
             "/08-publication/05-generated-roadmap-pack",
+            "/08-publication/13-generated-launch-pack",
         ],
     },
     {
@@ -429,6 +430,7 @@ def collect_make_targets(makefile: Path) -> dict[str, Any]:
         "workshop-packet",
         "assessment-pack",
         "roadmap-pack",
+        "launch-pack",
         "scripts-test",
     ]
     return {

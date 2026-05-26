@@ -48,12 +48,14 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 ```
 
 `release-brief` 会把学习站清单和运行证据合成一份公开发布摘要。  
 `workshop-packet` 会继续把课程目录和发布摘要合成议程、模块卡片、学习者交付和复盘问题，方便你直接组织共学或公开演示。
 `assessment-pack` 会把课程目录和共学包合成模块题目、证据要求、rubric 和 Capstone review，方便读者自测或 reviewer 复盘。
 `roadmap-pack` 会把发布摘要和测评包合成首批 GitHub issue 种子，方便把 FAQ、证据库、迁移指南和模块深挖任务拆成可贡献的小任务。
+`launch-pack` 会把发布摘要和路线图包合成首发运营包，方便统一 release notes、starter issues、默认标签规范和发布后复盘清单。
 
 ### 3. README 能独立解释项目
 
@@ -147,7 +149,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - 发布后 24 小时和 7 天怎么接反馈
 - 首批 issues 的学习价值、验收标准和验证命令是什么
 
-具体模板见 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues) 和 [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)。
+具体模板见 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues)、[v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 
 ## 当前已经准备好的材料
 
@@ -165,6 +167,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - Pull request template
 - 首批公开 issues 草稿
 - v0.1 release notes 草稿
+- 首发运营包生成器
 - CI workflow
 - Dependency review workflow
 - Dependabot weekly grouped updates
@@ -179,9 +182,9 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 5. 配置 GitHub Pages 为 GitHub Actions
 6. 手动运行一次 docs-pages workflow，确认 Pages 配置可用
 7. 把在线站点链接补到 README
-8. 根据 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook) 和 [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft) 准备首个 release notes
-9. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan) 和 [首批公开 Issues 草稿](/08-publication/11-first-public-issues) 创建第一批 roadmap issues
-10. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 持续补充 good first issue、docs、lab 和 evidence 任务
+8. 根据 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 准备首个 release notes
+9. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 创建第一批 roadmap issues
+10. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 持续补充 good first issue、docs、lab 和 evidence 任务
 
 ## 发布后优先收集什么反馈
 
@@ -210,6 +213,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)
 - [首批公开 Issues 草稿](/08-publication/11-first-public-issues)
 - [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 - [项目成熟度地图](/00-overview/14-project-maturity-map)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [示例输出与证据库](/13-output-gallery/00-overview)

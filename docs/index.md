@@ -102,6 +102,7 @@ features:
 - 想生成共学议程和模块卡片：看 [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)
 - 想生成模块题目和评分标准：看 [自动生成测评包](/10-assessments/06-generated-assessment-pack)
 - 想生成首批 GitHub issue 种子：看 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
+- 想生成 release notes、首批 issue 和发布后检查表：看 [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 - 想定位卡点：看 [常见排障手册](/09-reference/04-troubleshooting)
 - 想快速查词：看 [术语索引](/00-overview/13-glossary)
 - 如果还拿不准：看 [按目标选择学习路径](/00-overview/07-choose-your-path)
@@ -109,9 +110,9 @@ features:
 
 ## 如果你准备把它分享给别人
 
-建议先读 [面向分享的学习方式](/00-overview/11-public-learning-guide)，再打开 [共学与公开分享套件](/14-workshop-kit/00-overview)、[自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)、[自动生成测评包](/10-assessments/06-generated-assessment-pack) 和 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)，完成 [系统 Capstone 与验收 Rubric](/07-hands-on-labs/05-capstone-review-rubric) 和 [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)，最后用 [Capstone 答辩稿](/10-assessments/04-capstone-defense) 做一次公开展示前的自测。
+建议先读 [面向分享的学习方式](/00-overview/11-public-learning-guide)，再打开 [共学与公开分享套件](/14-workshop-kit/00-overview)、[自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)、[自动生成测评包](/10-assessments/06-generated-assessment-pack)、[自动生成路线图包](/08-publication/05-generated-roadmap-pack) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack)，完成 [系统 Capstone 与验收 Rubric](/07-hands-on-labs/05-capstone-review-rubric) 和 [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)，最后用 [Capstone 答辩稿](/10-assessments/04-capstone-defense) 做一次公开展示前的自测。
 
-如果你准备发布到 GitHub 或部署在线站点，再看 [公开发布总览](/08-publication/00-overview)、[GitHub Pages 发布指南](/08-publication/01-github-pages)、[GitHub 仓库设置建议](/08-publication/04-repository-settings)、[维护节奏与运营清单](/08-publication/08-maintainer-rhythm)、[Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)、[v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues) 和 [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)。
+如果你准备发布到 GitHub 或部署在线站点，再看 [公开发布总览](/08-publication/00-overview)、[GitHub Pages 发布指南](/08-publication/01-github-pages)、[GitHub 仓库设置建议](/08-publication/04-repository-settings)、[维护节奏与运营清单](/08-publication/08-maintainer-rhythm)、[Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)、[v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues)、[v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 
 这样你不仅能把项目跑起来，还能讲清楚：
 

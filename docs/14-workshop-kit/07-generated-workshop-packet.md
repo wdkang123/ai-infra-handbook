@@ -13,6 +13,7 @@
 
 如果你还需要把每个模块转成测评题、证据要求和评分标准，可以继续生成 [自动生成测评包](/10-assessments/06-generated-assessment-pack)。
 如果你还需要把测评薄弱点和发布反馈转成首批 GitHub issue，可以继续生成 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)。
+如果你准备创建第一个 release 或首批 issue，可以继续生成 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 
 它回答的是：
 
@@ -201,6 +202,7 @@ roadmap-pack
 | `workshop_packet.md` | 这次共学如何组织和复盘 | 讲师、组织者、学习小组 |
 | `assessment_pack.md` | 每个模块怎么测、怎么评分 | 学习者、讲师、reviewer |
 | `roadmap_pack.md` | 哪些改进可以变成 GitHub issue | 维护者、贡献者 |
+| `launch_pack.md` | release notes、starter issues 和发布后检查表是否一致 | 发布者、维护者 |
 
 这样，项目的公开学习闭环就更完整了：
 
@@ -210,4 +212,5 @@ roadmap-pack
 4. 发布可判断
 5. 共学可执行
 6. 测评可落地
+7. 首发可复核
 7. 路线图 issue 可创建

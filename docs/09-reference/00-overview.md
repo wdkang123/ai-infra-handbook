@@ -25,6 +25,7 @@
 - [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)
 - [自动生成测评包](/10-assessments/06-generated-assessment-pack)
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 - [示例输出与证据库](/13-output-gallery/00-overview)
 
 ## 怎么使用
@@ -40,6 +41,7 @@
 如果你准备直接安排共学议程、分发模块任务或收集课后复盘，优先看 [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)。
 如果你准备按模块出题、评分或做 PR review，优先看 [自动生成测评包](/10-assessments/06-generated-assessment-pack)。
 如果你准备把首批路线图拆成 GitHub issue，优先看 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)。
+如果你准备创建第一个 release、首批 issue 或发布后复盘，优先看 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 
 ## 参考资料的维护原则
 

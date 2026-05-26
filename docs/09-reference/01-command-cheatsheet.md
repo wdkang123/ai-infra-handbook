@@ -75,7 +75,7 @@ PYTHON=.venv/bin/python make scripts-test
 用途：
 
 - 验证 `scripts/` 下的仓库级工具
-- 当前覆盖证据包生成器、学习站清单生成器、课程目录生成器、发布摘要生成器、共学包生成器、测评包生成器和路线图包生成器
+- 当前覆盖证据包生成器、学习站清单生成器、课程目录生成器、发布摘要生成器、共学包生成器、测评包生成器、路线图包生成器和首发运营包生成器
 
 ### 生成学习站清单
 
@@ -204,6 +204,20 @@ PYTHON=.venv/bin/python make roadmap-pack
 - strict 校验发布摘要和测评包是否适合公开路线图
 - 帮助维护者把模块弱点、发布反馈和后续方向整理成 GitHub issue 种子
 
+### 生成首发运营包
+
+```bash
+PYTHON=.venv/bin/python make launch-pack
+```
+
+用途：
+
+- 先生成发布摘要和路线图包
+- 合成 `.tmp/launch/launch_pack.json`
+- 生成 `.tmp/launch/launch_pack.md`
+- strict 校验发布摘要和路线图包是否适合公开首发
+- 帮助维护者统一 release notes、starter issues、默认标签规范和发布后检查表
+
 ### 发布前完整检查
 
 ```bash
@@ -212,7 +226,7 @@ PYTHON=.venv/bin/python make infra-release
 
 用途：
 
-- 运行格式化、学习站清单、课程目录、全量检查、smoke、证据包、发布摘要、共学包、测评包和路线图包
+- 运行格式化、学习站清单、课程目录、全量检查、smoke、证据包、发布摘要、共学包、测评包、路线图包和首发运营包
 - 其中 `public-check` 会覆盖安全、个人信息、lint、测试、文档质量和文档站构建
 - 适合公开发布前最后一轮，不适合每次小改都跑
 

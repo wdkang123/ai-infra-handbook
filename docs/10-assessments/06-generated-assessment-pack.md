@@ -110,9 +110,11 @@ facilitator_review_flow
 
 ```bash
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 ```
 
 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 会把模块题目、证据要求和发布摘要合成 issue 种子，方便把薄弱点回流到 FAQ、lab、证据库或迁移指南。
+[自动生成首发运营包](/08-publication/13-generated-launch-pack) 会继续把路线图 issue 种子整理成 starter issues，并统一 release notes、默认标签和发布后检查表。
 
 ## 和发布检查的关系
 
@@ -135,6 +137,7 @@ release-brief
 workshop-packet
 assessment-pack
 roadmap-pack
+launch-pack
 ```
 
 这意味着发布前不仅检查“能不能构建、能不能跑、能不能带练”，还会检查：
@@ -153,6 +156,7 @@ roadmap-pack
 | `assessment_pack.md` | 每个模块怎么测、怎么评分 | 学习者、讲师、reviewer |
 | `release_brief.md` | 当前是否适合公开展示 | 发布者、维护者 |
 | `roadmap_pack.md` | 哪些改进可以变成 GitHub issue | 维护者、贡献者 |
+| `launch_pack.md` | release notes、starter issues 和发布后检查表是否一致 | 发布者、维护者 |
 
 这样学习闭环就多了一层“测得出来”：
 
@@ -162,3 +166,4 @@ roadmap-pack
 4. 证据可复盘
 5. 测评可落地
 6. 反馈可变成 issue
+7. 首发材料可复核

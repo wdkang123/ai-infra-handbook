@@ -32,6 +32,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 npm audit --omit=dev --audit-level=moderate
 ```
 
@@ -123,6 +124,7 @@ AI Infra Handbook 发布了一个学习型版本。
 - 共学包：议程模板、模块卡片、学习者交付和复盘问题
 - 测评包：模块题目、证据要求、rubric 和 Capstone review
 - 路线图包：GitHub issue 种子、推荐 label、验收标准和验证命令
+- 首发运营包：release notes、starter issues、默认标签规范和发布后检查表
 - 共学套件：带练、工作簿、复盘模板、贡献手册
 
 适合想系统理解 LLM serving、gateway、eval、finetune 工程边界的人。
@@ -149,6 +151,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 npm audit --omit=dev --audit-level=moderate
 ```
 
@@ -163,6 +166,7 @@ npm audit --omit=dev --audit-level=moderate
 - [自动生成共学包](/14-workshop-kit/07-generated-workshop-packet)
 - [自动生成测评包](/10-assessments/06-generated-assessment-pack)
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 - [共学与公开分享套件](/14-workshop-kit/00-overview)
 - [公开发布总览](/08-publication/00-overview)
 - [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)

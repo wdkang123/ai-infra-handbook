@@ -3,6 +3,9 @@
 这页给出一份更接近最终 GitHub Release 的 v0.1 草稿。
 它和 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook) 的区别是：首发手册解释“如何发布”，这页更像“发布时可以直接贴什么”。
 
+发布前也可以运行 `PYTHON=.venv/bin/python make launch-pack`，从 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 里拿到基于当前 release brief 和 roadmap pack 的 release notes draft。
+这页保留人工精修版本，launch pack 保留机器生成版本。
+
 ## 推荐标题
 
 ```text
@@ -45,6 +48,7 @@ Highlights
   - workshop packet
   - assessment pack
   - roadmap pack
+  - launch pack
 - 公开协作材料已补齐：
   - issue templates
   - PR template
@@ -88,6 +92,7 @@ Verification
 - PYTHON=.venv/bin/python make workshop-packet
 - PYTHON=.venv/bin/python make assessment-pack
 - PYTHON=.venv/bin/python make roadmap-pack
+- PYTHON=.venv/bin/python make launch-pack
 ```
 
 ## What This Release Is For
@@ -117,7 +122,7 @@ The default path intentionally uses mock/local scaffolds so readers can run, ins
 
 ## Suggested First Issues
 
-发布后可以从 [首批公开 Issues 草稿](/08-publication/11-first-public-issues) 中挑 6 到 10 条创建。
+发布后可以从 [首批公开 Issues 草稿](/08-publication/11-first-public-issues) 或 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 中挑 6 到 10 条创建。
 最推荐先创建：
 
 ```text
@@ -171,4 +176,5 @@ After publishing:
 
 - 如果你还没有整理 issue 池，先看 [首批公开 Issues 草稿](/08-publication/11-first-public-issues)。
 - 如果你要决定是否现在发布，先看 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)。
+- 如果你要自动复核 release notes、starter issues 和发布后检查表，先看 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 - 如果你要维护首发后一周反馈，看 [维护节奏与运营清单](/08-publication/08-maintainer-rhythm)。

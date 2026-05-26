@@ -164,6 +164,10 @@ PYTHON=.venv/bin/python make infra-check
 
 > 这些测评弱点和发布反馈如何变成可创建、可验收的 GitHub issue？
 
+[自动生成首发运营包](/08-publication/13-generated-launch-pack) 回答的是：
+
+> release notes、starter issues、默认标签和发布后检查表是否来自同一套可验证材料？
+
 公开展示时可以一起使用：
 
 1. 用 `learning_inventory.md` 说明课程结构
@@ -173,6 +177,7 @@ PYTHON=.venv/bin/python make infra-check
 5. 用 `workshop_packet.md` 安排议程、模块、交付和复盘问题
 6. 用 `assessment_pack.md` 安排模块题目、证据要求和评分标准
 7. 用 `roadmap_pack.md` 整理首批 issue 种子和推荐 label
-8. 用 [共学与公开分享套件](/14-workshop-kit/00-overview) 组织学习者任务和反馈
+8. 用 `launch_pack.md` 复核 release notes、starter issues 和发布后检查表
+9. 用 [共学与公开分享套件](/14-workshop-kit/00-overview) 组织学习者任务和反馈
 
 这样项目就不只是“很多文档”，而是有结构、有路径、有运行证据、也有协作入口的学习站。

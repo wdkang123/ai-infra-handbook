@@ -137,6 +137,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 PYTHON=.venv/bin/python make infra-release
 ```
 
@@ -149,6 +150,7 @@ PYTHON=.venv/bin/python make infra-release
 - 共学包可用
 - 测评包可用
 - 路线图包可用
+- 首发运营包可用
 
 ### 新增章节或大改学习路径时
 
@@ -173,8 +175,9 @@ PYTHON=.venv/bin/python make infra-release
 | `workshop_packet.md` | 这次共学如何安排议程、模块、交付和复盘 | 讲师、组织者、学习小组 |
 | `assessment_pack.md` | 每个模块如何出题、举证和评分 | 学习者、讲师、reviewer |
 | `roadmap_pack.md` | 哪些改进可以变成首批 issue | 维护者、贡献者 |
+| `launch_pack.md` | release notes、starter issues 和发布后检查表是否一致 | 发布者、维护者 |
 
-七者合起来之后，这个项目的公开学习闭环会更完整：
+这些产物合起来之后，这个项目的公开学习闭环会更完整：
 
 1. 课程结构可盘点
 2. 学习模块可分发
@@ -183,5 +186,6 @@ PYTHON=.venv/bin/python make infra-release
 5. 共学活动可执行
 6. 模块测评可落地
 7. 路线图 issue 可创建
+8. 首发运营包可复核
 
 这也是后续把项目传到 GitHub 时最值得保留的维护节奏。

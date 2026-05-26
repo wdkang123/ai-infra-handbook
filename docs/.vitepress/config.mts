@@ -82,6 +82,7 @@ export default defineConfig({
           { text: "v0.1 发布", link: "/08-publication/10-v0-1-release-playbook" },
           { text: "首批 Issues", link: "/08-publication/11-first-public-issues" },
           { text: "Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
+          { text: "首发运营包", link: "/08-publication/13-generated-launch-pack" },
         ],
       },
     ],
@@ -263,6 +264,7 @@ export default defineConfig({
           { text: "v0.1 首发发布手册", link: "/08-publication/10-v0-1-release-playbook" },
           { text: "首批公开 Issues 草稿", link: "/08-publication/11-first-public-issues" },
           { text: "v0.1 Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
+          { text: "自动生成首发运营包", link: "/08-publication/13-generated-launch-pack" },
         ],
       },
       {

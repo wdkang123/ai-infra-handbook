@@ -47,3 +47,4 @@ jobs:
           make PYTHON=python workshop-packet
           make PYTHON=python assessment-pack
           make PYTHON=python roadmap-pack
+          make PYTHON=python launch-pack

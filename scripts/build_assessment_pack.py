@@ -73,6 +73,7 @@ def build_assessment_pack(
             "PYTHON=.venv/bin/python make workshop-packet",
             "PYTHON=.venv/bin/python make assessment-pack",
             "PYTHON=.venv/bin/python make roadmap-pack",
+            "PYTHON=.venv/bin/python make launch-pack",
             "PYTHON=.venv/bin/python make infra-release",
         ],
         "facilitator_review_flow": [

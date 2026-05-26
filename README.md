@@ -100,6 +100,7 @@ flowchart TB
 - [自动生成共学包](./docs/14-workshop-kit/07-generated-workshop-packet.md)
 - [自动生成测评包](./docs/10-assessments/06-generated-assessment-pack.md)
 - [自动生成路线图包](./docs/08-publication/05-generated-roadmap-pack.md)
+- [自动生成首发运营包](./docs/08-publication/13-generated-launch-pack.md)
 - [公开发布总览](./docs/08-publication/00-overview.md)
 - [GitHub 仓库设置建议](./docs/08-publication/04-repository-settings.md)
 - [依赖维护与 Bot PR 处理](./docs/08-publication/07-dependency-maintenance.md)
@@ -220,6 +221,12 @@ PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
 ```
 
+如果你想把 release notes、首批 issue、标签规范和发布后检查表整理成首发运营包，再跑：
+
+```bash
+PYTHON=.venv/bin/python make launch-pack
+```
+
 ## 当前项目状态
 
 当前四个项目已经形成最小可运行闭环：
@@ -238,6 +245,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 `scripts/build_workshop_packet.py` 会把课程目录和发布摘要合成 JSON / Markdown 共学包，方便讲师安排议程、拆分模块、布置学习者交付和收集复盘问题。
 `scripts/build_assessment_pack.py` 会把课程目录和共学包合成 JSON / Markdown 测评包，方便按模块生成题目、证据要求、rubric 和 Capstone 追问。
 `scripts/build_roadmap_pack.py` 会把发布摘要和测评包合成 JSON / Markdown 路线图包，方便整理首批 GitHub issue 种子、推荐 label、验收标准和验证命令。
+`scripts/build_launch_pack.py` 会把发布摘要和路线图包合成 JSON / Markdown 首发运营包，方便统一 release notes、starter issues、默认标签规范和发布后复盘清单。
 
 ## 深度实战
 
@@ -301,7 +309,10 @@ PYTHON=.venv/bin/python make roadmap-pack
 - [复盘与评审模板](./docs/14-workshop-kit/04-review-templates.md)
 - [贡献者协作手册](./docs/14-workshop-kit/05-contribution-playbook.md)
 - [GitHub 发布计划](./docs/14-workshop-kit/06-github-release-plan.md)
+- [自动生成共学包](./docs/14-workshop-kit/07-generated-workshop-packet.md)
+- [自动生成测评包](./docs/10-assessments/06-generated-assessment-pack.md)
 - [自动生成路线图包](./docs/08-publication/05-generated-roadmap-pack.md)
+- [自动生成首发运营包](./docs/08-publication/13-generated-launch-pack.md)
 
 这些页面把“个人自学”继续推进成“可以带别人学、可以收反馈、可以持续迭代”的公开项目形态。
 
@@ -334,6 +345,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - [自动生成共学包](./docs/14-workshop-kit/07-generated-workshop-packet.md)
 - [自动生成测评包](./docs/10-assessments/06-generated-assessment-pack.md)
 - [自动生成路线图包](./docs/08-publication/05-generated-roadmap-pack.md)
+- [自动生成首发运营包](./docs/08-publication/13-generated-launch-pack.md)
 
 ## 仓库结构
 
@@ -364,6 +376,7 @@ PYTHON=.venv/bin/python make roadmap-pack
 - [v0.1 首发发布手册](./docs/08-publication/10-v0-1-release-playbook.md)
 - [首批公开 Issues 草稿](./docs/08-publication/11-first-public-issues.md)
 - [v0.1 Release Notes 草稿](./docs/08-publication/12-v0-1-release-notes-draft.md)
+- [自动生成首发运营包](./docs/08-publication/13-generated-launch-pack.md)
 
 ## 当前状态
 

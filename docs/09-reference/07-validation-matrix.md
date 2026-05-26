@@ -26,7 +26,8 @@
 | 共学包 | `make workshop-packet` | 合成课程目录和发布摘要，生成议程、模块卡片、学习者交付和复盘问题 | 组织共学或公开分享前 |
 | 测评包 | `make assessment-pack` | 合成课程目录和共学包，生成模块题目、证据要求、rubric 和 Capstone review | 自测、带练测评或 PR review 前 |
 | 路线图包 | `make roadmap-pack` | 合成发布摘要和测评包，生成 GitHub issue 种子、推荐 label 和验收命令 | GitHub 首发、公开路线图或反馈回流前 |
-| 发布前整体验收 | `make infra-release` | format、inventory、course catalog、public-check、smoke、evidence、release brief、workshop packet、assessment pack、roadmap pack | 正式公开发布前 |
+| 首发运营包 | `make launch-pack` | 合成发布摘要和路线图包，生成 release notes、starter issues、默认标签和发布后检查表 | 创建 release、首批 issue 或发布后复盘前 |
+| 发布前整体验收 | `make infra-release` | format、inventory、course catalog、public-check、smoke、evidence、release brief、workshop packet、assessment pack、roadmap pack、launch pack | 正式公开发布前 |
 | 依赖审计 | `npm audit --omit=dev --audit-level=moderate` | Node 依赖漏洞 | 发布前 |
 
 ## 按改动类型选择
@@ -49,6 +50,7 @@
 | 改共学包生成器 | `make scripts-test`、`make workshop-packet` | `make infra-release` |
 | 改测评包生成器 | `make scripts-test`、`make assessment-pack` | `make infra-release` |
 | 改路线图包生成器 | `make scripts-test`、`make roadmap-pack` | `make infra-release` |
+| 改首发运营包生成器 | `make scripts-test`、`make launch-pack` | `make infra-release` |
 | 改 GitHub Pages workflow | `make docs-quality`、`npm run docs:build` | 首次配置后手动跑一次 workflow |
 | 改 `tasks/` 或 `prompts/` 公开工作台 | `make security-check` | `make public-check` |
 | 准备公开发布 | `make public-check`、`make infra-release` | `npm audit --omit=dev --audit-level=moderate` |
@@ -162,6 +164,7 @@ PYTHON=.venv/bin/python make release-brief
 PYTHON=.venv/bin/python make workshop-packet
 PYTHON=.venv/bin/python make assessment-pack
 PYTHON=.venv/bin/python make roadmap-pack
+PYTHON=.venv/bin/python make launch-pack
 npm audit --omit=dev --audit-level=moderate
 ```
 
@@ -178,7 +181,8 @@ npm audit --omit=dev --audit-level=moderate
 9. 生成共学包，检查公开带练材料是否可用
 10. 生成测评包，检查模块题目和评分标准是否可用
 11. 生成路线图包，检查首批 issue 是否能承接反馈
-12. 发布前补依赖安全底线
+12. 生成首发运营包，检查 release notes、starter issues 和发布后检查表是否一致
+13. 发布前补依赖安全底线
 
 ## 验证失败时怎么判断
 
@@ -200,6 +204,7 @@ npm audit --omit=dev --audit-level=moderate
 | `workshop-packet` | 课程目录和发布摘要是否存在、课程目录是否 ready、发布摘要是否 ready |
 | `assessment-pack` | 课程目录和共学包是否存在、模块数量是否一致、共学包是否 ready |
 | `roadmap-pack` | 发布摘要和测评包是否存在、发布摘要是否 ready、测评包是否 ready、模块和题目是否可用 |
+| `launch-pack` | 发布摘要和路线图包是否存在、发布摘要是否 ready、路线图包是否 ready、issue seeds 是否可用 |
 
 如果失败发生在跨服务链路，不要只看最后一个错误。  
 先看 request id、events、summary、产物文件，再回到代码。

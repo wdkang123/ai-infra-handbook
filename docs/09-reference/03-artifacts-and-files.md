@@ -210,6 +210,31 @@
 
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
 
+## 首发运营包产物
+
+目录：
+
+```text
+.tmp/launch/
+```
+
+示例：
+
+```text
+.tmp/launch/launch_pack.json
+.tmp/launch/launch_pack.md
+```
+
+含义：
+
+- `make launch-pack` 会读取发布摘要和路线图包
+- JSON 汇总首发门禁、release notes、starter issues、默认标签规范、发布后检查表和推荐命令
+- Markdown 适合用来创建 GitHub release、挑选首批 issue 或做发布后 24 小时复盘
+
+相关页面：
+
+- [自动生成首发运营包](/08-publication/13-generated-launch-pack)
+
 ## Eval 产物
 
 目录：

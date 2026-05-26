@@ -16,6 +16,7 @@
 - [ ] README 指向自动生成共学包
 - [ ] README 指向自动生成测评包
 - [ ] README 指向自动生成路线图包
+- [ ] README 指向自动生成首发运营包
 - [ ] README 说明当前是学习型项目，不是生产系统
 
 ## 2. 文档站
@@ -40,6 +41,7 @@
 - [ ] `PYTHON=.venv/bin/python make workshop-packet` 能生成共学包
 - [ ] `PYTHON=.venv/bin/python make assessment-pack` 能生成测评包
 - [ ] `PYTHON=.venv/bin/python make roadmap-pack` 能生成路线图包
+- [ ] `PYTHON=.venv/bin/python make launch-pack` 能生成首发运营包
 - [ ] `PYTHON=.venv/bin/python make infra-release` 在发布前最后一轮通过
 - [ ] `.nvmrc` 与 `package.json` 的 Node 版本要求一致
 - [ ] CI 工作流能在 GitHub Actions 上执行
@@ -62,6 +64,7 @@
 - [ ] GitHub repo description、topics、About 链接已设置
 - [ ] 第一个 release notes 能说明学习价值、验证命令和项目边界
 - [ ] 首批公开 issues 有学习价值、验收标准和验证命令
+- [ ] 首发运营包能统一 release notes、starter issues、默认标签和发布后检查表
 
 ## 5. 敏感信息
 
@@ -93,6 +96,7 @@
 - [ ] 有自动生成共学包，帮助讲师把议程、模块卡片、学习者交付和复盘问题整理成一份材料
 - [ ] 有自动生成测评包，帮助学习者、讲师和 reviewer 按模块出题、举证和评分
 - [ ] 有自动生成路线图包，帮助维护者把测评弱点和发布反馈整理成 GitHub issue 种子
+- [ ] 有自动生成首发运营包，帮助维护者在创建 release 和首批 issues 前统一复核
 - [ ] 有维护节奏和 issue triage 文档，帮助公开发布后持续处理反馈
 - [ ] 有 v0.1 首发发布手册，帮助第一个 release 写清楚范围和边界
 - [ ] 有首批公开 issues 和 release notes 草稿，帮助首发后直接落地协作

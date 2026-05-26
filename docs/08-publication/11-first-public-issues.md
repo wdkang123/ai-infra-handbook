@@ -3,6 +3,9 @@
 这页把项目首发后可以创建的第一批 GitHub issues 直接整理成可复制草稿。
 它的目标是让公开仓库一打开就能看到清楚、可验证、适合不同贡献者参与的小任务。
 
+如果你想先从当前 release brief 和 roadmap pack 自动生成一版可复核的 starter issues，可以运行 `PYTHON=.venv/bin/python make launch-pack`，再打开 `.tmp/launch/launch_pack.md`。
+这页保留人工精修版本，[自动生成首发运营包](/08-publication/13-generated-launch-pack) 保留机器生成版本，两者可以互相校对。
+
 ## 使用原则
 
 先不要一次创建太多 issue。首批建议 6 到 10 条，覆盖：

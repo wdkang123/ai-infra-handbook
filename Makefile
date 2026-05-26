@@ -1,5 +1,5 @@
 .PHONY: help
-.PHONY: infra-install infra-dev-install infra-lint infra-format infra-test scripts-test security-check public-check infra-check infra-serve infra-smoke infra-evidence infra-release release-brief course-catalog workshop-packet assessment-pack roadmap-pack infra-clean docs-build docs-quality docs-inventory
+.PHONY: infra-install infra-dev-install infra-lint infra-format infra-test scripts-test security-check public-check infra-check infra-serve infra-smoke infra-evidence infra-release release-brief course-catalog workshop-packet assessment-pack roadmap-pack launch-pack infra-clean docs-build docs-quality docs-inventory
 .PHONY: \
 	inference-install inference-serve inference-health inference-test \
 	gateway-install gateway-serve gateway-health gateway-test \
@@ -45,6 +45,10 @@ ROADMAP_PACK_RELEASE ?= $(RELEASE_BRIEF_OUTPUT)
 ROADMAP_PACK_ASSESSMENT ?= $(ASSESSMENT_PACK_OUTPUT)
 ROADMAP_PACK_OUTPUT ?= ./.tmp/roadmap/roadmap_pack.json
 ROADMAP_PACK_MARKDOWN ?= ./.tmp/roadmap/roadmap_pack.md
+LAUNCH_PACK_RELEASE ?= $(RELEASE_BRIEF_OUTPUT)
+LAUNCH_PACK_ROADMAP ?= $(ROADMAP_PACK_OUTPUT)
+LAUNCH_PACK_OUTPUT ?= ./.tmp/launch/launch_pack.json
+LAUNCH_PACK_MARKDOWN ?= ./.tmp/launch/launch_pack.md
 
 help:
 	@grep -E '^[a-zA-Z_-]+:' Makefile | \
@@ -145,8 +149,16 @@ roadmap-pack: release-brief assessment-pack
 		--markdown-output $(ROADMAP_PACK_MARKDOWN) \
 		--strict
 
-infra-release: infra-format docs-inventory course-catalog public-check infra-smoke infra-evidence release-brief workshop-packet assessment-pack roadmap-pack
-	@echo "Release checks completed. See $(RELEASE_BRIEF_MARKDOWN)"
+launch-pack: release-brief roadmap-pack
+	@$(PYTHON_FOR_SUBMAKE) scripts/build_launch_pack.py \
+		--release-brief $(LAUNCH_PACK_RELEASE) \
+		--roadmap-pack $(LAUNCH_PACK_ROADMAP) \
+		--output $(LAUNCH_PACK_OUTPUT) \
+		--markdown-output $(LAUNCH_PACK_MARKDOWN) \
+		--strict
+
+infra-release: infra-format docs-inventory course-catalog public-check infra-smoke infra-evidence release-brief workshop-packet assessment-pack roadmap-pack launch-pack
+	@echo "Release checks completed. See $(LAUNCH_PACK_MARKDOWN)"
 
 infra-clean:
 	@$(MAKE) PYTHON=$(PYTHON_FOR_SUBMAKE) -C projects/inference-service clean || true
