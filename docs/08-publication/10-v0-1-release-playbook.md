@@ -1,7 +1,17 @@
 # v0.1 首发发布手册
 
 这页用于准备第一个公开 release。
+
 它不是要求你马上打 tag，而是把 v0.1 需要说清楚的范围、验证、发布说明和后续维护动作提前整理好。
+
+第一个 release 的目标不是宣布项目完成，而是给读者一个稳定起点：
+
+- 这是什么
+- 能学什么
+- 怎么运行
+- 怎么验证
+- 现在边界在哪里
+- 下一步如何贡献
 
 ## v0.1 的定位
 
@@ -26,7 +36,7 @@ v0.1 的目标是让新读者可以开始系统学习，让维护者可以持续
 发布前建议先跑：
 
 ```bash
-nvm use
+nvm use 22
 PYTHON=.venv/bin/python make public-check
 PYTHON=.venv/bin/python make infra-smoke
 PYTHON=.venv/bin/python make infra-evidence
@@ -39,7 +49,8 @@ npm audit --omit=dev --audit-level=moderate
 ```
 
 如果你只是在小范围改文档，`public-check` 已经足够。
-但打 release 之前，建议跑完整链路，因为 release notes 需要能说明“这套学习站不仅能看，还能跑、能复盘、能组织共学、能拆路线图”，并且首批 issues、默认标签和发布后检查表要能从同一份 launch pack 里复核。
+
+但打 release 之前，建议跑完整链路，因为 release notes 需要能说明这套学习站不仅能看，还能跑、能复盘、能组织共学、能拆路线图，并且首批 issues、默认标签和发布后检查表要能从同一份 launch pack 里复核。
 
 ## 人工检查清单
 
@@ -99,6 +110,8 @@ AI Infra Handbook v0.1.0-learning-site
 - 真实 serving、gateway、eval 和 training 接入请参考生产迁移章节
 ```
 
+发布前要按真实验证结果删改，不要照抄未运行的命令。
+
 ## 首发后 24 小时
 
 发布后第一天不要急着继续大改。先确认：
@@ -122,12 +135,13 @@ AI Infra Handbook v0.1.0-learning-site
 ## 首发后 7 天
 
 第一周最值得做的是收集真实卡点。
+
 不要先追求新功能，先回答：
 
 - 哪个入口最常被问
 - 哪条命令最容易失败
 - 哪个概念读者最难理解
-- 哪个 lab 的“成功标准”不够清楚
+- 哪个 lab 的成功标准不够清楚
 - 哪类输出证据最需要补截图或字段解释
 
 这些反馈应该回流到：
@@ -138,9 +152,28 @@ AI Infra Handbook v0.1.0-learning-site
 - [Issue 分类与标签策略](/08-publication/09-issue-triage-and-labels)
 - [自动生成路线图包](/08-publication/05-generated-roadmap-pack)
 
+## 首发后 30 天
+
+一个月后可以做一次结构性复盘：
+
+- 哪些页面被访问或反馈最多
+- 哪些 issue 自然形成贡献
+- 哪些 lab 仍然太难
+- 哪些真实接入方向最被期待
+- 是否需要打 v0.1.1 或 v0.2.0
+
+如果已经有稳定反馈，可以考虑：
+
+- 增加一批 good first issue
+- 更新路线图
+- 补一个真实接入迁移案例
+- 增加一页 FAQ 或排障扩展
+- 发布一个 patch release
+
 ## 是否现在就创建 GitHub release
 
 可以，但不必急。
+
 比较稳的做法是：
 
 1. 先让 `main` 上的 CI 和 Pages 连续通过。
@@ -150,6 +183,22 @@ AI Infra Handbook v0.1.0-learning-site
 5. 发布后把 release 链接补回 README 或 Changelog。
 
 如果你还没有创建首批 roadmap issues，也可以先不打 release，先把 issue 池整理出来。
+
+## 发布失败时怎么办
+
+不要急着重发 release。
+
+先判断失败位置：
+
+| 失败位置 | 先看 |
+| --- | --- |
+| public-check | 安全扫描、测试、构建输出 |
+| docs-pages | Pages source、base、workflow、Node/npm |
+| ci | pytest、smoke、生成器、docs-quality |
+| release notes | 是否承诺未验证能力 |
+| site 404 | Pages source、URL、base、部署环境 |
+
+修复后再重新跑验证，并在 release notes 或 PR 中说明。
 
 ## 下一步
 
