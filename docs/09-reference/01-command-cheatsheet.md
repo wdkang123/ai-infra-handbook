@@ -135,6 +135,26 @@ PYTHON=.venv/bin/python make infra-smoke
 - 验证 gateway / inference / eval / finetune 最小链路
 - 生成 `.tmp/smoke/evidence/evidence_packet.json` 和 `.md`
 
+### 15 分钟 Quickstart
+
+```bash
+PYTHON=.venv/bin/python make quickstart
+```
+
+用途：
+
+- 安装开发依赖
+- 运行跨服务 smoke
+- 生成根级 `.tmp/evidence/evidence_packet.json` 和 `.md`
+- 启动本地 inference / gateway 服务，方便继续手动发送请求
+- 适合第一次 clone 后按 [15 分钟 Quickstart](/quickstart/15-minute-demo) 跑通项目
+
+跑完后如果不继续手动实验，可以停止服务：
+
+```bash
+PYTHON=.venv/bin/python make all-stop
+```
+
 ### 生成证据包
 
 ```bash

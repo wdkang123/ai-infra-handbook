@@ -7,6 +7,7 @@
 - 我从哪里开始
 - 这套内容适不适合我
 - 当前项目已经做到什么程度
+- 15 分钟内能不能跑通一条证据链
 - 跑完命令后能不能看懂输出证据
 - 如果想带别人学习，有没有可复用的共学材料
 - 网站能不能在线访问
@@ -149,7 +150,7 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - 发布后 24 小时和 7 天怎么接反馈
 - 首批 issues 的学习价值、验收标准和验证命令是什么
 
-具体模板见 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues)、[v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
+具体模板见 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues)、[v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)、[Starter Issues](/08-publication/15-starter-issues)、[v0.1.0 Release Notes](/08-publication/16-v0-1-release-notes) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack)。
 
 ## 当前已经准备好的材料
 
@@ -167,6 +168,10 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - Pull request template
 - 首批公开 issues 草稿
 - v0.1 release notes 草稿
+- 20 个 starter issues
+- v0.1.0 release notes 正式稿
+- 社区贡献路径、First PR Playbook、公开数据与证据规范、维护者 Triage 节奏
+- 15 分钟 Quickstart
 - 首发运营包生成器
 - GitHub 入口与协作地图
 - CI workflow
@@ -183,9 +188,9 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 5. 配置 GitHub Pages 为 GitHub Actions
 6. 手动运行一次 docs-pages workflow，确认 Pages 配置可用
 7. 把在线站点链接补到 README
-8. 根据 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 准备首个 release notes
-9. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 创建第一批 roadmap issues
-10. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 持续补充 good first issue、docs、lab 和 evidence 任务
+8. 根据 [v0.1 首发发布手册](/08-publication/10-v0-1-release-playbook)、[v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)、[v0.1.0 Release Notes](/08-publication/16-v0-1-release-notes) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 准备首个 release notes
+9. 根据 [GitHub 发布计划](/14-workshop-kit/06-github-release-plan)、[首批公开 Issues 草稿](/08-publication/11-first-public-issues)、[Starter Issues](/08-publication/15-starter-issues) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 创建第一批 roadmap issues
+10. 用 [自动生成路线图包](/08-publication/05-generated-roadmap-pack)、[社区贡献路径](/community/00-overview)、[First PR Playbook](/community/01-first-pr-playbook)、[公开数据与证据规范](/community/02-safe-data-and-evidence)、[维护者 Triage 节奏](/community/03-triage-and-maintainer-rhythm) 和 [自动生成首发运营包](/08-publication/13-generated-launch-pack) 持续补充 good first issue、docs、lab 和 evidence 任务
 
 ## 发布后优先收集什么反馈
 
@@ -216,6 +221,12 @@ Issue template 和 bot 配置不要引用仓库里不存在的 labels。
 - [v0.1 Release Notes 草稿](/08-publication/12-v0-1-release-notes-draft)
 - [自动生成首发运营包](/08-publication/13-generated-launch-pack)
 - [GitHub 入口与协作地图](/08-publication/14-github-entrypoints)
+- [Starter Issues](/08-publication/15-starter-issues)
+- [v0.1.0 Release Notes](/08-publication/16-v0-1-release-notes)
+- [社区贡献路径](/community/00-overview)
+- [First PR Playbook](/community/01-first-pr-playbook)
+- [公开数据与证据规范](/community/02-safe-data-and-evidence)
+- [维护者 Triage 节奏](/community/03-triage-and-maintainer-rhythm)
 - [项目成熟度地图](/00-overview/14-project-maturity-map)
 - [公开发布验收 Lab](/07-hands-on-labs/06-public-release-readiness-lab)
 - [示例输出与证据库](/13-output-gallery/00-overview)

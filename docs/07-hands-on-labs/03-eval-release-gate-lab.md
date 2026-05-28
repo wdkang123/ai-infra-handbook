@@ -52,6 +52,24 @@
 
 发布门禁的关键不是“有一个分数”，而是分数背后的条件可追踪。
 
+## 本 Lab 的最终交付物
+
+完成后建议写一段发布判断，而不是只保存 `lab_compare.json`：
+
+```text
+baseline：
+candidate：
+task / backend / few-shot 是否一致：
+核心指标变化：
+sample analysis 发现：
+release recommendation：
+我的判断：
+我还需要补充的证据：
+```
+
+这份交付物应该能放进 PR 或 release discussion。
+它的价值是让别人能看懂你为什么 approve、review 或 block。
+
 ## 操作步骤
 
 ### 1. 跑 baseline
@@ -117,6 +135,20 @@ PYTHONPATH=src ../../.venv/bin/python -m eval_module.main compare \
 
 把这一步写下来很重要。
 真实团队里，门禁系统很少直接“替你发布”，它更多是把风险显性化，让人做可复盘决策。
+
+一个比较好的 compare 解读应该包含：
+
+```text
+candidate 相比 baseline 的 delta 是：
+这个 delta 是否超过 min_delta：
+比较设置是否一致：
+recommendation 是：
+recommendation 的理由是：
+我是否同意这个建议：
+如果不同意，我需要补充什么证据：
+```
+
+如果你只写“candidate 更高”，说明你还停在分数层，没有进入发布判断层。
 
 ### 4. 生成 run index
 
@@ -235,6 +267,29 @@ comparison index 则回答第三个问题：“我们过去做过哪些发布判
 
 遇到这些问题时，不要先改代码。
 先确认比较对象、评测参数和结果文件是否一致。
+
+## 常见错误结论
+
+### “compare 通过就可以发布”
+
+不一定。
+compare 只覆盖当前离线证据，真实发布还要看运行指标、成本、回滚和线上风险。
+
+### “leaderboard 第一就是应该上线”
+
+不一定。
+leaderboard 是展示层，不是发布门禁。
+还要回到 run bundle 和 comparison report。
+
+### “sample_outputs 太细，可以不看”
+
+风险很大。
+总分可能掩盖关键样本退化，sample outputs 才能解释模型到底错在哪里。
+
+### “min_delta 是形式主义”
+
+不是。
+它帮助你避免把很小的波动当作真实提升。
 
 ## 可贴进 PR 的证据块
 

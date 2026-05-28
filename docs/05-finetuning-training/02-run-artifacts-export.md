@@ -14,6 +14,10 @@
 所以训练系统不能只留下一个 checkpoint。
 它需要把一次训练变成可追踪的资产链路。
 
+![Finetune 资产链路：dataset registry、training run、checkpoint、export manifest、eval 和 release decision 互相追溯](/images/articles/finetune-asset-lineage.jpg)
+
+*图：微调产物要能从数据追到 run、checkpoint、export，再进入 eval 和 release decision；否则 checkpoint 只是一个难以解释的文件。*
+
 ## 训练不只是生成权重
 
 一次微调至少有三类产物：

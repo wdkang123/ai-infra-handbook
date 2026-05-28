@@ -11,6 +11,26 @@
 
 迁移目标不是“立刻变成生产平台”，而是让真实后端进入当前已有的服务边界，并继续可测试、可观察、可回退。
 
+## 迁移前先回答三个问题
+
+真实 serving 后端很容易让项目一下变复杂。
+在动手之前，先回答三个问题：
+
+1. 这次迁移是为了学习真实执行层，还是为了提升线上可用性？
+2. 没有 GPU、没有模型权重、没有外部服务的读者还能不能跑通默认路径？
+3. 迁移后出现问题，能不能一键回到 mock 路径并保留证据？
+
+如果这三个问题没有答案，就很容易把学习项目改成只有少数人能跑的重系统。
+
+本项目更适合采用“双路径”原则：
+
+```text
+默认路径：mock engine，低门槛、CI 稳定、文档可复现
+进阶路径：OpenAI-compatible backend，真实执行、指标更多、依赖更多
+```
+
+这样既能继续公开分享，也能逐步接近真实工程。
+
 ## 当前最应该保留的边界
 
 当前 `inference-service` 已经保留了几个迁移时最重要的接口：
@@ -85,6 +105,24 @@ PYTHONPATH=src ../../.venv/bin/python -m inference_service.main serve \
 
 先不要急着接所有 runtime-specific 指标。
 先把基础路径走稳。
+
+## 第二阶段的最小成功标准
+
+OpenAI-compatible 后端接入后，不要只验证“返回了一段文本”。
+至少要跑通这几条路径：
+
+| 路径 | 为什么要测 |
+| --- | --- |
+| 普通成功请求 | 确认基本协议和 usage |
+| streaming 成功请求 | 确认 SSE/chunk 语义 |
+| 错误模型名 | 确认 404 或上游错误映射 |
+| 上游 500 | 确认结构化 502 和 events |
+| 上游超时 | 确认 timeout 不会变成无解释挂起 |
+| streaming 中途失败 | 确认 error event 和收尾语义 |
+| gateway -> inference -> backend | 确认平台入口不是绕过验证 |
+
+这些路径比单次 demo 更能说明迁移质量。
+真实后端接入最容易漏的恰恰是错误路径。
 
 ## 第三阶段：明确 Usage 和 Token 语义
 
@@ -181,6 +219,34 @@ client
 
 这一步能避免“直接打 inference 成功，但平台入口不稳”。
 
+## 灰度和回滚怎么设计
+
+即使只是学习项目，也应该用生产思维设计迁移节奏。
+
+一个稳妥顺序是：
+
+```text
+mock only
+  -> openai-compatible backend in local opt-in mode
+  -> inference-service adapter tests
+  -> gateway integration smoke
+  -> docs evidence update
+  -> optional demo path
+```
+
+每一步都要能回滚：
+
+| 变更 | 回滚方式 |
+| --- | --- |
+| backend URL 配置错误 | 切回 mock engine |
+| streaming 语义不稳定 | 暂时禁用进阶 streaming demo |
+| usage 不可信 | 标注 unknown 或本地估算，不进入成本结论 |
+| gateway 联调失败 | 保留 direct inference 路径，同时修复 gateway |
+| docs 过度依赖真实后端 | 把真实后端内容降级为进阶附录 |
+
+这不是保守，而是保护公开学习体验。
+读者应该始终有一条确定能跑通的主线。
+
 ## 当前仓库相关文件
 
 重点文件：
@@ -214,6 +280,27 @@ scripts/integration_smoke_test.sh
 - 大规模性能压测
 
 这些都重要，但应在边界稳定后逐步推进。
+
+## 迁移 PR 应该怎么写
+
+如果未来把真实后端接入做成 GitHub PR，PR 描述建议包含：
+
+```text
+目标：
+新增后端：
+默认路径是否保持 mock：
+新增配置：
+新增/修改测试：
+已验证成功路径：
+已验证错误路径：
+usage 语义：
+streaming 语义：
+metrics/events 变化：
+文档更新：
+回滚方式：
+```
+
+这能让迁移不只是代码变化，而是一次可审计的系统边界变化。
 
 ## 验收清单
 

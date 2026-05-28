@@ -21,6 +21,31 @@ Cache 在 LLM serving 里不是“锦上添花”。
 
 很多时候最后都会回到 cache。
 
+## 一个容易踩坑的场景
+
+想象一个公开学习助手，每次请求都带同一段 system prompt：
+
+```text
+你是一个 AI Infra 学习助手，请用场景、机制、代码映射和误区解释问题。
+```
+
+如果请求结构稳定，serving runtime 可能复用这段公共前缀的计算状态。
+如果团队后来为了排查方便，把动态 request id、当前时间、用户昵称都插到 prompt 最前面：
+
+```text
+request_id=...
+current_time=...
+user_name=...
+你是一个 AI Infra 学习助手...
+```
+
+那么“公共前缀”就被打散了。
+从业务代码看，只是多加了几个字段；从 serving 视角看，prefix caching 的命中可能明显下降。
+
+这就是 Cache 章节最想建立的直觉：
+
+> Prompt 结构、平台字段、用户隔离和 runtime cache 并不是互不相干的。
+
 ## 先分清三种 Cache
 
 LLM 系统里常见的 cache 至少有三层。
@@ -155,6 +180,56 @@ Cache 不是免费的。
 
 所以 prompt 组织方式会影响 serving 性能。
 
+## Cache Key 应该包含什么
+
+平台层 response cache 最容易出事故的地方，不是“有没有缓存”，而是 cache key 设计不完整。
+
+一个粗糙的 cache key 可能只看：
+
+```text
+model + messages
+```
+
+但真实系统里，影响响应语义的字段很多：
+
+| 字段 | 为什么可能影响 cache |
+| --- | --- |
+| 调用方 / token / tenant | 防止跨用户复用敏感结果 |
+| 外部模型名和内部 target | 同名模型迁移后结果可能不同 |
+| system prompt | 指令改变会改变输出 |
+| messages | 用户输入本体 |
+| temperature / top_p | 采样参数影响随机性 |
+| tools / response format | 输出协议可能不同 |
+| safety / policy version | 策略变化会改变可返回内容 |
+| adapter / prompt version | 微调或提示词版本影响结果 |
+
+学习项目里的 cache 可以保持简化，但文档需要让读者知道：生产 cache 的难点往往在语义边界，而不是字典读写。
+
+一个更稳的原则是：
+
+> 只缓存你能解释其等价性的请求。
+
+如果你无法清楚说明两个请求为什么“应该得到同一个结果”，就不要急着把它们放进同一个 cache key。
+
+## Cache 失效比 Cache 命中更重要
+
+很多人设计 cache 时只盯命中率。
+但 AI 系统里更危险的是错误命中和过期复用。
+
+你至少要考虑：
+
+- 模型升级后旧缓存是否还有效。
+- prompt 版本变化后是否应该清空。
+- 用户权限变化后是否还能复用旧结果。
+- 训练 adapter 替换后 cache key 是否包含版本。
+- 安全策略更新后旧回答是否还允许返回。
+- 评测或发布回滚后是否要隔离 cache。
+
+因此 cache 需要和发布流程相连。
+当模型、prompt、adapter、policy 或路由目标变化时，cache 也要能解释自己是否仍然有效。
+
+这也是为什么本项目把 cache、gateway、eval 和 production migration 放在同一个学习体系里：它们最终都会汇合到“系统变化如何被治理”这个问题。
+
 ## 当前仓库怎么对应
 
 当前仓库还没有真实接入 vLLM/SGLang 的 prefix caching。
@@ -207,6 +282,27 @@ projects/ai-gateway/src/ai_gateway/runtime.py
 5. 比较两组趋势。
 
 目标不是严谨 benchmark，而是确认你能看见“共享前缀改变服务行为”。
+
+## 排查 Cache 问题时的证据顺序
+
+当你怀疑 cache 影响系统行为时，可以按这个顺序查：
+
+1. 看响应 header：`x-cache` 是 hit 还是 miss。
+2. 看 gateway events：是否记录 cache lookup、hit、miss、store。
+3. 看 request id：同一请求是否真的没有进入下游。
+4. 看模型和 target：cache 是否跨目标复用。
+5. 看 token / tenant：cache 是否按调用方隔离。
+6. 看 TTL 和 eviction：结果是否过期或被淘汰。
+7. 看 eval 或 sample：缓存复用后质量是否仍然可接受。
+
+这套顺序能帮助你区分几类问题：
+
+| 现象 | 可能原因 |
+| --- | --- |
+| 本该 hit 却 miss | key 不稳定、prompt 动态字段过多、TTL 太短 |
+| 本该 miss 却 hit | key 缺字段、版本未纳入、隔离不足 |
+| hit 后质量变差 | 旧结果过期、模型或策略已变 |
+| cache 降低成本但事故变多 | 只追命中率，没有发布联动和审计 |
 
 ## 常见误区
 

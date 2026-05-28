@@ -19,6 +19,10 @@
 - 如果失败，下一步应该找哪个证据
 - 公开分享时应该展示哪些材料
 
+![示例输出与证据库示意图](/images/articles/output-gallery-overview.jpg)
+
+*图：证据库把命令输出、HTTP header、评测报告、训练 manifest 和复盘材料放到同一套可解释结构里。*
+
 ## 为什么需要证据库
 
 AI Infra 学习很容易卡在两个极端：

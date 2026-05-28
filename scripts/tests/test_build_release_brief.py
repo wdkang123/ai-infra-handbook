@@ -90,9 +90,45 @@ def test_build_release_brief_combines_inventory_and_evidence(tmp_path: Path) -> 
     assert brief["summary"]["release_readiness"] == "ready"
     assert brief["summary"]["docs_pages"] == 119
     assert brief["summary"]["evidence_sections"] == 3
+    assert brief["summary"]["eval_release_gate"] == "warn"
+    assert brief["summary"]["public_release_gate"] == "warn"
     assert brief["validation"]["ready_for_public_review"] is True
     assert brief["runtime_evidence"]["eval"]["task"] == "mmlu"
+    assert brief["runtime_evidence"]["eval"]["release_gate"] == "warn"
     assert "AI Infra Release Brief" in render_markdown(brief)
+    assert "## Release Gate" in render_markdown(brief)
+
+
+def test_release_gate_maps_eval_approve_to_public_pass(tmp_path: Path) -> None:
+    inventory = tmp_path / "inventory.json"
+    evidence = tmp_path / "evidence.json"
+    payload = minimal_evidence()
+    payload["summary"]["release_recommendation"] = "approve"
+    payload["sections"]["eval"]["release_recommendation"] = "approve"
+    write_json(inventory, minimal_inventory())
+    write_json(evidence, payload)
+
+    brief = build_release_brief(inventory, evidence, strict=True)
+
+    assert brief["summary"]["eval_release_gate"] == "pass"
+    assert brief["summary"]["public_release_gate"] == "pass"
+    assert brief["release_gate"]["public"]["gate"] == "pass"
+
+
+def test_release_gate_maps_eval_block_to_public_block(tmp_path: Path) -> None:
+    inventory = tmp_path / "inventory.json"
+    evidence = tmp_path / "evidence.json"
+    payload = minimal_evidence()
+    payload["summary"]["release_recommendation"] = "block"
+    payload["sections"]["eval"]["release_recommendation"] = "block"
+    write_json(inventory, minimal_inventory())
+    write_json(evidence, payload)
+
+    brief = build_release_brief(inventory, evidence, strict=True)
+
+    assert brief["summary"]["eval_release_gate"] == "block"
+    assert brief["summary"]["public_release_gate"] == "block"
+    assert any("Eval comparison recommends block" in reason for reason in brief["release_gate"]["public"]["reasons"])
 
 
 def test_strict_mode_rejects_incomplete_evidence(tmp_path: Path) -> None:
@@ -108,6 +144,7 @@ def test_strict_mode_rejects_incomplete_evidence(tmp_path: Path) -> None:
 
     brief = build_release_brief(inventory, evidence, strict=False)
     assert brief["summary"]["release_readiness"] == "review"
+    assert brief["summary"]["public_release_gate"] == "block"
 
 
 def test_write_outputs_persists_release_brief(tmp_path: Path) -> None:

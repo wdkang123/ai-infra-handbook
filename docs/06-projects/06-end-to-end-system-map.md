@@ -16,6 +16,10 @@
 
 可以先用这张图理解：
 
+![AI Infra 四层系统图：Gateway、Inference、Eval 和 Finetune 通过证据与发布判断连成闭环](/images/articles/ai-infra-system-map.jpg)
+
+*图：四个学习项目不是孤立 demo，而是围绕请求执行、平台治理、质量判断和训练迭代组成的最小闭环。*
+
 ```text
 应用 / 调用方
   -> ai-gateway

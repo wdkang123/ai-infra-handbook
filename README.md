@@ -8,12 +8,15 @@
 
 > 一套能边学边跑的 AI 基础设施学习手册：从 LLM 请求链路、推理服务、AI Gateway、评测观测到微调资产化，用文档站、可运行代码、hands-on labs 和证据包把学习过程连起来。
 
+**English summary:** AI Infra Handbook is a public learning handbook for backend, platform, and AI application developers. It is not a production platform. The project combines structured docs, four runnable learning services, hands-on labs, request evidence, eval reports, training manifests, and a migration roadmap toward vLLM, SGLang, OpenTelemetry GenAI, Prometheus metrics, and eval release gates.
+
 这个仓库现在的主目标，不是做一个花哨产品，而是把 AI Infra 的学习内容、可运行脚手架和最小联调链路收成一套能边学边跑的手册。
 
 当前定位：
 
 - 学习项目，不是生产平台
 - 文档站 + 可运行代码 + hands-on labs
+- 面向公开分享、学习小组和 GitHub 贡献
 - MIT License，欢迎基于学习和教学目的复用
 
 你可以把它理解成三条并行主线：
@@ -54,26 +57,32 @@ flowchart TB
 
 如果你准备跟着文档一步步学，最推荐顺序是：
 
-1. [从 0 到 1 学习路径](./docs/00-overview/00-zero-to-one.md)
-2. [什么是 AI Infra](./docs/00-overview/01-what-is-ai-infra.md)
-3. [学习路线图](./docs/00-overview/02-learning-route.md)
-4. [课程大纲](./docs/00-overview/12-course-syllabus.md)
-5. [项目成熟度地图](./docs/00-overview/14-project-maturity-map.md)
-6. [两周学习计划](./docs/00-overview/15-two-week-learning-plan.md)
-7. [最小运行手册](./docs/00-overview/03-runbook.md)
-8. [第一次实操演练](./docs/00-overview/04-first-walkthrough.md)
-9. [第一次跑完之后学什么](./docs/00-overview/06-after-first-walkthrough.md)
-10. [深度实战总览](./docs/07-hands-on-labs/00-overview.md)
-11. [案例复盘总览](./docs/11-case-studies/00-overview.md)
-12. [示例输出与证据库](./docs/13-output-gallery/00-overview.md)
-13. [共学与公开分享套件](./docs/14-workshop-kit/00-overview.md)
-14. [生产迁移路线总览](./docs/12-production-migration/00-overview.md)
-15. [学习自测总览](./docs/10-assessments/00-overview.md)
-16. [参考资料总览](./docs/09-reference/00-overview.md)
+1. [15 分钟 Quickstart](./docs/quickstart/15-minute-demo.md)
+2. [从 0 到 1 学习路径](./docs/00-overview/00-zero-to-one.md)
+3. [什么是 AI Infra](./docs/00-overview/01-what-is-ai-infra.md)
+4. [学习路线图](./docs/00-overview/02-learning-route.md)
+5. [课程大纲](./docs/00-overview/12-course-syllabus.md)
+6. [项目成熟度地图](./docs/00-overview/14-project-maturity-map.md)
+7. [两周学习计划](./docs/00-overview/15-two-week-learning-plan.md)
+8. [最小运行手册](./docs/00-overview/03-runbook.md)
+9. [第一次实操演练](./docs/00-overview/04-first-walkthrough.md)
+10. [第一次跑完之后学什么](./docs/00-overview/06-after-first-walkthrough.md)
+11. [深度实战总览](./docs/07-hands-on-labs/00-overview.md)
+12. [案例复盘总览](./docs/11-case-studies/00-overview.md)
+13. [示例输出与证据库](./docs/13-output-gallery/00-overview.md)
+14. [共学与公开分享套件](./docs/14-workshop-kit/00-overview.md)
+15. [生产迁移路线总览](./docs/12-production-migration/00-overview.md)
+16. [学习自测总览](./docs/10-assessments/00-overview.md)
+17. [参考资料总览](./docs/09-reference/00-overview.md)
 
 如果你更想直接按模块学，再看：
 
 - [项目学习总览](./docs/06-projects/00-projects-overview.md)
+- [AI Infra 入门](./docs/landing/ai-infra-intro.md)
+- [AI Gateway](./docs/landing/ai-gateway.md)
+- [LLM Observability](./docs/landing/llm-observability.md)
+- [LLM Evaluation](./docs/landing/llm-evaluation.md)
+- [Production Migration](./docs/landing/production-migration.md)
 - [文档与项目怎么联动](./docs/06-projects/05-docs-and-projects-map.md)
 - [面向分享的学习方式](./docs/00-overview/11-public-learning-guide.md)
 - [项目成熟度地图](./docs/00-overview/14-project-maturity-map.md)
@@ -111,7 +120,24 @@ flowchart TB
 - [v0.1 首发发布手册](./docs/08-publication/10-v0-1-release-playbook.md)
 - [首批公开 Issues 草稿](./docs/08-publication/11-first-public-issues.md)
 - [v0.1 Release Notes 草稿](./docs/08-publication/12-v0-1-release-notes-draft.md)
+- [Starter Issues](./docs/08-publication/15-starter-issues.md)
+- [v0.1.0 Release Notes](./docs/08-publication/16-v0-1-release-notes.md)
+- [社区贡献路径](./docs/community/00-overview.md)
+- [First PR Playbook](./docs/community/01-first-pr-playbook.md)
+- [公开数据与证据规范](./docs/community/02-safe-data-and-evidence.md)
+- [维护者 Triage 节奏](./docs/community/03-triage-and-maintainer-rhythm.md)
 - [Publication Checklist](./PUBLICATION_CHECKLIST.md)
+
+## 15 分钟 Quickstart
+
+第一次 clone 后，推荐先跑：
+
+```bash
+python3 -m venv .venv
+PYTHON=.venv/bin/python make quickstart
+```
+
+这会完成安装、跨服务 smoke、证据包生成，并启动本地 inference / gateway 服务。随后可以按 [15 分钟 Quickstart](./docs/quickstart/15-minute-demo.md) 手动发送请求、查看 request id、events、metrics，并生成 evidence packet。
 
 ## 文档站
 
@@ -327,6 +353,10 @@ PYTHON=.venv/bin/python make launch-pack
 - [Gateway 平台化加固](./docs/12-production-migration/02-gateway-platform-hardening.md)
 - [Eval 评测系统迁移](./docs/12-production-migration/03-eval-judge-dashboard-migration.md)
 - [Finetune 真实训练迁移](./docs/12-production-migration/04-finetune-real-training-migration.md)
+- [vLLM Adapter 设计](./docs/12-production-migration/05-vllm-adapter-design.md)
+- [OpenTelemetry GenAI Tracing 设计](./docs/12-production-migration/06-opentelemetry-genai-tracing.md)
+- [Prometheus Metrics 对照表](./docs/12-production-migration/07-prometheus-metrics-map.md)
+- [SGLang 迁移对比](./docs/12-production-migration/08-sglang-migration-notes.md)
 
 这些页面不会把当前项目说成生产平台，而是说明如何保留接口、观测、manifest 和验证，再逐步替换真实后端、平台策略、judge/dashboard 和训练执行。
 
@@ -357,6 +387,7 @@ PYTHON=.venv/bin/python make launch-pack
 - `tasks/`：脱敏后的任务卡、研究记录、评审记录和演进工作台
 - `prompts/`：脱敏后的 AI 协作提示词和任务执行模板
 - `.github/`：CI、Pages workflow、issue templates 和 PR template
+- `llms.txt` / `docs/public/llms.txt`：面向搜索、AI 工具和公开分享的核心入口清单
 - `PUBLICATION_CHECKLIST.md`：公开发布前检查清单
 - `SECURITY.md`：安全边界、密钥处理约定和报告方式
 
@@ -378,28 +409,39 @@ PYTHON=.venv/bin/python make launch-pack
 - [v0.1 首发发布手册](./docs/08-publication/10-v0-1-release-playbook.md)
 - [首批公开 Issues 草稿](./docs/08-publication/11-first-public-issues.md)
 - [v0.1 Release Notes 草稿](./docs/08-publication/12-v0-1-release-notes-draft.md)
+- [Starter Issues](./docs/08-publication/15-starter-issues.md)
+- [v0.1.0 Release Notes](./docs/08-publication/16-v0-1-release-notes.md)
+- [社区贡献路径](./docs/community/00-overview.md)
+- [First PR Playbook](./docs/community/01-first-pr-playbook.md)
+- [公开数据与证据规范](./docs/community/02-safe-data-and-evidence.md)
+- [维护者 Triage 节奏](./docs/community/03-triage-and-maintainer-rhythm.md)
 - [自动生成首发运营包](./docs/08-publication/13-generated-launch-pack.md)
 
 ## 当前状态
 
-按最开始的目标来看，这套仓库的主任务已经完成到“可正式开始系统学习”的阶段：
+按公开分享目标来看，这套仓库已经从“可正式开始系统学习”推进到“公开增长态”的前半段：
 
 - 学习手册主干已经收齐
 - 本地文档站已经可用
 - 四个项目的最小可运行闭环已经打通
+- 15 分钟 Quickstart 已经成为第一入口
 - 文档、代码、运行入口已经基本对齐
 - 课程大纲、项目成熟度地图、两周学习计划、发布前验收 Lab 已经能支撑公开分享前的自查
 - 示例输出与证据库已经能支撑读者按输出证据做复盘和公开演示
 - 共学与公开分享套件已经能支撑学习小组、公开演示、贡献协作和 GitHub 首发计划
+- v0.1.0 release notes、starter issues、community path、First PR Playbook、公开数据与证据规范、维护者 Triage 节奏、landing pages 和 `llms.txt` 已经补齐公开增长入口
+- vLLM、SGLang、OpenTelemetry GenAI、Prometheus metrics 和 Eval release gate 已经有迁移设计锚点
+- release brief 已经能把 eval recommendation 映射成 pass / warn / block 的公开发布风险
 
 所以你现在完全可以直接按文档开始学，而不是再等仓库继续长。
 
 ## 下一阶段会做什么
 
-后续如果继续推进，重点已经不是“把手册从 0 写出来”，而会更偏：
+后续如果继续推进，重点会更偏向“真实 AI Infra 小步迁移”和“公开反馈回流”：
 
-- 做最后的一致性抛光
-- 逐步把部分 mock/学习型实现替换成更真实的后端或训练逻辑
-- 继续增加更真实的接入示例、失败案例和证据驱动复盘材料
-- 根据公开共学反馈继续收敛 FAQ、工作簿、议程和贡献任务
-- 按你实际学习中遇到的卡点继续细化代码和文档
+- 把 vLLM adapter 从设计页推进到可选实现，同时保留 mock 默认路径
+- 给 gateway / inference 增加 OpenTelemetry GenAI tracing 的版本化映射
+- 把当前 metrics 和真实 vLLM / SGLang runtime metrics 对齐到 Prometheus 观察清单
+- 把 eval release gate 继续接入 evidence packet、CI release check 和发布 PR 模板
+- 把 starter issues 转成 GitHub issues，并根据读者反馈持续拆小
+- 继续补真实失败案例、lab 和 evidence packet，让内容从“能读”继续变成“能验证、能贡献”

@@ -14,6 +14,8 @@ DOCS_DIR = ROOT_DIR / "docs"
 CONFIG_PATH = DOCS_DIR / ".vitepress" / "config.mts"
 HOME_LAUNCH_PADS = DOCS_DIR / ".vitepress" / "theme" / "components" / "HomeLaunchPads.vue"
 VITEPRESS_THEME_DIR = DOCS_DIR / ".vitepress" / "theme"
+LLMS_ROOT = ROOT_DIR / "llms.txt"
+LLMS_PUBLIC = DOCS_DIR / "public" / "llms.txt"
 VITEPRESS_SPECIAL_RE = re.compile(r"""[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>,.?/]+""")
 
 CHECKED_MARKDOWN_FILES = [
@@ -85,6 +87,7 @@ def main() -> int:
     issues.extend(check_markdown_structure())
     issues.extend(check_home_doc_count())
     issues.extend(check_readme_publication_links())
+    issues.extend(check_llms_txt_sync())
 
     if issues:
         print("Documentation quality check failed:")
@@ -367,6 +370,16 @@ def check_readme_publication_links() -> list[str]:
         if target not in publication_text:
             issues.append(f"docs/08-publication/00-overview.md should link to {target}")
     return issues
+
+
+def check_llms_txt_sync() -> list[str]:
+    if not LLMS_ROOT.exists():
+        return ["llms.txt is missing from the repository root"]
+    if not LLMS_PUBLIC.exists():
+        return ["docs/public/llms.txt is missing from the public docs assets"]
+    if LLMS_ROOT.read_text() != LLMS_PUBLIC.read_text():
+        return ["llms.txt and docs/public/llms.txt should stay identical"]
+    return []
 
 
 def count_docs_markdown() -> int:

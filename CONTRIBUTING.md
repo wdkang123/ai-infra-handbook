@@ -145,6 +145,8 @@ PYTHON=.venv/bin/python make launch-pack
 - [内容写作规范](./docs/08-publication/02-content-style-guide.md)
 - [示例输出与证据库](./docs/13-output-gallery/00-overview.md)
 - [贡献者协作手册](./docs/14-workshop-kit/05-contribution-playbook.md)
+- [First PR Playbook](./docs/community/01-first-pr-playbook.md)
+- [公开数据与证据规范](./docs/community/02-safe-data-and-evidence.md)
 
 ## 代码贡献标准
 
@@ -168,6 +170,8 @@ PYTHON=.venv/bin/python make launch-pack
 - 是否影响学习路径或文档导航
 
 如果只是修 typo，也可以保持很小的 PR。
+
+第一次贡献可以按 [First PR Playbook](./docs/community/01-first-pr-playbook.md) 选择 docs-only、code-only 或 cross-service 验证路径。提交输出证据、截图、toy data、manifest 或 evidence packet 前，请先按 [公开数据与证据规范](./docs/community/02-safe-data-and-evidence.md) 脱敏。
 
 ## 发布相关文件
 

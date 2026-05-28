@@ -1,5 +1,10 @@
 # 04. Evaluation Observability
 
+> 本页解决：系统跑完之后，如何知道输出质量和运行过程到底发生了什么。
+> 读完能做：区分 evaluation 和 observability，并把 run、compare、events、metrics 放到一条证据链里。
+> 关联代码：`projects/eval-module`、`projects/ai-gateway`、`projects/inference-service`。
+> 验证命令：`PYTHON=.venv/bin/python make infra-smoke`。
+
 这一组讲的是“系统跑完之后，你怎么知道它到底表现如何”。
 
 它包含两条互相补充的线：
@@ -12,6 +17,10 @@
 这一章要帮你建立的直觉是：
 
 > AI Infra 不是只把请求跑通，还要把结果变成可比较、可复盘、可发布判断的证据。
+
+![Evaluation 与 Observability 证据视图](/images/articles/evaluation-observability-overview.jpg)
+
+*图：Evaluation 关注质量变化，Observability 关注运行过程；两者连起来，才有足够证据解释系统变化。*
 
 ## Evaluation 和 Observability 的区别
 
@@ -135,6 +144,7 @@ Observability 也有类似层次：
 6. [Benchmark、Arena、Leaderboard](/04-evaluation-observability/06-benchmark-arena-leaderboard)
 7. [从 Run 到发布决策](/04-evaluation-observability/07-from-run-to-release-decision)
 8. [Benchmark 与生产质量不是一回事](/04-evaluation-observability/08-benchmark-vs-production-quality)
+9. [Eval Regression Gate 示例](/04-evaluation-observability/09-eval-regression-gate-example)
 
 建议先读 run / compare / history，因为这是最小可复盘单元；再读 benchmark 和 leaderboard；最后读 observability 与发布决策。
 

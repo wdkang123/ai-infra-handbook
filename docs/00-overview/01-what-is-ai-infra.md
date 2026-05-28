@@ -1,5 +1,10 @@
 # 什么是 AI Infra
 
+> 本页解决：AI Infra 到底包含哪些系统边界，以及为什么它不是“把模型 API 包起来”。
+> 读完能做：画出 inference-service、ai-gateway、eval-module、finetune-demo 四层学习地图。
+> 关联代码：`projects/inference-service`、`projects/ai-gateway`、`projects/eval-module`、`projects/finetune-demo`。
+> 验证命令：`PYTHON=.venv/bin/python make quickstart`。
+
 AI Infra 不是单一组件，也不是“把模型跑起来”这么简单。
 
 如果从工程视角看，它更像一整套围绕模型能力建立的基础设施：模型如何接入、如何提供推理服务、请求如何被治理、输出如何被评测、运行过程如何被观测、训练产物如何被管理，以及这些能力如何进入真实产品和平台。
@@ -17,6 +22,10 @@ AI Infra 不是单一组件，也不是“把模型跑起来”这么简单。
 - **迭代**：prompt、数据、训练、模型版本和反馈要进入持续改进闭环。
 
 这也是整个仓库后续所有章节反复展开的主线。
+
+![AI Infra 系统关系图](/images/articles/what-is-ai-infra.jpg)
+
+*图：AI Infra 的难点不是单个组件，而是交付、运行、治理、评估和迭代如何连接成一套系统。*
 
 ## 为什么 AI Infra 重要
 

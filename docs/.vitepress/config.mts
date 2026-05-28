@@ -4,18 +4,19 @@ const base = process.env.VITEPRESS_BASE || "/";
 const siteUrl = "https://wdkang123.github.io/ai-infra-handbook/";
 const siteTitle = "AI Infra Handbook";
 const siteDescription =
-  "一套能边学边跑的 AI Infra 学习站，覆盖推理服务、AI Gateway、评测观测、微调训练和公开分享材料。";
+  "面向后端、平台和 AI 应用开发者的 AI Infra 工程学习手册，覆盖 Quickstart、推理服务、AI Gateway、评测观测、微调训练、证据包和真实迁移路线。";
 const socialImage = `${siteUrl}og-image.png`;
 
 export default defineConfig({
   lang: "zh-CN",
   title: siteTitle,
-  description: "把学习文档、可运行脚手架、hands-on labs 和最小联调链路收成一个可浏览的 AI Infra 学习站。",
+  description: siteDescription,
   base,
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: "localhostLinks",
   head: [
+    ["meta", { name: "description", content: siteDescription }],
     ["meta", { property: "og:title", content: siteTitle }],
     [
       "meta",
@@ -35,6 +36,9 @@ export default defineConfig({
     ["meta", { name: "twitter:description", content: siteDescription }],
     ["meta", { name: "twitter:image", content: socialImage }],
   ],
+  sitemap: {
+    hostname: siteUrl.replace(/\/$/, ""),
+  },
   themeConfig: {
     siteTitle: "AI Infra Handbook",
     logo: {
@@ -53,11 +57,22 @@ export default defineConfig({
       {
         text: "开始",
         items: [
+          { text: "15 分钟跑通", link: "/quickstart/15-minute-demo" },
           { text: "从 0 到 1", link: "/00-overview/00-zero-to-one" },
           { text: "学习路线", link: "/00-overview/02-learning-route" },
           { text: "第一次实操", link: "/00-overview/04-first-walkthrough" },
           { text: "两周学习计划", link: "/00-overview/15-two-week-learning-plan" },
           { text: "运行手册", link: "/00-overview/03-runbook" },
+        ],
+      },
+      {
+        text: "专题",
+        items: [
+          { text: "AI Infra 入门", link: "/landing/ai-infra-intro" },
+          { text: "AI Gateway", link: "/landing/ai-gateway" },
+          { text: "LLM Observability", link: "/landing/llm-observability" },
+          { text: "LLM Evaluation", link: "/landing/llm-evaluation" },
+          { text: "Production Migration", link: "/landing/production-migration" },
         ],
       },
       {
@@ -85,6 +100,7 @@ export default defineConfig({
         text: "发布与参考",
         items: [
           { text: "公开发布", link: "/08-publication/00-overview" },
+          { text: "社区贡献", link: "/community/00-overview" },
           { text: "参考资料", link: "/09-reference/00-overview" },
           { text: "验证矩阵", link: "/09-reference/07-validation-matrix" },
           { text: "学习站清单", link: "/09-reference/08-learning-inventory" },
@@ -100,6 +116,8 @@ export default defineConfig({
           { text: "Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
           { text: "首发运营包", link: "/08-publication/13-generated-launch-pack" },
           { text: "GitHub 入口", link: "/08-publication/14-github-entrypoints" },
+          { text: "Starter Issues", link: "/08-publication/15-starter-issues" },
+          { text: "v0.1.0 Release Notes", link: "/08-publication/16-v0-1-release-notes" },
         ],
       },
       { text: "GitHub", link: "https://github.com/wdkang123/ai-infra-handbook" },
@@ -125,6 +143,20 @@ export default defineConfig({
           { text: "术语索引", link: "/00-overview/13-glossary" },
           { text: "项目成熟度地图", link: "/00-overview/14-project-maturity-map" },
           { text: "两周学习计划", link: "/00-overview/15-two-week-learning-plan" },
+        ],
+      },
+      {
+        text: "Quickstart",
+        items: [{ text: "15 分钟跑通", link: "/quickstart/15-minute-demo" }],
+      },
+      {
+        text: "Landing Pages",
+        items: [
+          { text: "AI Infra 入门", link: "/landing/ai-infra-intro" },
+          { text: "AI Gateway", link: "/landing/ai-gateway" },
+          { text: "LLM Observability", link: "/landing/llm-observability" },
+          { text: "LLM Evaluation", link: "/landing/llm-evaluation" },
+          { text: "Production Migration", link: "/landing/production-migration" },
         ],
       },
       {
@@ -191,6 +223,7 @@ export default defineConfig({
           { text: "Benchmark、Arena、Leaderboard", link: "/04-evaluation-observability/06-benchmark-arena-leaderboard" },
           { text: "从 Run 到发布决策", link: "/04-evaluation-observability/07-from-run-to-release-decision" },
           { text: "Benchmark 与生产质量不是一回事", link: "/04-evaluation-observability/08-benchmark-vs-production-quality" },
+          { text: "Eval Regression Gate 示例", link: "/04-evaluation-observability/09-eval-regression-gate-example" },
         ],
       },
       {
@@ -228,6 +261,7 @@ export default defineConfig({
           { text: "训练产物复现案例", link: "/11-case-studies/03-finetune-to-eval-asset-lineage" },
           { text: "Gateway Fallback 与缓存复盘案例", link: "/11-case-studies/04-gateway-fallback-cache-incident" },
           { text: "Eval 退化与发布阻断案例", link: "/11-case-studies/05-eval-regression-release-gate" },
+          { text: "失败案例手册", link: "/11-case-studies/06-failure-case-playbook" },
         ],
       },
       {
@@ -264,6 +298,19 @@ export default defineConfig({
           { text: "Gateway 平台化加固", link: "/12-production-migration/02-gateway-platform-hardening" },
           { text: "Eval 评测系统迁移", link: "/12-production-migration/03-eval-judge-dashboard-migration" },
           { text: "Finetune 真实训练迁移", link: "/12-production-migration/04-finetune-real-training-migration" },
+          { text: "vLLM Adapter 设计", link: "/12-production-migration/05-vllm-adapter-design" },
+          { text: "OpenTelemetry GenAI Tracing", link: "/12-production-migration/06-opentelemetry-genai-tracing" },
+          { text: "Prometheus Metrics 对照表", link: "/12-production-migration/07-prometheus-metrics-map" },
+          { text: "SGLang 迁移对比", link: "/12-production-migration/08-sglang-migration-notes" },
+        ],
+      },
+      {
+        text: "Community",
+        items: [
+          { text: "社区贡献路径", link: "/community/00-overview" },
+          { text: "First PR Playbook", link: "/community/01-first-pr-playbook" },
+          { text: "公开数据与证据规范", link: "/community/02-safe-data-and-evidence" },
+          { text: "维护者 Triage 节奏", link: "/community/03-triage-and-maintainer-rhythm" },
         ],
       },
       {
@@ -284,6 +331,8 @@ export default defineConfig({
           { text: "v0.1 Release Notes 草稿", link: "/08-publication/12-v0-1-release-notes-draft" },
           { text: "自动生成首发运营包", link: "/08-publication/13-generated-launch-pack" },
           { text: "GitHub 入口与协作地图", link: "/08-publication/14-github-entrypoints" },
+          { text: "Starter Issues", link: "/08-publication/15-starter-issues" },
+          { text: "v0.1.0 Release Notes", link: "/08-publication/16-v0-1-release-notes" },
         ],
       },
       {

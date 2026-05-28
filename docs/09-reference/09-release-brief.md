@@ -105,6 +105,18 @@ release-brief
 
 release brief 更像仪表盘，不是盖章机。真正发布前仍然需要人读一遍关键入口。
 
+## pass / warn / block 怎么理解
+
+`release_readiness` 只说明自动输入是否完整；`release_gate` 会把 eval recommendation 和公开发布最低门禁翻译成更直接的 pass / warn / block：
+
+| Gate | 含义 | 典型来源 |
+| --- | --- | --- |
+| `pass` | 自动输入完整，eval 没有提示 review 或 block | `approve` + inventory/evidence 完整 |
+| `warn` | 可以继续人工复核，但不能直接当作发布批准 | eval `review`、recommendation 缺失或未知 |
+| `block` | 当前证据不支持公开发布或发布候选叙事 | eval `block`、缺证据、缺路由、证据包不完整 |
+
+这个 gate 仍然不是生产审批系统。它的作用是让 release notes、starter issues 和公开分享材料诚实地表达风险。
+
 ## JSON 结构
 
 `release_brief.json` 的顶层结构是：
@@ -117,6 +129,7 @@ summary
 learning_site
 runtime_evidence
 validation
+release_gate
 public_positioning
 recommended_commands
 next_review_questions
@@ -133,8 +146,12 @@ next_review_questions
 | `summary.evidence_sections` | 证据包可用章节数量 |
 | `summary.missing_evidence_artifacts` | 缺失证据产物数量 |
 | `summary.eval_release_recommendation` | eval comparison 给出的发布建议 |
+| `summary.eval_release_gate` | 将 eval recommendation 映射成 `pass` / `warn` / `block` |
+| `summary.public_release_gate` | 结合自动门禁和 eval gate 后的公开发布建议 |
 | `summary.finetune_export_status` | finetune export 状态 |
 | `validation.ready_for_public_review` | 是否满足公开复盘的最低自动门禁 |
+| `release_gate.eval.reasons` | eval gate 的解释 |
+| `release_gate.public.reasons` | public gate 的解释 |
 
 ## Markdown 结构
 
@@ -142,6 +159,7 @@ next_review_questions
 
 - `Public Positioning`：公开定位，避免把学习项目说成生产平台
 - `Validation`：自动门禁信号
+- `Release Gate`：pass / warn / block 和原因
 - `Learning Site`：章节、主线和学习材料统计
 - `Runtime Evidence`：serving、eval、finetune 关键运行证据
 - `Recommended Commands`：发布前推荐命令

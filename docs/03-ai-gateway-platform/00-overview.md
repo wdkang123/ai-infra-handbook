@@ -1,5 +1,10 @@
 # 03. AI Gateway Platform
 
+> 本页解决：模型服务外层为什么需要 gateway，以及 gateway 和 serving 的边界是什么。
+> 读完能做：解释 auth、routing、rate limit、fallback、cache、events 和 metrics 如何组成平台治理层。
+> 关联代码：`projects/ai-gateway`、`projects/inference-service`。
+> 验证命令：`curl -s http://localhost:8080/metrics`。
+
 这一组讲的是“模型服务外面那层平台治理逻辑”。
 
 如果 serving 层回答“模型怎么执行”，gateway 层回答的就是：
@@ -7,6 +12,10 @@
 > 在一个组织或产品里，很多调用方、很多模型、很多供应商、很多策略同时存在时，调用大模型这件事怎样被统一管理？
 
 初学时，gateway 很容易被看成“转发代理”。但真实系统里，它往往是 AI 平台最先长出来、也最容易变复杂的一层。它不负责模型内部推理，却负责让模型调用变得可控、可观测、可审计、可演进。
+
+![AI Gateway 平台治理示意图](/images/articles/gateway-platform-overview.jpg)
+
+*图：Gateway 是模型调用的策略边界，同一入口里同时处理鉴权、路由、限流、缓存、fallback 和证据记录。*
 
 ## 为什么需要 Gateway
 

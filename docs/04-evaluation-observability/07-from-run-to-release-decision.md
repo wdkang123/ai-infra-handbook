@@ -104,6 +104,10 @@ Eval Task
 
 当前项目没有完整 release platform，但它已经保留了足够的学习骨架，让你练习发布判断。
 
+![Eval 发布门禁示意图：baseline 和 candidate 进入 compare、sample analysis、history，再形成 approve、review 或 block 分支](/images/articles/eval-release-gate.jpg)
+
+*图：评测门禁的价值不是给出一个分数，而是把 run、compare、样本证据、历史表现和发布建议放进同一条决策链。*
+
 ## 当前仓库提供了什么学习骨架
 
 当前仓库已经把从 run 走向决策最重要的基础对象留下来了：
@@ -141,6 +145,26 @@ Eval Task
 | rollback evidence | 如果发布后出问题，如何回退和解释 |
 
 这些字段不一定都要在一个文件里，但决策时必须能找到。
+
+## 最小发布门禁矩阵
+
+可以把发布判断拆成四个门：
+
+| 门禁 | 通过条件 | 不通过时 |
+| --- | --- | --- |
+| 可比性 | baseline/candidate 的 task、样本、配置可解释 | rerun 或标记 review |
+| 质量 | 指标和样本分析支持提升或至少不退化 | block 或补样本复核 |
+| 运行 | 延迟、错误率、fallback、cache 没有新异常 | review 系统证据 |
+| 资产 | 模型/prompt/adapter/代码版本可追溯 | 补 manifest / lineage |
+
+这四个门里，任何一个明显缺证据，都不应该直接 approve。
+
+它们分别防止四类常见误判：
+
+- 把不可比结果当作提升。
+- 把平均分提升当作全面变好。
+- 忽略运行成本和稳定性。
+- 发布一个无法追踪和回滚的候选对象。
 
 ## Observability 为什么会在这里重新出现
 
@@ -226,6 +250,31 @@ Compare report 显示：
 
 如果这些问题大多答不上来，就不应该急着发布。
 
+## 决策记录应该保留在哪里
+
+一次发布判断最好不要只存在聊天记录里。
+
+至少应该能落到这些地方之一：
+
+- comparison markdown
+- release notes 草稿
+- PR description
+- GitHub issue
+- output gallery 的证据包
+- case study
+
+决策记录不需要很长，但要能回答：
+
+```text
+我们为什么推进或阻断？
+当时主要证据是什么？
+我们知道哪些风险？
+如果后来出问题，应该回看哪些文件？
+```
+
+这也是公开学习项目和普通 demo 的区别。
+demo 可以只展示“跑通了”，学习项目应该展示“我们为什么这样判断”。
+
 ## 和当前项目怎么练习
 
 你可以这样练：
@@ -250,6 +299,37 @@ Compare report 显示：
 ```
 
 这比单纯贴分数有价值得多。
+
+## 三种典型结论示例
+
+### Approve 示例
+
+```text
+建议：approve 进入小流量灰度。
+原因：candidate 在相同 task / backend / few-shot 下超过 min_delta，关键样本未见退化。
+主要证据：compare report、sample analysis、run history。
+主要风险：当前样本规模仍小，灰度期间继续观察延迟和错误率。
+```
+
+### Review 示例
+
+```text
+建议：review，不直接发布。
+原因：总体分数略升，但 factuality 样本出现退化，输出 token 明显增加。
+主要证据：sample analysis、observability token counters。
+下一步：限制输出长度后重跑 candidate，并人工复核低分样本。
+```
+
+### Block 示例
+
+```text
+建议：block。
+原因：candidate 未达到 min_delta，且关键样本出现回归。
+主要证据：comparison verdict、failed sample ids、judge reasons。
+下一步：回到数据或 prompt 设计，补充回归集后再提交候选。
+```
+
+这些示例能帮助读者把 recommendation 变成可沟通的工程语言。
 
 ## 学习时常见误区
 

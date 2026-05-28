@@ -1,5 +1,5 @@
 .PHONY: help
-.PHONY: infra-install infra-dev-install infra-lint infra-format infra-test scripts-test security-check public-check infra-check infra-serve infra-smoke infra-evidence infra-release release-brief course-catalog workshop-packet assessment-pack roadmap-pack launch-pack infra-clean docs-build docs-quality docs-inventory
+.PHONY: infra-install infra-dev-install infra-lint infra-format infra-test scripts-test security-check public-check infra-check infra-serve infra-smoke infra-evidence quickstart infra-release release-brief course-catalog workshop-packet assessment-pack roadmap-pack launch-pack infra-clean docs-build docs-quality docs-inventory
 .PHONY: \
 	inference-install inference-serve inference-health inference-test \
 	gateway-install gateway-serve gateway-health gateway-test \
@@ -116,6 +116,17 @@ infra-evidence:
 		--smoke-dir $(EVIDENCE_SMOKE_DIR) \
 		--output $(EVIDENCE_OUTPUT) \
 		--markdown-output $(EVIDENCE_MARKDOWN)
+
+quickstart: infra-dev-install
+	@$(MAKE) PYTHON=$(PYTHON_FOR_SUBMAKE) MODEL=$(MODEL) INFERENCE_PORT=$(INFERENCE_PORT) GATEWAY_PORT=$(GATEWAY_PORT) infra-smoke
+	@$(MAKE) PYTHON=$(PYTHON_FOR_SUBMAKE) EVIDENCE_SMOKE_DIR=$(EVIDENCE_SMOKE_DIR) EVIDENCE_OUTPUT=$(EVIDENCE_OUTPUT) EVIDENCE_MARKDOWN=$(EVIDENCE_MARKDOWN) infra-evidence
+	@$(MAKE) PYTHON=$(PYTHON_FOR_SUBMAKE) MODEL=$(MODEL) INFERENCE_PORT=$(INFERENCE_PORT) GATEWAY_PORT=$(GATEWAY_PORT) all-serve
+	@echo "Quickstart completed."
+	@echo "Services are available at http://localhost:$(INFERENCE_PORT) and http://localhost:$(GATEWAY_PORT)"
+	@echo "Smoke evidence: $(EVIDENCE_SMOKE_DIR)"
+	@echo "Evidence packet: $(EVIDENCE_OUTPUT)"
+	@echo "Evidence markdown: $(EVIDENCE_MARKDOWN)"
+	@echo "Stop services with: make all-stop"
 
 release-brief: docs-inventory infra-evidence
 	@$(PYTHON_FOR_SUBMAKE) scripts/build_release_brief.py \

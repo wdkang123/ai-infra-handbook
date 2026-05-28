@@ -20,6 +20,10 @@
 
 读完以后，你应该能把慢请求、首 token 慢、streaming 卡顿、gateway fallback、token usage 和 request timeline 放到同一张图里理解。
 
+![从客户端请求到首个 token 的端到端链路：Gateway、推理服务、Prefill、Decode 和 Streaming 共同决定 TTFT](/images/articles/request-to-first-token.jpg)
+
+*图：首 token 不是模型内部的孤立瞬间，而是入口治理、路由、上下文处理、prefill、decode 和 stream flush 共同完成后的第一次可见反馈。*
+
 ## 先看最粗链路
 
 一条 chat completion 请求，最粗可以拆成七段：

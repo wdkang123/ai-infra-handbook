@@ -19,6 +19,10 @@
 
 案例的价值不是告诉你标准答案，而是训练你用证据做工程判断。
 
+![案例复盘证据链示意图](/images/articles/case-studies-overview.jpg)
+
+*图：案例复盘从现象出发，把日志、事件、报告和产物串成证据链，再形成判断和后续行动。*
+
 ## 案例和教程的区别
 
 教程通常按顺序告诉你做什么：
@@ -207,6 +211,23 @@
 - 轻微退化也可能很重要
 - settings changed 会影响可比性
 - release gate 的价值是保护主线质量
+
+### 案例 6：失败案例手册
+
+入口：[失败案例手册](/11-case-studies/06-failure-case-playbook)
+
+你会用统一格式复盘四类失败：
+
+- gateway upstream timeout
+- fallback used
+- eval regression blocks release
+- finetune export manifest lineage mismatch
+
+训练重点：
+
+- 每个失败都要有症状、触发命令、观察证据、定位路径、修复方式和复盘问题
+- 不要只修 happy path
+- 失败案例可以直接沉淀成 lab 或 starter issue
 
 ## 这章训练什么能力
 

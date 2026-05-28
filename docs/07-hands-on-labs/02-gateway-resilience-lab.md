@@ -53,6 +53,23 @@ metrics 里变化的字段：
 
 这个 lab 的目标不是把命令跑完，而是让你能用证据解释 gateway 的每种行为。
 
+## 本 Lab 的最终交付物
+
+完成后建议写一段“gateway 行为复盘”，而不是只贴 curl 输出：
+
+```text
+我验证的成功路径：
+我验证的入口错误：
+我验证的路由错误：
+我验证的限流行为：
+我观察到的 cache header：
+我观察到的 fallback header：
+events 中最能说明 gateway 价值的事件：
+我认为 gateway 和 inference-service 的边界是：
+```
+
+这份交付物应该能回答：gateway 到底比普通代理多做了什么。
+
 ## 操作步骤
 
 ### 1. 启动 inference 和 gateway
@@ -141,6 +158,18 @@ done
 - `404` 是路由问题
 - `429` 是平台主动保护下游
 
+这里最容易出错的地方是把所有失败都叫“服务失败”。
+更好的记录方式是：
+
+| 请求 | 状态码 | 应该归因到哪层 | 是否应该打到下游 |
+| --- | --- | --- | --- |
+| 无 token | `401` | gateway 鉴权 | 不应该 |
+| unknown model | `404` | gateway 路由 | 不应该 |
+| 高频请求 | `429` | gateway 限流 | 通常不应该 |
+| upstream error | `502` | 下游或 fallback 候选 | 已尝试下游 |
+
+这张表能帮助你建立平台层排障顺序。
+
 ### 4. 验证 streaming
 
 ```bash
@@ -172,6 +201,28 @@ curl -s "http://localhost:8080/events/summary"
 - 是否能按最近事件判断失败主要集中在哪一层
 
 这比只看最后一个 curl 输出更接近真实排障。
+
+## 如何解释一次 gateway 成功响应
+
+一个 gateway 成功响应至少可能有三种来源：
+
+| 成功来源 | 你应该看什么 |
+| --- | --- |
+| 主 upstream 成功 | `x-upstream-model`、`x-fallback-used: false` |
+| fallback 成功 | `x-fallback-used: true`、fallback events |
+| cache 命中 | `x-cache: HIT`、cache events |
+
+所以 `200` 不是完整结论。
+你要继续问：
+
+```text
+它是怎么成功的？
+有没有绕过下游？
+有没有切过备用模型？
+这条路径是否符合预期？
+```
+
+这也是 gateway lab 和普通 API 调用练习的区别。
 
 ## 关键观察点
 
@@ -282,6 +333,30 @@ PYTHON=.venv/bin/python make infra-smoke
 ### cache 一直是 BYPASS
 
 先确认 response cache 是否启用。默认关闭时 `BYPASS` 是正确结果，不是失败。
+
+## 常见错误结论
+
+### “fallback 成功说明系统健康”
+
+不一定。
+fallback 成功只能说明用户拿到了响应，主 upstream 可能正在退化。
+还要看 `/events/failures` 和 fallback metrics。
+
+### “cache hit 一定是好事”
+
+不一定。
+cache hit 要建立在隔离、TTL 和 key 语义正确的基础上。
+错误命中比 miss 更危险。
+
+### “gateway 能转发就够了”
+
+不够。
+gateway 的价值在于把 auth、routing、rate limit、cache、fallback、events、metrics 放到统一入口。
+
+### “streaming fallback 和普通 fallback 一样”
+
+不一样。
+已经发出 chunk 后再切上游，会破坏输出语义。
 
 ## 复盘问题
 

@@ -1,5 +1,10 @@
 # 05. Finetuning Training
 
+> 本页解决：一次训练为什么不应该只剩一个模型文件，而要留下可复现资产。
+> 读完能做：解释 dataset registry、run manifest、checkpoint index、export manifest 和 lineage 的关系。
+> 关联代码：`projects/finetune-demo`、`projects/eval-module`。
+> 验证命令：`PYTHON=.venv/bin/python make infra-smoke`。
+
 这一组讲的是“模型能力怎么通过训练迭代出来”。
 
 这里的重点不是一上来跑一个很重的 GPU 训练，也不是把所有训练框架参数都背下来。更重要的是先理解：

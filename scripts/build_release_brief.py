@@ -31,6 +31,9 @@ def build_release_brief(
     evidence = read_json_file(evidence_file, strict=strict, label="evidence packet")
 
     validation = build_validation_summary(inventory, evidence)
+    eval_release_recommendation = get_nested(evidence, ["summary", "release_recommendation"])
+    eval_release_gate = build_eval_release_gate(eval_release_recommendation)
+    public_release_gate = build_public_release_gate(validation, eval_release_gate)
     if strict:
         errors = validation_errors(validation)
         if errors:
@@ -51,12 +54,18 @@ def build_release_brief(
             "missing_track_routes": get_nested(inventory, ["summary", "missing_track_route_count"], 0),
             "evidence_sections": get_nested(evidence, ["summary", "available_section_count"], 0),
             "missing_evidence_artifacts": get_nested(evidence, ["summary", "missing_artifact_count"], 0),
-            "eval_release_recommendation": get_nested(evidence, ["summary", "release_recommendation"]),
+            "eval_release_recommendation": eval_release_recommendation,
+            "eval_release_gate": eval_release_gate["gate"],
+            "public_release_gate": public_release_gate["gate"],
             "finetune_export_status": get_nested(evidence, ["summary", "finetune_export_status"]),
         },
         "learning_site": build_learning_site_summary(inventory),
         "runtime_evidence": build_runtime_evidence_summary(evidence),
         "validation": validation,
+        "release_gate": {
+            "eval": eval_release_gate,
+            "public": public_release_gate,
+        },
         "public_positioning": [
             "Learning-first AI Infra manual, not a production platform.",
             "The site combines structured docs, runnable scaffolds, course catalog modules, hands-on labs, assessments, and evidence artifacts.",
@@ -140,6 +149,56 @@ def validation_errors(validation: dict[str, Any]) -> list[str]:
     return errors
 
 
+def build_eval_release_gate(recommendation: str | None) -> dict[str, Any]:
+    normalized = (recommendation or "unknown").lower()
+    if normalized == "approve":
+        return {
+            "gate": "pass",
+            "source_recommendation": recommendation,
+            "reasons": ["Eval comparison recommends approve; continue to public readiness checks."],
+        }
+    if normalized == "block":
+        return {
+            "gate": "block",
+            "source_recommendation": recommendation,
+            "reasons": ["Eval comparison recommends block; do not present this candidate as release-ready."],
+        }
+    if normalized == "review":
+        return {
+            "gate": "warn",
+            "source_recommendation": recommendation,
+            "reasons": ["Eval comparison recommends review; require human sample and risk review before release."],
+        }
+    return {
+        "gate": "warn",
+        "source_recommendation": recommendation,
+        "reasons": ["Eval recommendation is missing or unknown; require manual review before release."],
+    }
+
+
+def build_public_release_gate(validation: dict[str, Any], eval_gate: dict[str, Any]) -> dict[str, Any]:
+    reasons: list[str] = []
+    validation_issues = validation_errors(validation)
+    if validation_issues:
+        reasons.extend(validation_issues)
+
+    eval_gate_value = eval_gate["gate"]
+    if eval_gate_value == "block":
+        reasons.extend(eval_gate["reasons"])
+        return {"gate": "block", "reasons": reasons}
+    if validation_issues:
+        return {"gate": "block", "reasons": reasons}
+    if eval_gate_value == "warn":
+        reasons.extend(eval_gate["reasons"])
+        return {"gate": "warn", "reasons": reasons}
+    return {
+        "gate": "pass",
+        "reasons": [
+            "Release brief validation passed and eval comparison did not raise a warning or block signal.",
+        ],
+    }
+
+
 def build_learning_site_summary(inventory: dict[str, Any]) -> dict[str, Any]:
     sections = inventory.get("sections") or []
     course_tracks = inventory.get("course_tracks") or []
@@ -185,6 +244,7 @@ def build_runtime_evidence_summary(evidence: dict[str, Any]) -> dict[str, Any]:
     return {
         "available_sections": get_nested(evidence, ["summary", "available_sections"], []),
         "release_recommendation": get_nested(evidence, ["summary", "release_recommendation"]),
+        "release_gate": build_eval_release_gate(get_nested(evidence, ["summary", "release_recommendation"]))["gate"],
         "finetune_export_status": get_nested(evidence, ["summary", "finetune_export_status"]),
         "serving_gateway": {
             "status": serving.get("status"),
@@ -197,6 +257,7 @@ def build_runtime_evidence_summary(evidence: dict[str, Any]) -> dict[str, Any]:
             "task": get_nested(eval_section, ["run", "task"]),
             "accuracy": get_nested(eval_section, ["run", "accuracy"]),
             "release_recommendation": eval_section.get("release_recommendation"),
+            "release_gate": build_eval_release_gate(eval_section.get("release_recommendation"))["gate"],
         },
         "finetune": {
             "status": finetune.get("status"),
@@ -232,6 +293,7 @@ def render_markdown(brief: dict[str, Any]) -> str:
     validation = brief["validation"]
     learning = brief["learning_site"]
     evidence = brief["runtime_evidence"]
+    release_gate = brief["release_gate"]
 
     lines = [
         "# AI Infra Release Brief",
@@ -242,6 +304,8 @@ def render_markdown(brief: dict[str, Any]) -> str:
         f"- Course tracks: `{summary['course_tracks']}`",
         f"- Evidence sections: `{summary['evidence_sections']}`",
         f"- Eval release recommendation: `{summary['eval_release_recommendation']}`",
+        f"- Eval release gate: `{summary['eval_release_gate']}`",
+        f"- Public release gate: `{summary['public_release_gate']}`",
         f"- Finetune export status: `{summary['finetune_export_status']}`",
         "",
         "## Public Positioning",
@@ -260,6 +324,18 @@ def render_markdown(brief: dict[str, Any]) -> str:
     )
     for key, value in validation.items():
         lines.append(f"| `{key}` | `{value}` |")
+
+    lines.extend(
+        [
+            "",
+            "## Release Gate",
+            "",
+            "| Gate | Value | Reasons |",
+            "| --- | --- | --- |",
+            f"| Eval | `{release_gate['eval']['gate']}` | {'; '.join(release_gate['eval']['reasons'])} |",
+            f"| Public | `{release_gate['public']['gate']}` | {'; '.join(release_gate['public']['reasons'])} |",
+        ]
+    )
 
     lines.extend(
         [
@@ -298,6 +374,7 @@ def render_markdown(brief: dict[str, Any]) -> str:
             f"- Eval task: `{evidence['eval']['task']}`",
             f"- Eval accuracy: `{evidence['eval']['accuracy']}`",
             f"- Eval release recommendation: `{evidence['eval']['release_recommendation']}`",
+            f"- Eval release gate: `{evidence['eval']['release_gate']}`",
             f"- Finetune method: `{evidence['finetune']['method']}`",
             f"- Finetune dataset id: `{evidence['finetune']['dataset_id']}`",
             f"- Finetune export status: `{evidence['finetune']['export_status']}`",

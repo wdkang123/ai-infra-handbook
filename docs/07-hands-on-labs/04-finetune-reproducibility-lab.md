@@ -38,6 +38,25 @@
 - `projects/finetune-demo/src/finetune_demo/export/adapter_exporter.py`
 - `projects/finetune-demo/tests/test_trainer.py`
 
+## 本 Lab 的最终交付物
+
+完成后建议写一份“训练资产复盘”：
+
+```text
+训练 run：
+dataset id / version：
+dataset sha256：
+checkpoint：
+checkpoint index：
+export：
+export manifest：
+export lineage 能追溯到：
+我确认的文件指纹：
+如果要进入 eval，还缺什么：
+```
+
+这份复盘的重点不是证明“训练命令跑了”，而是证明“训练产物可追踪、可校验、可交付”。
+
 ## 操作步骤
 
 ### 1. 跑一次训练
@@ -92,6 +111,18 @@ cat ./outputs/lab-run/data/dataset_summary.json
 - 数据集大小和 `sha256`
 
 当前训练入口还会校验 chat-style JSONL：每条记录需要 `messages`，并包含 user 和 assistant。
+
+你可以用下面问题检查自己是否读懂了 dataset summary：
+
+```text
+这次训练到底用了哪份数据？
+这份数据有多少条记录？
+user / assistant / system 的角色分布是否合理？
+dataset version 是什么？
+sha256 是否能帮助我确认数据没有被替换？
+```
+
+如果你只知道“用了 train.jsonl”，说明数据资产还没有被你真正读懂。
 
 ### 3. 检查 dataset registry
 
@@ -317,6 +348,45 @@ dataset diff 会把 `dataset_sha256`、`dataset_version`、records、messages、
 
 训练 run 解释“怎么训练出来”，export index 解释“交付出了哪些 adapter”。  
 当 export index 同时保留 dataset id、dataset version、adapter hash、export manifest pointer、status、duration、model summaries 和 dataset summaries 时，你就能从一个导出文件反查训练输入，也能从一份数据输入找到对应导出，并且知道这次导出是否成功、耗时大概是多少、按模型或数据集怎么归类、证据 manifest 在哪里。
+
+## 如何判断产物是否可复现
+
+可以用这张表检查：
+
+| 问题 | 应该在哪找 |
+| --- | --- |
+| 训练用了哪份数据 | `dataset_summary.json`、`dataset_registry_entry.json` |
+| 数据是否被替换过 | dataset `sha256` |
+| 训练参数是什么 | `training_args.json`、`run_manifest.json` |
+| checkpoint 是否完整 | `checkpoint_index.json` |
+| adapter 文件指纹是什么 | checkpoint/export file artifacts |
+| export 来自哪个 checkpoint | `export_manifest.json` lineage |
+| 这个 export 是否进入历史 | `export_history.jsonl`、export index |
+| 后续 eval 应该引用什么 | export manifest、dataset id、base model |
+
+如果这些问题都能回答，训练产物才从“文件夹”变成“资产”。
+
+## 常见错误结论
+
+### “有 checkpoint 就能复现”
+
+不够。
+还要知道 checkpoint 来自哪份数据、哪个配置、哪个 base model、哪个训练 run。
+
+### “dataset summary 和 registry 是重复的”
+
+不是。
+summary 解释单次 run 的输入，registry 负责跨 run 登记和查询。
+
+### “export 只是复制文件”
+
+不对。
+export 是把训练产物整理成可交付资产，并保留 lineage。
+
+### “hash 和 size 对质量没帮助，所以不用管”
+
+它们不能证明质量，但能证明文件身份。
+没有文件指纹，复现和审计会变弱。
 
 ## 扩展任务
 

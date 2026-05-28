@@ -6,11 +6,11 @@
       <p>不管你是第一次接触 AI Infra，还是已经准备开始实操，这里都有一条直接可走的入口。</p>
     </div>
     <div class="launch-grid">
-      <a class="launch-card primary" href="/00-overview/00-zero-to-one">
+      <a class="launch-card primary" href="/quickstart/15-minute-demo">
         <span class="launch-kicker">新手入口</span>
-        <h3>从 0 到 1 走完整轮</h3>
-        <p>适合第一次系统学习的人。先明确要完成什么，再按主线跑环境、实操、自测和复盘。</p>
-        <span class="launch-meta">路线 → 实操 → 验收</span>
+        <h3>15 分钟跑通一轮</h3>
+        <p>适合第一次打开仓库的人。先跑 quickstart，再用 request id、events 和 evidence packet 复盘。</p>
+        <span class="launch-meta">clone → quickstart → 证据包</span>
       </a>
       <a class="launch-card" href="/00-overview/02-learning-route">
         <span class="launch-kicker">系统学习</span>
@@ -39,7 +39,7 @@
     </div>
     <div class="launch-stats">
       <div class="stat-pill">
-        <strong>134</strong>
+        <strong>152</strong>
         <span>文档页</span>
       </div>
       <div class="stat-pill">

@@ -1,5 +1,10 @@
 # 生产迁移路线总览
 
+> 本页解决：学习型实现如何逐步接近真实工程，而不牺牲可运行、可验证和可复盘。
+> 读完能做：为 vLLM、Gateway 加固、Eval gate、真实训练和跨层发布闭环排出迁移顺序。
+> 关联代码：`projects/`、`scripts/integration_smoke_test.sh`、`scripts/build_evidence_packet.py`。
+> 验证命令：`PYTHON=.venv/bin/python make infra-smoke`。
+
 这一章回答一个进阶问题：
 
 > 当前项目是学习型实现，如果想把它逐步改得更接近真实工程，应该按什么顺序推进？
@@ -13,6 +18,10 @@
 - 迁移后如何继续公开分享和维护
 
 学习型项目最怕两种极端：一种是永远停在 toy demo，另一种是一口气堆成读者跑不起来的重系统。本章的目标，是给出一条中间路线：让项目越来越真实，但不牺牲可学习、可运行、可复盘。
+
+![生产迁移路线示意图](/images/articles/production-migration-overview.jpg)
+
+*图：生产迁移不是推倒重写，而是在保留接口、观测和证据边界的前提下逐步替换内部实现。*
 
 ## 迁移不是重写
 
@@ -123,6 +132,8 @@
 
 - [Serving 后端迁移](/12-production-migration/01-serving-backend-migration)
 - [从学习型服务到真实 Serving Stack](/02-inference-serving/10-from-learning-service-to-real-serving-stack)
+- [vLLM Adapter 设计](/12-production-migration/05-vllm-adapter-design)
+- [SGLang 迁移对比](/12-production-migration/08-sglang-migration-notes)
 
 ### 阶段二：Gateway 平台化加固
 
@@ -182,6 +193,7 @@
 
 - [Eval 评测系统迁移](/12-production-migration/03-eval-judge-dashboard-migration)
 - [从 Run 到发布决策](/04-evaluation-observability/07-from-run-to-release-decision)
+- [Eval Regression Gate 示例](/04-evaluation-observability/09-eval-regression-gate-example)
 
 ### 阶段四：Finetune 接真实训练
 
@@ -237,6 +249,10 @@ Train or prompt/model change
 - [Gateway 平台化加固](/12-production-migration/02-gateway-platform-hardening)
 - [Eval 评测系统迁移](/12-production-migration/03-eval-judge-dashboard-migration)
 - [Finetune 真实训练迁移](/12-production-migration/04-finetune-real-training-migration)
+- [vLLM Adapter 设计](/12-production-migration/05-vllm-adapter-design)
+- [OpenTelemetry GenAI Tracing 设计](/12-production-migration/06-opentelemetry-genai-tracing)
+- [Prometheus Metrics 对照表](/12-production-migration/07-prometheus-metrics-map)
+- [SGLang 迁移对比](/12-production-migration/08-sglang-migration-notes)
 
 ## 一张迁移地图
 

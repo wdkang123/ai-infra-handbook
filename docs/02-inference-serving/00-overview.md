@@ -1,5 +1,10 @@
 # 02. Inference Serving
 
+> 本页解决：模型权重和 tokenizer 如何变成稳定、高效、可观测的模型服务。
+> 读完能做：解释 `/v1/chat/completions`、`/v1/models`、streaming、metrics 和 request id 的 serving 契约。
+> 关联代码：`projects/inference-service`、`projects/ai-gateway`。
+> 验证命令：`curl -s http://localhost:8000/v1/models`。
+
 这一组内容讲的是“模型服务本体”这一层。
 
 更具体一点，它回答的是：
@@ -7,6 +12,10 @@
 > 一个大模型已经有了权重和 tokenizer 之后，系统怎样把它稳定、高效、可观测地变成可调用服务？
 
 这层离模型最近，也最容易被工具名词淹没。你会看到 vLLM、SGLang、Triton Inference Server、TensorRT-LLM、prefix caching、continuous batching、streaming、TTFT、ITL 等等。它们看起来像一串独立技术，但背后其实围绕同一个问题：如何在有限 GPU、显存、队列和延迟预算里，让很多请求同时生成 token。
+
+![Inference Serving 执行层示意图](/images/articles/inference-serving-overview.jpg)
+
+*图：Serving 层把权重、token、队列、缓存和流式输出组织成一个可调用、可观测、可替换的模型服务。*
 
 ## 先把 Serving 看成“执行契约”
 

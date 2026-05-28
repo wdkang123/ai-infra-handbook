@@ -40,6 +40,24 @@
 这三类信号互相补充。
 缺任何一个，系统都会变得更难维护。
 
+## 最常见的问题是信号错配
+
+排障时很容易拿错信号回答问题。
+
+例如：
+
+| 你想回答的问题 | 不够合适的信号 | 更合适的信号 |
+| --- | --- | --- |
+| 这条请求为什么 502 | `/metrics` 总数 | request timeline |
+| 最近是不是系统性失败 | 单个 response body | `/metrics` + `/events/failures` |
+| 上游现在还能不能探测到 | 单次 chat completion | `/health` |
+| 请求最终走了哪个模型 | leaderboard | `x-upstream-model` + events |
+| 成功是否来自 fallback | HTTP 200 | `x-fallback-used` + fallback events |
+| cache 是否影响结果 | 总耗时 | `x-cache` + cache events |
+
+这也是为什么学习站要同时保留 health、metrics、headers 和 events。
+它们不是重复设计，而是在回答不同问题。
+
 ## Health Check：活着不等于健康
 
 最简单的 `/health` 只会返回：
@@ -177,6 +195,35 @@ inference-service 也会记录：
 
 这些事件让学习者可以看到一次请求在不同层发生了什么。
 
+## 一个事件最好包含哪些字段
+
+事件不是越多越好，关键是字段能不能帮助复盘。
+
+一个有用的 gateway event 通常应该包含：
+
+| 字段 | 用途 |
+| --- | --- |
+| `request_id` | 串联单次请求 |
+| `event_type` | 表达发生了什么 |
+| `model` | 外部模型名 |
+| `upstream_model` | 实际上游目标 |
+| `status_code` | HTTP 语义 |
+| `cache_status` | hit / miss / bypass |
+| `fallback_used` | 是否走过备用路径 |
+| `error_type` | 失败分类 |
+| `timestamp` | 排序和复盘 |
+
+学习项目可以保持字段少一点，但字段语义要稳定。
+否则事件会变成“看起来很多，实际不好查”的日志噪音。
+
+一个好事件应该让人能回答：
+
+```text
+这条请求在哪一层发生了关键变化？
+这个变化是否影响用户看到的结果？
+它是否和同类请求的整体趋势一致？
+```
+
 ## 一条请求应该怎么查
 
 假设用户说：“刚才那个请求失败了。”
@@ -291,6 +338,29 @@ projects/inference-service/src/inference_service/runtime.py
 
 但学习阶段先把边界讲清楚更重要。
 你要先知道 health、metrics、request id、events 分别解决什么问题，再去接更复杂的观测系统。
+
+## 如何写一段请求复盘
+
+当你拿到 request id 后，可以用这个小模板写复盘：
+
+```text
+request id：
+入口状态：
+gateway 判断：
+实际 upstream：
+cache 状态：
+fallback 状态：
+inference 是否收到：
+最终结果：
+我能确认：
+我不能确认：
+下一步：
+```
+
+这个模板适合放进案例、Issue、PR 评论或学习笔记。
+它能强迫你区分“事实”“判断”和“还缺的证据”。
+
+这比一句“服务挂了”有用得多，也更适合公开项目沉淀知识。
 
 ## 常见误区
 

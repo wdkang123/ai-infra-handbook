@@ -16,6 +16,34 @@ vLLM 最适合先理解成：
 
 如果只把 vLLM 理解成“一个能 serve 模型的命令”，会漏掉它最值得学的部分。
 
+## 先用一个真实问题理解 vLLM
+
+假设你维护一个问答产品，最开始只有少量内部用户。
+直接调用一个模型接口时，一切都看起来正常。
+
+后来流量上来以后，你开始遇到这些现象：
+
+- 第一个用户很快，多个用户同时来时首 token 明显变慢。
+- 有些长文档请求会让短问题也跟着变慢。
+- GPU 看起来很忙，但 tokens/sec 并不稳定。
+- streaming 能返回，但用户感觉输出一阵一阵地卡。
+- 上下文一长，显存压力比预期更早出现。
+
+这时问题已经不是“HTTP 服务有没有写好”，而是模型执行层如何调度在线请求。
+vLLM 的学习价值就在这里：它把这些现象放进同一个运行时问题里，让你能从 token、cache、batch 和 scheduler 的角度理解瓶颈。
+
+所以读 vLLM 时，不要先问：
+
+```text
+启动命令是什么？
+```
+
+更好的问题是：
+
+```text
+当很多请求同时生成 token 时，它如何管理显存、队列、cache 和输出节奏？
+```
+
 ## 它在系统里处在哪一层
 
 可以把 vLLM 放在这里：
@@ -71,6 +99,38 @@ PagedAttention 背后的学习直觉是：
 
 这比记住论文细节更重要。
 
+## 运行时里真正难的是“正在生成的请求”
+
+传统 API 服务处理请求时，常常可以把一次请求看成短暂的输入输出。
+LLM serving 不一样。
+一个请求在生成完成前会一直占用运行时状态：
+
+- prompt 已经 prefill 过。
+- KV cache 还在显存里。
+- decode 还要继续很多步。
+- streaming 连接还没有结束。
+- scheduler 还要决定下一轮 token 生成时它是否进入 batch。
+
+这意味着 vLLM 这样的运行时不是只处理“请求进来”和“响应出去”两个时刻，而是在很多 token iteration 之间不断做资源分配。
+
+你可以把在线 LLM serving 想成一个持续变化的队列：
+
+```text
+新请求进入 -> prefill -> 进入 decode 队列 -> 每轮生成一些 token -> 结束或继续等待下一轮
+```
+
+每一轮里，运行时都要面对几个取舍：
+
+| 取舍 | 影响 |
+| --- | --- |
+| 多放一些请求进 batch | 吞吐可能提高，但单请求等待可能变长 |
+| 优先短请求 | 交互体验更好，但调度策略更复杂 |
+| 接受长上下文 | 能力更强，但 KV Cache 压力上升 |
+| 保留更多 cache | 复用机会更多，但显存更紧 |
+
+这也是为什么 vLLM 不是普通 Web 框架里的一个 handler。
+它更像模型执行层的交通系统。
+
 ## Continuous Batching 为什么重要
 
 训练时的 batch 往往是固定的。
@@ -114,6 +174,25 @@ POST /v1/chat/completions
 
 所以学习 vLLM 时，不要停在“接口像 OpenAI”。
 接口相似只是集成入口，运行时行为才是重点。
+
+## 接入 vLLM 时应该保留哪些证据
+
+如果未来把当前项目接到真实 vLLM 后端，最重要的不是让第一条请求成功，而是保留足够证据解释每条请求。
+
+至少要保住这几类证据：
+
+| 证据 | 为什么重要 |
+| --- | --- |
+| request id | 串起 gateway、inference-service 和 vLLM backend |
+| model / served model name | 确认外部模型名最终落到了哪个执行目标 |
+| prompt / completion token usage | 用于成本、限流和 eval 分析 |
+| TTFT / queue / prefill / decode 信号 | 拆解“慢”到底慢在哪一段 |
+| streaming start / end / error | 判断用户体感和协议边界 |
+| backend error type | 区分连接失败、模型不存在、超时、OOM、运行时错误 |
+
+如果只看到一段文本结果，而没有这些证据，真实后端接入以后会很难排障。
+
+一个学习项目尤其要保留这些字段，因为读者需要看到“为什么这样设计”，而不是只看到“它能返回”。
 
 ## vLLM 和 Gateway 的关系
 
@@ -199,6 +278,25 @@ inference-service engine adapter
 
 不要只看 request per second。
 LLM 负载必须看 token。
+
+## 什么情况下不该急着优化 vLLM
+
+vLLM 很重要，但不是所有问题都应该立刻归因到 vLLM。
+
+如果你看到系统变慢，先确认：
+
+| 现象 | 先看哪里 |
+| --- | --- |
+| 401、404、429 变多 | gateway 鉴权、路由、限流 |
+| cache miss 变多 | gateway cache key、请求差异、TTL |
+| 首 token 前等待很久 | gateway timeline、queue time、prefill token |
+| 首 token 很快但后续卡 | decode、batch 调度、stream flush |
+| 回答质量下降 | eval run、sample analysis、模型或 prompt 变更 |
+| 只有某个业务方慢 | tenant quota、prompt 结构、上下文长度 |
+
+换 runtime 或调参数之前，先用证据确认瓶颈在哪一层。
+这也是本学习站反复强调 gateway、events、metrics、eval 的原因。
+Serving runtime 是核心层，但它不是唯一层。
 
 ## 常见误区
 

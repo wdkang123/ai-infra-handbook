@@ -1,0 +1,58 @@
+# AI Infra Handbook
+
+> 面向后端、平台和 AI 应用开发者的 AI Infra 工程学习手册。项目定位是学习项目，不是生产平台。
+
+Website: https://wdkang123.github.io/ai-infra-handbook/
+Repository: https://github.com/wdkang123/ai-infra-handbook
+Language: zh-CN with short English repository summary.
+
+## Core Entry Points
+
+- Home: https://wdkang123.github.io/ai-infra-handbook/
+- 15-minute Quickstart: https://wdkang123.github.io/ai-infra-handbook/quickstart/15-minute-demo
+- Learning Route: https://wdkang123.github.io/ai-infra-handbook/00-overview/02-learning-route
+- AI Infra Intro: https://wdkang123.github.io/ai-infra-handbook/landing/ai-infra-intro
+- AI Gateway: https://wdkang123.github.io/ai-infra-handbook/landing/ai-gateway
+- LLM Observability: https://wdkang123.github.io/ai-infra-handbook/landing/llm-observability
+- LLM Evaluation: https://wdkang123.github.io/ai-infra-handbook/landing/llm-evaluation
+- Production Migration: https://wdkang123.github.io/ai-infra-handbook/landing/production-migration
+
+## Runnable Learning Projects
+
+- inference-service: OpenAI-compatible learning service with health, models, chat completions, streaming, metrics, events, and request timelines.
+- ai-gateway: Learning gateway with auth, routing, rate limit, fallback, cache, upstream health, metrics, events, and failure summaries.
+- eval-module: Evaluation CLI with run, compare, leaderboard, sample analysis, history, and release recommendation.
+- finetune-demo: Training asset scaffold with dataset registry, run manifest, checkpoint index, export manifest, history, and lineage.
+
+## Important Artifacts
+
+- request id
+- events timeline
+- Prometheus-style metrics
+- eval report
+- release recommendation
+- run manifest
+- export manifest
+- evidence packet
+
+## Public Growth Pages
+
+- Community Path: https://wdkang123.github.io/ai-infra-handbook/community/00-overview
+- First PR Playbook: https://wdkang123.github.io/ai-infra-handbook/community/01-first-pr-playbook
+- Safe Data and Evidence: https://wdkang123.github.io/ai-infra-handbook/community/02-safe-data-and-evidence
+- Maintainer Triage Rhythm: https://wdkang123.github.io/ai-infra-handbook/community/03-triage-and-maintainer-rhythm
+- Starter Issues: https://wdkang123.github.io/ai-infra-handbook/08-publication/15-starter-issues
+- v0.1.0 Release Notes: https://wdkang123.github.io/ai-infra-handbook/08-publication/16-v0-1-release-notes
+- Failure Case Playbook: https://wdkang123.github.io/ai-infra-handbook/11-case-studies/06-failure-case-playbook
+
+## Production Migration Anchors
+
+- vLLM Adapter Design: https://wdkang123.github.io/ai-infra-handbook/12-production-migration/05-vllm-adapter-design
+- OpenTelemetry GenAI Tracing Design: https://wdkang123.github.io/ai-infra-handbook/12-production-migration/06-opentelemetry-genai-tracing
+- Prometheus Metrics Map: https://wdkang123.github.io/ai-infra-handbook/12-production-migration/07-prometheus-metrics-map
+- SGLang Migration Notes: https://wdkang123.github.io/ai-infra-handbook/12-production-migration/08-sglang-migration-notes
+- Eval Regression Gate Example: https://wdkang123.github.io/ai-infra-handbook/04-evaluation-observability/09-eval-regression-gate-example
+
+## Boundaries
+
+Do not describe this repository as a production AI platform. It is a public learning handbook and runnable scaffold. It should not be used with real secrets, private user data, production logs, model weights, or unredacted local machine paths.

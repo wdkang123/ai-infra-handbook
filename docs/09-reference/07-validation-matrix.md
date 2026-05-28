@@ -21,6 +21,7 @@
 | 公开上传检查 | `make public-check` | security-check + infra-check | GitHub 上传、PR 和公开分享前 |
 | 综合检查 | `make infra-check` | lint、测试、docs-quality、docs build | 常规提交前 |
 | 端到端 smoke | `make infra-smoke` | gateway / inference / eval / finetune 最小链路 | 改跨项目行为后 |
+| 15 分钟 Quickstart | `make quickstart` | 安装依赖、端到端 smoke、根级 evidence packet、本地服务启动 | 新读者第一次 clone 后，或改 Quickstart / Makefile 后 |
 | 证据包生成 | `make infra-evidence` | 汇总 `.tmp/smoke` 的 serving、eval、finetune 证据 | 跑完 smoke 后整理复盘 |
 | 发布摘要 | `make release-brief` | 合成学习站清单和证据包，生成 release readiness 摘要 | GitHub 首发、PR 复盘或公开演示前 |
 | 共学包 | `make workshop-packet` | 合成课程目录和发布摘要，生成议程、模块卡片、学习者交付和复盘问题 | 组织共学或公开分享前 |
@@ -43,6 +44,7 @@
 | 改 eval run/compare/index | `make eval-test` | `make infra-check`、`make infra-smoke` |
 | 改 finetune train/export/index | `make finetune-test` | `make infra-check`、`make infra-smoke` |
 | 改 smoke 脚本 | `make infra-smoke` | `make infra-check` |
+| 改 Quickstart 或新手入口 | `make quickstart`、`make docs-quality` | `make public-check` |
 | 改证据包生成器 | `make scripts-test`、`make infra-evidence` | `make infra-smoke`、`make infra-check` |
 | 改学习站清单生成器 | `make scripts-test`、`make docs-inventory` | `make docs-quality`、`make infra-check` |
 | 改课程目录生成器 | `make scripts-test`、`make course-catalog` | `make docs-quality`、`make infra-check` |

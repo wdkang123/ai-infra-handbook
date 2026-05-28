@@ -15,6 +15,21 @@ LoRA、QLoRA、PEFT 经常一起出现，因为它们都围绕同一个现实问
 所以工程里出现了很多“参数高效微调”的方法。
 它们的共同目标不是重新训练一个模型，而是用更小代价让模型往目标任务方向移动一段。
 
+## 先用一个产品问题理解微调
+
+假设你在做一个面向团队内部的 AI Infra 学习助手。
+原始模型已经能回答问题，但存在几个稳定问题：
+
+- 回答经常只讲概念，不会连接到项目里的代码和命令。
+- 输出结构不稳定，有时缺少场景，有时缺少误区。
+- 对内部术语的解释风格不一致。
+- 你已经有一批高质量示例答案。
+
+这时可以先尝试 prompt 和 few-shot。
+如果 prompt 已经很长、few-shot 成本高、输出仍不稳定，微调才开始有讨论价值。
+
+也就是说，LoRA / QLoRA 不是“让模型变聪明”的万能按钮，而是当你已经有稳定任务、稳定数据和稳定评测时，用更低成本固化某些行为模式。
+
 ## 先理解全量微调为什么重
 
 假设一个模型有几十亿甚至上百亿参数。
@@ -253,6 +268,54 @@ QLoRA 可以看成在更省资源设置下应用 LoRA 思路。
 
 这些内容会帮助你把“LoRA/QLoRA/PEFT”从方法名变成工程资产链路。
 
+## Adapter 的生命周期
+
+一个 adapter 从产生到被使用，应该经历一条清楚路径：
+
+```text
+dataset version
+  -> training run
+  -> checkpoint
+  -> export
+  -> eval run
+  -> compare
+  -> release decision
+  -> serving target
+```
+
+每一步都应该留下证据。
+
+| 阶段 | 关键问题 | 需要留下什么 |
+| --- | --- | --- |
+| dataset | 用了哪些样本，是否可复现 | dataset registry、hash、diff |
+| run | 怎么训练的 | run manifest、config、seed、代码版本 |
+| checkpoint | 中间产物是否完整 | checkpoint index、文件 hash |
+| export | 发布资产从哪里来 | export manifest、base model、adapter id |
+| eval | 是否真的变好 | eval result、sample analysis |
+| compare | 是否值得发布 | baseline/candidate、recommendation |
+| serving | 如何被调用 | model mapping、version、rollback path |
+
+如果中间任何一段断了，adapter 就会变成“一个不知道从哪里来的文件”。
+这种文件很难维护，也不适合公开项目。
+
+所以本项目先做 `finetune-demo` 的资产链路，而不是一上来追求真实 GPU 训练。
+这是有意的：先学会管理训练产物，再接入真实训练执行。
+
+## 怎么判断要不要微调
+
+可以用这个顺序做决策：
+
+| 问题 | 更优先的手段 |
+| --- | --- |
+| 模型不知道最新事实 | RAG / 工具 / 数据源更新 |
+| 输出格式偶尔不稳 | prompt、response schema、eval gate |
+| 需要稳定模仿大量示例风格 | SFT / LoRA |
+| 两个答案都能生成，但经常选差的 | 偏好数据、DPO 或 rerank |
+| 任务定义还在变 | 先不要微调，先沉淀数据和标准 |
+| 没有评测集 | 先做 eval，再训练 |
+
+这张表的核心是：微调不是第一反应，而是证据充分后的工程选择。
+
 ## 一个学习任务
 
 你可以这样练习：
@@ -266,6 +329,33 @@ QLoRA 可以看成在更省资源设置下应用 LoRA 思路。
 7. 思考：如果这个 adapter 要发布，还缺哪些 eval 证据？
 
 这个练习不是为了训练出好模型，而是为了理解一个训练产物怎样变成可审计资产。
+
+## 命名和版本也很重要
+
+训练产物如果命名混乱，很快就无法维护。
+
+一个可读的 adapter 名称最好能表达：
+
+```text
+base model + task + dataset version + training method + date/run id
+```
+
+例如：
+
+```text
+qwen-ai-infra-sft-lora-ds2026q2-run014
+```
+
+这个名字不需要完全遵守某个标准，但应该让维护者一眼知道：
+
+- 它基于哪个模型家族。
+- 它面向什么任务。
+- 它来自哪个数据版本。
+- 它是 LoRA / QLoRA / 其他方法。
+- 它能回到哪个 run。
+
+公开项目里，命名本身也是学习体验的一部分。
+读者看到清楚的资产名，会更容易理解训练系统不是黑箱。
 
 ## 常见误区
 
